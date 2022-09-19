@@ -1,8 +1,11 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,10 +25,12 @@ public class PomiaryEdytuj extends AppCompatActivity {
     public static final String EXTRA_Pomiar_ID = "pomiarId";
     private int pomiarId;
 
+    Pomiar pomiar;
     private EditText nazwa, notatka;
     private Spinner jednostki;
     private UsersRoomDatabase database;
     private List<Jednostka> ListaJednostek;
+    private int idWybranejJednostki;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +45,13 @@ public class PomiaryEdytuj extends AppCompatActivity {
 
         database = UsersRoomDatabase.getInstance(getApplicationContext());
         ListaJednostek = database.localJednostkaDao().getAll();
-        Pomiar pomiar = database.localPomiarDao().findById(pomiarId);
+        pomiar = database.localPomiarDao().findById(pomiarId);
         nazwa.setText(pomiar.getNazwa());
         notatka.setText(pomiar.getNotatka());
 
         //jednostka.
-        int i = 1, idWybranejJednostki = 0;
+        int i = 1;
+        idWybranejJednostki = 0;
         String[] strJednostki = new String[ListaJednostek.size()+1];
         strJednostki[0] = "Wybierz jednostkę";
         for (Jednostka jednostka: ListaJednostek) {
@@ -55,20 +61,57 @@ public class PomiaryEdytuj extends AppCompatActivity {
             i++;
         }
 
-        ArrayAdapter<String > adapter = new ArrayAdapter<String> (getApplicationContext(),
-                android.R.layout.simple_list_item_1, strJednostki);
+        ArrayAdapter<String > adapter = new ArrayAdapter<String> (this, android.R.layout.simple_spinner_dropdown_item, strJednostki);
 
         jednostki.setAdapter(adapter);
         jednostki.setSelection(idWybranejJednostki);
+        jednostki.setEnabled(false);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_object_change, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId() ) {
+
+            case R.id.edit:
+                Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
+                Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+                aktualizuj.setEnabled(true);
+                anuluj.setEnabled(true);
+                nazwa.setEnabled(true);
+                notatka.setEnabled(true);
+                jednostki.setEnabled(true);
+                return true;
+            case R.id.drop:
+                if (database != null) {
+                    Pomiar pomiar = database.localPomiarDao().findById(pomiarId);
+                    database.localPomiarDao().delete(pomiar);
+                }
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
-    public void usun(View view) {
-        if (database != null) {
-            Pomiar pomiar = database.localPomiarDao().findById(pomiarId);
-            database.localPomiarDao().delete(pomiar);
-        }
-        finish();
+    public void stopEdit(View view) {
+        Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
+        Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+        aktualizuj.setEnabled(false);
+        anuluj.setEnabled(false);
+        nazwa.setEnabled(false);
+        notatka.setEnabled(false);
+        jednostki.setEnabled(false);
+        nazwa.setText(pomiar.getNazwa());
+        notatka.setText(pomiar.getNotatka());
+        jednostki.setSelection(idWybranejJednostki);
     }
 
     public void aktualizuj(View view) {

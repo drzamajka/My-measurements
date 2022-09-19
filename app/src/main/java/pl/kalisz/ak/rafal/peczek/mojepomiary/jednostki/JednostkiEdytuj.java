@@ -104,7 +104,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
     }
 
 
-    public void usunJednostke(View view) {
+    public void stopEdit(View view) {
         Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
         Button anuluj = (Button) findViewById(R.id.button_disable_edit);
         aktualizuj.setEnabled(false);

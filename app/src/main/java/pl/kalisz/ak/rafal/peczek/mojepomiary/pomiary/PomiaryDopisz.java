@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class PomiaryDopisz extends AppCompatActivity {
     private EditText nazwa, notatka;
     private Spinner jednostki;
     private UsersRoomDatabase database;
-    private List<Jednostka> ListaJednostek;
+    private List<Jednostka> listaJednostek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,25 +35,24 @@ public class PomiaryDopisz extends AppCompatActivity {
         jednostki = (Spinner) findViewById(R.id.spinner);
 
         database = UsersRoomDatabase.getInstance(getApplicationContext());
-        ListaJednostek = database.localJednostkaDao().getAll();
+        listaJednostek = database.localJednostkaDao().getAll();
 
-        //jednostka.
-        int i = 1;
-        String[] strJednostki = new String[ListaJednostek.size()+1];
-        strJednostki[0] = "Wybierz jednostkę";
-        for (Jednostka jednostka: ListaJednostek) {
-            strJednostki[i] = jednostka.getNazwa()+" "+jednostka.getWartosc();
-            i++;
+        //jednostki
+        ArrayList<String> data = new ArrayList<>();
+        for (Jednostka jednostka: listaJednostek){
+            data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
         }
 
-        ArrayAdapter<String > adapter = new ArrayAdapter<String> ( getApplicationContext(),
-                android.R.layout.simple_spinner_item, strJednostki);
+
+        ArrayAdapter adapter = new ArrayAdapter ( this, android.R.layout.simple_spinner_dropdown_item, data);
 
 
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         jednostki.setAdapter(adapter);
-        jednostki.setEnabled(true);
+        //jednostki.setEnabled(true);
 
     }
 
@@ -67,7 +67,7 @@ public class PomiaryDopisz extends AppCompatActivity {
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
                 notatka += '.';
-            jednostka = ListaJednostek.get(jednostka - 1).getId();
+            jednostka = listaJednostek.get(jednostka - 1).getId();
 
             int id = database.localPomiarDao().countAll();
             int userid = database.localUzytkownikDao().getAll().get(0).getId();
