@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="pl.kalisz.ak.rafal.peczek.mojepomiary">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_wlasna"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_wlasna_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MojePomiary">
+        <activity
+            android:name=".wpisy.WpisyEdytuj"
+            android:exported="false"
+            android:label="Edycia Wpisu"
+            android:parentActivityName=".wpisy.WpisyActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".wpisy.WpisyDopisz"
+            android:exported="false"
+            android:label="Dodawanie Wpisu"
+            android:parentActivityName=".wpisy.WpisyActivity"
+            android:theme="@style/MyAppTheme"/>
+        <activity
+            android:name=".wpisy.WpisyActivity"
+            android:exported="false"
+            android:label="Wpisy"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme"/>
+        <activity
+            android:name=".terapie.TerapiaEdytuj"
+            android:exported="false"
+            android:label="Edycia Terapi"
+            android:parentActivityName=".terapie.TerapiaActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".terapie.TerapiaDopisz"
+            android:exported="false"
+            android:label="Dodawanie Terapi"
+            android:parentActivityName=".terapie.TerapiaActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".terapie.TerapiaActivity"
+            android:exported="false"
+            android:label="Terapie"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".pomiary.PomiaryEdytuj"
+            android:exported="false"
+            android:label="Edycia pomiaru"
+            android:parentActivityName=".pomiary.PomiaryActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".pomiary.PomiaryDopisz"
+            android:exported="false"
+            android:label="Dodawanie pomiaru"
+            android:parentActivityName=".pomiary.PomiaryActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".pomiary.PomiaryActivity"
+            android:exported="false"
+            android:label="Pomiary"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".jednostki.JednostkiEdytuj"
+            android:exported="false"
+            android:label="Edycja jednostki"
+            android:parentActivityName=".jednostki.JednostkiActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".jednostki.JednostkiDopisz"
+            android:exported="false"
+            android:label="Dodawanie jednostki"
+            android:parentActivityName=".jednostki.JednostkiActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".jednostki.JednostkiActivity"
+            android:exported="false"
+            android:label="@string/title_activity_jednostki"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".auth.RegisterActivity"
+            android:exported="false"
+            android:label="Rejestracja"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".lab12.Ustawienia"
+            android:exported="false"
+            android:label="@string/title_activity_ustawienia"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
+
+
+
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.MojePomiary">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
