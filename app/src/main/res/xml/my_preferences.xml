@@ -5,7 +5,7 @@
 
         <SwitchPreferenceCompat
             app:key="database"
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:title="Dostęp do zdalnej bazy danych"/>
     </PreferenceCategory>
 

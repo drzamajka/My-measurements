@@ -49,7 +49,7 @@ public class WpisyDopisz extends AppCompatActivity {
             i++;
         }
 
-        ArrayAdapter<String > adapter = new ArrayAdapter<String> (getApplicationContext(),
+        ArrayAdapter<String > adapter = new ArrayAdapter<String> (this,
                 android.R.layout.simple_list_item_1, strPomiarow);
 
         pomiary.setAdapter(adapter);
