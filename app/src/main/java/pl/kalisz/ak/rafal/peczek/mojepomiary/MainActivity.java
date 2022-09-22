@@ -45,6 +45,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UserRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyAdapter;
 
@@ -188,10 +189,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent2 = new Intent( this, PomiaryActivity.class);
                 startActivity(intent2);
                 break;
-//            case R.id.naw_terapie:
-//                Intent intent3 = new Intent( this, TerapiaActivity.class);
-//                startActivity(intent3);
-//                break;
+            case R.id.naw_terapie:
+                Intent intent3 = new Intent( this, TerapiaActivity.class);
+                startActivity(intent3);
+                break;
             case R.id.naw_wpisy:
                 Intent intent4 = new Intent( this, WpisyActivity.class);
                 startActivity(intent4);

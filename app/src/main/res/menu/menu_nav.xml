@@ -9,8 +9,8 @@
                 android:title="Jednostki"/>
             <item android:id="@+id/naw_pomiary"
                 android:title="Pomiary"/>
-<!--            <item android:id="@+id/naw_terapie"-->
-<!--                android:title="Terapie"/>-->
+            <item android:id="@+id/naw_terapie"
+                android:title="Terapie"/>
             <item android:id="@+id/naw_wpisy"
                 android:title="Wpisy"/>
 

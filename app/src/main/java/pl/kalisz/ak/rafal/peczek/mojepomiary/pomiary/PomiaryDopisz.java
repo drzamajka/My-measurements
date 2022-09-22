@@ -39,18 +39,14 @@ public class PomiaryDopisz extends AppCompatActivity {
 
         //jednostki
         ArrayList<String> data = new ArrayList<>();
+        data.add("Wybierz jednostkę");
         for (Jednostka jednostka: listaJednostek){
             data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
         }
 
-
         ArrayAdapter adapter = new ArrayAdapter ( this, android.R.layout.simple_spinner_dropdown_item, data);
 
 
-
-
-
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         jednostki.setAdapter(adapter);
         //jednostki.setEnabled(true);
 
@@ -76,4 +72,5 @@ public class PomiaryDopisz extends AppCompatActivity {
         }else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
     }
+
 }

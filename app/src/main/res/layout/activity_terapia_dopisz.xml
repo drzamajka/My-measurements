@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pomiary.PomiaryDopisz">
+    tools:context=".terapie.TerapiaDopisz">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,16 +20,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Pomiary"
+                android:text="Elementy terapi"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/spinnerPomiary"
+            <LinearLayout
+                android:id="@+id/listaElementow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/addElement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:layout_marginTop="10dp"
+                android:onClick="dodajElement"
+                android:text="Dodaj element" />
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Pomiary"-->
+<!--                android:textColor="@color/colorPrimary"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <Spinner-->
+<!--                android:id="@+id/spinnerPomiary"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:minHeight="48dp"-->
+<!--                tools:ignore="SpeakableTextPresentCheck" />-->
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -53,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:calendarViewShown="false"
                     android:datePickerMode="spinner" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -86,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:onClick="zapiszNowaPozycia"
-                android:text="Zapisz nową pozycję"
+                android:text="Zapisz nową terapie"
                 />
 
         </LinearLayout>
