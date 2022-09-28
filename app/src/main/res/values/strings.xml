@@ -175,4 +175,10 @@
         <item>Leki i Pomiary</item>
     </string-array>
 
+    <string-array name="czestotliwosc">
+        <item>Codziennie x razy dziennie</item>
+        <item>Codziennie co x godziń</item>
+        <item>co x dni</item>
+    </string-array>
+
 </resources>

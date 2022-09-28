@@ -56,6 +56,41 @@
 <!--                tools:ignore="SpeakableTextPresentCheck" />-->
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:text="Cęstotliwość:"
+                    android:textSize="15sp"
+
+                    />
+
+                <Spinner
+                    android:id="@+id/czestotliwosc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/czestotliwosc"
+                    android:minHeight="48dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:id="@+id/listaCzestotliwosci"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,12 +108,21 @@
                     android:text = "Data rozpoczęcia terapi:"
 
                     />
-                <DatePicker
+<!--                <DatePicker-->
+<!--                    android:id="@+id/dataRozpoczecia"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:calendarViewShown="false"-->
+<!--                    android:datePickerMode="spinner" />-->
+                <EditText
                     android:id="@+id/dataRozpoczecia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:calendarViewShown="false"
-                    android:datePickerMode="spinner" />
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="date" />
 
             </LinearLayout>
 
@@ -98,12 +142,21 @@
                     android:text = "Data zakonczenia terapi:"
 
                     />
-                <DatePicker
+<!--                <DatePicker-->
+<!--                    android:id="@+id/dataZakonczenia"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:calendarViewShown="false"-->
+<!--                    android:datePickerMode="spinner" />-->
+                <EditText
                     android:id="@+id/dataZakonczenia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:calendarViewShown="false"
-                    android:datePickerMode="spinner" />
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="date" />
             </LinearLayout>
 
 
