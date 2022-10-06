@@ -17,7 +17,8 @@
             android:exported="false"
             android:label="Edycia Wpisu"
             android:parentActivityName=".wpisy.WpisyActivity"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".wpisy.WpisyDopisz"
             android:exported="false"
@@ -35,7 +36,8 @@
             android:exported="false"
             android:label="Edycia Terapi"
             android:parentActivityName=".terapie.TerapiaActivity"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".terapie.TerapiaDopisz"
             android:exported="false"
@@ -53,7 +55,8 @@
             android:exported="false"
             android:label="Edycia pomiaru"
             android:parentActivityName=".pomiary.PomiaryActivity"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".pomiary.PomiaryDopisz"
             android:exported="false"
@@ -71,7 +74,8 @@
             android:exported="false"
             android:label="Edycja jednostki"
             android:parentActivityName=".jednostki.JednostkiActivity"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".jednostki.JednostkiDopisz"
             android:exported="false"
