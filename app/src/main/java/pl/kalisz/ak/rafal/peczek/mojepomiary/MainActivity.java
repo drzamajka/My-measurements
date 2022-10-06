@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +48,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UserRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaActivity;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaDopisz;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyAdapter;
 
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // lista
             dataWpsiow = (TextView) findViewById(R.id.Data);
+            dodajDatePicker(dataWpsiow);
             Date date = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
             dataWpsiow.setText(simpleDateFormat.format(date));
@@ -404,5 +408,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         date = c.getTime();
         dataWpsiow.setText(simpleDateFormat.format(date));
         odswiezListe();
+    }
+
+    private void dodajDatePicker(TextView textView){
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(dataWpsiow.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        MainActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                textView.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                odswiezListe();
+
+                            }
+                        },
+                        year, month, day);
+                datePickerDialog.show();
+            }
+        });
     }
 }
