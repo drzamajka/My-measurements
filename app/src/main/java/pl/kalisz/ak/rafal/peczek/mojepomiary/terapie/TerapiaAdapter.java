@@ -7,20 +7,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.RVAdapter;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 
 public class TerapiaAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
     private List<Terapia> listaTerapi;
+    private UsersRoomDatabase database;
 
-    public TerapiaAdapter(List<Terapia> listaTerapi) {
+    public TerapiaAdapter(List<Terapia> listaTerapi, UsersRoomDatabase usersRoomDatabase) {
+
         this.listaTerapi = listaTerapi;
+        database = usersRoomDatabase;
     }
 
     @Override
@@ -32,10 +40,21 @@ public class TerapiaAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(RVAdapter.ViewHolder holder, int position) {
         CardView cardView = holder.cardView;
+        Terapia terapia = listaTerapi.get(position);
+        ArrayList<Pomiar> listaCzynnosci = new ArrayList<>();
+        String tytuł = "";
+        ArrayList<Integer> idsCzynnosci = terapia.getIdsCzynnosci();
+        for(int i=0; i<idsCzynnosci.size();i++){
+            if(i>0 && i<idsCzynnosci.size())
+                tytuł += ", ";
+            tytuł += database.localPomiarDao().findById(idsCzynnosci.get(i)).getNazwa();
+        }
+
         TextView obiektNazwa = (TextView) cardView.findViewById(R.id.nazwa);
-        obiektNazwa.setText(listaTerapi.get(position).getId()+"");
+        obiektNazwa.setText(terapia.getId()+". "+tytuł);
         TextView obiektOpis = (TextView) cardView.findViewById(R.id.opis);
-        obiektOpis.setText("rozpoczyna się: "+listaTerapi.get(position).getDataRozpoczecia().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        obiektOpis.setText("trwa od: "+sdf.format(terapia.getDataRozpoczecia())+" do: "+sdf.format(terapia.getDataZakonczenia()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

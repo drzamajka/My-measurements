@@ -30,9 +30,9 @@
             android:id="@+id/opis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
             android:layout_below="@id/nazwa"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:gravity="left" />
 
     </RelativeLayout>
 

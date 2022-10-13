@@ -78,7 +78,7 @@ public class TerapiaActivity extends AppCompatActivity {
             List<Terapia> listaTerapi = database.localTerapiaDao().getAll();
             Toast.makeText(this, "posiadasz: " + database.localTerapiaDao().countAll() + " terapi", Toast.LENGTH_SHORT).show();
 
-            adapter = new TerapiaAdapter(listaTerapi);
+            adapter = new TerapiaAdapter(listaTerapi, database);
             rvPomiary.setAdapter(adapter);
         }
 

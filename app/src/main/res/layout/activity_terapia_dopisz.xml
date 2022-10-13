@@ -142,12 +142,6 @@
                     android:text = "Data zakonczenia terapi:"
 
                     />
-<!--                <DatePicker-->
-<!--                    android:id="@+id/dataZakonczenia"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:calendarViewShown="false"-->
-<!--                    android:datePickerMode="spinner" />-->
                 <EditText
                     android:id="@+id/dataZakonczenia"
                     android:layout_width="match_parent"
@@ -160,14 +154,43 @@
             </LinearLayout>
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:text="Notatka"
+                    android:textSize="15sp"
+
+                    />
+
+                <EditText
+                    android:id="@+id/editTextTextMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine"
+                    android:minLines="4"/>
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/button_save_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:focusable="true" android:focusableInTouchMode="true"
                 android:onClick="zapiszNowaPozycia"
-                android:text="Zapisz nową terapie"
-                />
+                android:text="Zapisz nową terapie" />
 
         </LinearLayout>
     </ScrollView>

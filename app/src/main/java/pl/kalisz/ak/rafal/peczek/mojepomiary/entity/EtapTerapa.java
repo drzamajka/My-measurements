@@ -16,7 +16,8 @@ public class EtapTerapa {
     @PrimaryKey
     private int id;
     private Date dataZaplanowania;
-    private String wynikPomiary;
+    private Date dataWykonania;
+    private String notatka;
     private int idTerapi;
     private Date dataUtwozenia;
     private Date dataAktualizacji;
@@ -24,10 +25,11 @@ public class EtapTerapa {
     public EtapTerapa() {
     }
 
-    public EtapTerapa(int id, Date dataZaplanowania, String wynikPomiary, int idTerapi, Date dataUtwozenia, Date dataAktualizacji) {
+    public EtapTerapa(int id, Date dataZaplanowania, Date dataWykonania, String notatka, int idTerapi, Date dataUtwozenia, Date dataAktualizacji) {
         this.id = id;
         this.dataZaplanowania = dataZaplanowania;
-        this.wynikPomiary = wynikPomiary;
+        this.dataWykonania = dataWykonania;
+        this.notatka = notatka;
         this.idTerapi = idTerapi;
         this.dataUtwozenia = dataUtwozenia;
         this.dataAktualizacji = dataAktualizacji;
@@ -45,16 +47,18 @@ public class EtapTerapa {
         return dataZaplanowania;
     }
 
-    public void setDataZaplanowania(Date dataZaplanowania) {
-        this.dataZaplanowania = dataZaplanowania;
+    public void setDataZaplanowania(Date dataZaplanowania) { this.dataZaplanowania = dataZaplanowania; }
+
+    public Date getDataWykonania() { return dataWykonania; }
+
+    public void setDataWykonania(Date dataWykonania) { this.dataWykonania = dataWykonania; }
+
+    public String getNotatka() {
+        return notatka;
     }
 
-    public String getWynikPomiary() {
-        return wynikPomiary;
-    }
-
-    public void setWynikPomiary(String wynikPomiary) {
-        this.wynikPomiary = wynikPomiary;
+    public void setNotatka(String notatka) {
+        this.notatka = notatka;
     }
 
     public int getIdTerapi() {
@@ -86,7 +90,8 @@ public class EtapTerapa {
         return "EtapTerapa{" +
                 "id=" + id +
                 ", dataZaplanowania=" + dataZaplanowania +
-                ", wynikPomiary='" + wynikPomiary + '\'' +
+                ", dataWykonania=" + dataWykonania +
+                ", notatka='" + notatka +
                 ", idTerapi=" + idTerapi +
                 ", dataUtwozenia=" + dataUtwozenia +
                 ", dataAktualizacji=" + dataAktualizacji +

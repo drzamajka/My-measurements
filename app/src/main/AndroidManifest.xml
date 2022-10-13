@@ -43,7 +43,8 @@
             android:exported="false"
             android:label="Dodawanie Terapi"
             android:parentActivityName=".terapie.TerapiaActivity"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".terapie.TerapiaActivity"
             android:exported="false"
