@@ -5,6 +5,9 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
@@ -17,7 +20,7 @@ public class Terapia {
     private int id;
     private int idUzytkownika;
     private int typ;
-    private int idPomiaru;
+    private ArrayList<Integer> idsCzynnosci;
     private Date dataRozpoczecia;
     private Date dataZakonczenia;
     private Date dataUtwozenia;
@@ -26,11 +29,11 @@ public class Terapia {
     public Terapia() {
     }
 
-    public Terapia(int id, int idUzytkownika, int typ, int idPomiaru, Date dataRozpoczecia, Date dataZakonczenia, Date dataUtwozenia, Date dataAktualizacji) {
+    public Terapia(int id, int idUzytkownika, int typ, ArrayList<Integer> idsCzynnosci, Date dataRozpoczecia, Date dataZakonczenia, Date dataUtwozenia, Date dataAktualizacji) {
         this.id = id;
         this.idUzytkownika = idUzytkownika;
         this.typ = typ;
-        this.idPomiaru = idPomiaru;
+        this.idsCzynnosci = idsCzynnosci;
         this.dataRozpoczecia = dataRozpoczecia;
         this.dataZakonczenia = dataZakonczenia;
         this.dataUtwozenia = dataUtwozenia;
@@ -61,13 +64,11 @@ public class Terapia {
         this.typ = typ;
     }
 
-    public int getIdPomiaru() {
-        return idPomiaru;
+    public ArrayList<Integer> getIdsCzynnosci() {
+        return idsCzynnosci;
     }
 
-    public void setIdPomiaru(int idPomiaru) {
-        this.idPomiaru = idPomiaru;
-    }
+    public void setIdsCzynnosci(ArrayList<Integer> idsCzynnosci) { this.idsCzynnosci = idsCzynnosci; }
 
     public Date getDataRozpoczecia() {
         return dataRozpoczecia;
@@ -107,7 +108,7 @@ public class Terapia {
                 "id=" + id +
                 ", idUzytkownika=" + idUzytkownika +
                 ", typ=" + typ +
-                ", idPomiaru=" + idPomiaru +
+                ", idsCzynnosci=" + idsCzynnosci.toString() +
                 ", dataRozpoczecia=" + dataRozpoczecia +
                 ", dataZakonczenia=" + dataZakonczenia +
                 ", dataUtwozenia=" + dataUtwozenia +

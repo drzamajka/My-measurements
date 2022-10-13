@@ -18,16 +18,16 @@ public interface LocalTerapiaDao {
     public void insertTerapie(Terapia... terapie);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public long insert(Terapia jednostka);
+    public long insert(Terapia terapia);
 
     @Update
-    public void update(Terapia jednostka);
+    public void update(Terapia terapia);
 
     @Update
     public int updateTerapie(Terapia... terapie);
 
     @Delete
-    public void delete(Terapia jednostka);
+    public void delete(Terapia terapia);
 
     @Query("delete from terapie")
     void removeAllTerapie();
