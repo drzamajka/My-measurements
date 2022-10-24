@@ -5,6 +5,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="logo">@mipmap/ic_launcher_wlasna_foreground</item>
+        <item name="colorOnBackground">@color/cardview_light_background</item>
 
     </style>
 
@@ -12,6 +13,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnBackground">@color/cardview_light_background</item>
     </style>
 
     <style name="MySnackbar" parent="@style/Widget.MaterialComponents.Snackbar">
