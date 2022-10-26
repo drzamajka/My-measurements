@@ -103,10 +103,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
                     android:textSize="15sp"
                     android:text = "Data rozpoczęcia terapi:"
-
                     />
 <!--                <DatePicker-->
 <!--                    android:id="@+id/dataRozpoczecia"-->
@@ -137,10 +135,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
                     android:textSize="15sp"
                     android:text = "Data zakonczenia terapi:"
-
                     />
                 <EditText
                     android:id="@+id/dataZakonczenia"
@@ -165,14 +161,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-
                     android:text="Notatka"
                     android:textSize="15sp"
-
                     />
 
                 <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                    android:id="@+id/editTextNotatka"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

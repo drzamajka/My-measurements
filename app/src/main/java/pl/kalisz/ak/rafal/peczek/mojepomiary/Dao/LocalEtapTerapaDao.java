@@ -29,6 +29,9 @@ public interface LocalEtapTerapaDao {
     @Delete
     public void delete(EtapTerapa etapTerapa);
 
+    @Query("DELETE FROM etap_terapa WHERE idTerapi LIKE :idTerapi")
+    public void deleteByIdTerapi(int idTerapi);
+
     @Query("delete from etap_terapa")
     void removeAllEtapy();
 

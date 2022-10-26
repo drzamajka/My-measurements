@@ -20,6 +20,7 @@ public class Terapia {
     private int id;
     private int idUzytkownika;
     private int typ;
+    private String notatka;
     private ArrayList<Integer> idsCzynnosci;
     private Date dataRozpoczecia;
     private Date dataZakonczenia;
@@ -29,10 +30,11 @@ public class Terapia {
     public Terapia() {
     }
 
-    public Terapia(int id, int idUzytkownika, int typ, ArrayList<Integer> idsCzynnosci, Date dataRozpoczecia, Date dataZakonczenia, Date dataUtwozenia, Date dataAktualizacji) {
+    public Terapia(int id, int idUzytkownika, int typ, String notatka, ArrayList<Integer> idsCzynnosci, Date dataRozpoczecia, Date dataZakonczenia, Date dataUtwozenia, Date dataAktualizacji) {
         this.id = id;
         this.idUzytkownika = idUzytkownika;
         this.typ = typ;
+        this.notatka = notatka;
         this.idsCzynnosci = idsCzynnosci;
         this.dataRozpoczecia = dataRozpoczecia;
         this.dataZakonczenia = dataZakonczenia;
@@ -63,6 +65,10 @@ public class Terapia {
     public void setTyp(int typ) {
         this.typ = typ;
     }
+
+    public String getNotatka() { return notatka; }
+
+    public void setNotatka(String notatka) { this.notatka = notatka; }
 
     public ArrayList<Integer> getIdsCzynnosci() {
         return idsCzynnosci;
@@ -107,6 +113,7 @@ public class Terapia {
         return "Terapia{" +
                 "id=" + id +
                 ", idUzytkownika=" + idUzytkownika +
+                ", notatka=" + notatka +
                 ", typ=" + typ +
                 ", idsCzynnosci=" + idsCzynnosci.toString() +
                 ", dataRozpoczecia=" + dataRozpoczecia +

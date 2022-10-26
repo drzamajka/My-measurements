@@ -23,7 +23,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
-@Database(entities = {Uzytkownik.class, Jednostka.class, Pomiar.class, Terapia.class, EtapTerapa.class, WpisPomiar.class}, version = 18, exportSchema = false)
+@Database(entities = {Uzytkownik.class, Jednostka.class, Pomiar.class, Terapia.class, EtapTerapa.class, WpisPomiar.class}, version = 19, exportSchema = false)
 public abstract class UsersRoomDatabase extends RoomDatabase {
 
     private static UsersRoomDatabase instance;

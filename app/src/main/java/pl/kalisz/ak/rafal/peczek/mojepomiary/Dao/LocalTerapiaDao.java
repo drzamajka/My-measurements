@@ -5,11 +5,13 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.TerapiaPosiadEtay;
 
 @Dao
 public interface LocalTerapiaDao {
@@ -42,6 +44,14 @@ public interface LocalTerapiaDao {
 
     @Query("SELECT * FROM terapie WHERE id LIKE :id")
     Terapia findById(int id);
+
+    @Transaction
+    @Query("SELECT * FROM terapie")
+    public List<TerapiaPosiadEtay> getTerapieAndWpisy();
+
+    @Transaction
+    @Query("SELECT * FROM terapie WHERE id LIKE :id")
+    TerapiaPosiadEtay findTerapieAndWpisyById(int id);
 
 
     @Query("SELECT COUNT(id) FROM terapie")

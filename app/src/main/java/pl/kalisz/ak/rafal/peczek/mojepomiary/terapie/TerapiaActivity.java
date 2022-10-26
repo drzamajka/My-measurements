@@ -58,12 +58,9 @@ public class TerapiaActivity extends AppCompatActivity {
         } else
             layoutManager = new LinearLayoutManager(this);
 
-
         rvPomiary.setLayoutManager(layoutManager);
         rvPomiary.setItemAnimator(new DefaultItemAnimator());
-
         rvPomiary = (RecyclerView) findViewById(R.id.recycleView);
-
 
         database = UsersRoomDatabase.getInstance(getApplicationContext());
 

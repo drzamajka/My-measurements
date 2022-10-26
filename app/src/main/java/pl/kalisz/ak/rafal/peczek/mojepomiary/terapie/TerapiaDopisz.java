@@ -47,7 +47,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         setContentView(R.layout.activity_terapia_dopisz);
         listaElementowL = new ArrayList<>();
         listaGodzin = new ArrayList<>();
-        notatka = (EditText) findViewById(R.id.editTextTextMultiLine);
+        notatka = (EditText) findViewById(R.id.editTextNotatka);
         dataRozpoczecia = (EditText) findViewById(R.id.dataRozpoczecia);
         dataZakonczenia = (EditText) findViewById(R.id.dataZakonczenia);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -214,6 +214,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                             }
                         },
                         year, month, day);
+                datePickerDialog.getDatePicker().setMinDate(new Date().getTime());
                 datePickerDialog.show();
             }
         });
@@ -261,6 +262,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         dataRozpoczecia = sdf.parse(this.dataRozpoczecia.getText().toString());
         dataZakonczenia = sdf.parse(this.dataZakonczenia.getText().toString());
 
+
         ArrayList listaWybranych = new ArrayList();
         ArrayList<Integer> idsCzynnosci = new ArrayList<>();
         for(View v: listaElementowL){
@@ -303,15 +305,12 @@ public class TerapiaDopisz extends AppCompatActivity {
             }
             break;
         }
-        Log.v("TerapieDopisz-godziny", "lista godzin:"+listaGodzin);                                            /// log
 
         Calendar c = Calendar.getInstance();
         c.setTime(dataRozpoczecia);
 
-        Log.v("TerapieDopisz", "start pentli");                                            /// log
 
         while (dataZakonczenia.after(c.getTime())) {
-            Log.v("TerapieDopisz-kalkulacia", "data:"+c.getTime());                 /// log
             c.set(Calendar.MILLISECOND, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MINUTE, 0);
@@ -329,21 +328,18 @@ public class TerapiaDopisz extends AppCompatActivity {
             }else
                 c.add(Calendar.DATE, 1);
         }
-        Log.v("TerapieDopisz-daty", "lista dat:"+listaDatZaplanowanychTerapi);                                            /// log
 
 
         for(View v: listaElementowL){
             Spinner spinner = (Spinner) v.findViewById(R.id.spinnerPomiary);
             listaWybranych.add(database.localPomiarDao().findByName((String)spinner.getSelectedItem()));
         }
-        //Toast.makeText(this, "liczba pomiarów="+listaElementowl.size(), Toast.LENGTH_LONG).show();
         Toast.makeText(this, "liczba wybranych="+listaWybranych, Toast.LENGTH_LONG).show();
 
 
         int id = database.localTerapiaDao().countAll();
         int idUzytkownika = database.localUzytkownikDao().getAll().get(0).getId();
-        Terapia terapia = new Terapia((id + 1), idUzytkownika, 1, idsCzynnosci, dataRozpoczecia, dataZakonczenia, new Date(), new Date());
-        Log.v("TerapieDopisz-terapia", "terapia:"+terapia);                                            /// log
+        Terapia terapia = new Terapia((id + 1), idUzytkownika, 1, notatka.getText().toString(), idsCzynnosci, dataRozpoczecia, dataZakonczenia, new Date(), new Date());
         database.localTerapiaDao().insert( terapia);
         ArrayList<EtapTerapa> listaEtapowTerapi = new ArrayList<>();
         for (Date data: listaDatZaplanowanychTerapi ) {
@@ -352,25 +348,6 @@ public class TerapiaDopisz extends AppCompatActivity {
             listaEtapowTerapi.add(etapTerapa);
             database.localEtapTerapaDao().insert(etapTerapa);
         }
-
-        Log.v("TerapieDopisz-etapy", "lista etapów:"+listaEtapowTerapi);                                            /// log
         finish();
-
-
-//        Calendar calendar = Calendar.getInstance();
-//
-//        calendar.set(this.dataRozpoczecia.getYear(), this.dataRozpoczecia.getMonth(), this.dataRozpoczecia.getDayOfMonth());
-//        Date dataRozpoczecia = calendar.getTime();
-//
-//        calendar.set(this.dataZakonczenia.getYear(), this.dataZakonczenia.getMonth(), this.dataZakonczenia.getDayOfMonth());
-//        Date dataZakonczenia = calendar.getTime();
-//
-//        int pomiary = this.pomiary.getSelectedItemPosition();
-//
-//
-//        int id = database.localPomiarDao().countAll();
-//        int userid = database.localUzytkownikDao().getAll().get(0).getId();
-//        database.localTerapiaDao().insert(new Terapia((id+1), userid, 0, pomiary, dataRozpoczecia, dataZakonczenia, new Date(), new Date() ));
-//        finish();
     }
 }

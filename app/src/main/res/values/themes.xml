@@ -6,6 +6,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="logo">@mipmap/ic_launcher_wlasna_foreground</item>
         <item name="colorOnBackground">@color/cardview_light_background</item>
+        <item name="android:textColor">@color/black</item>
 
     </style>
 
