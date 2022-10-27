@@ -10,6 +10,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
 
 @Dao
 public interface LocalEtapTerapaDao {
@@ -40,11 +41,17 @@ public interface LocalEtapTerapaDao {
     @Query("SELECT * FROM etap_terapa")
     List<EtapTerapa> getAll();
 
+    @Query("SELECT * FROM etap_terapa WHERE dataZaplanowania BETWEEN :dataOd AND :dataDo ORDER BY dataZaplanowania ASC")
+    List<EtapTerapiPosiaRelacie> getAllWithRelationsBetwenData(Long  dataOd, Long  dataDo);
+
     @Query("SELECT * FROM etap_terapa WHERE id IN (:ids)")
     List<EtapTerapa> findAllByIds(int[] ids);
 
     @Query("SELECT * FROM etap_terapa WHERE id LIKE :id")
     EtapTerapa findById(int id);
+
+    @Query("SELECT * FROM etap_terapa WHERE id LIKE :id")
+    EtapTerapiPosiaRelacie findByIdWithRelations(int id);
 
     @Query("SELECT COUNT(id) FROM etap_terapa")
     int countAll();

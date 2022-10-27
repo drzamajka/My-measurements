@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
@@ -272,6 +273,7 @@ public class TerapiaDopisz extends AppCompatActivity {
             idsCzynnosci.add(pomiar.getId());
         }
 
+
         ArrayList<Date> listaDatZaplanowanychTerapi = new ArrayList();
         ArrayList<Time> listaGodzin = new ArrayList<>();
         switch ((int) czestotliwosc.getSelectedItemId()) {
@@ -309,17 +311,19 @@ public class TerapiaDopisz extends AppCompatActivity {
         Calendar c = Calendar.getInstance();
         c.setTime(dataRozpoczecia);
 
-
-        while (dataZakonczenia.after(c.getTime())) {
+        while (!dataZakonczenia.before(c.getTime())) {
             c.set(Calendar.MILLISECOND, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.HOUR, 0);
 
+
             for (Time godzina: listaGodzin) {
-                c.set(Calendar.MINUTE, godzina.getMinutes());
-                c.set(Calendar.HOUR, godzina.getHours());
-                listaDatZaplanowanychTerapi.add(c.getTime());
+                Calendar tmpC = (Calendar) c.clone();
+                tmpC.set(Calendar.MINUTE, godzina.getMinutes());
+                tmpC.set(Calendar.HOUR, godzina.getHours());
+                Log.v("TerapieDopisz-data", "lista dat:"+tmpC.getTime());
+                listaDatZaplanowanychTerapi.add(tmpC.getTime());
             }
 
             if(czestotliwosc.getSelectedItemId() == 2) {

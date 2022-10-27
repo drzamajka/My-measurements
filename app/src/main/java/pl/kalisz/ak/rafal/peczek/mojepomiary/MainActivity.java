@@ -41,6 +41,7 @@ import java.util.List;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.UzytkownikDao;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.RegisterActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.WpisPomiarPosiadaPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
@@ -372,9 +373,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Date dateJutro = c.getTime();
 
 
-        List<WpisPomiarPosiadaPomiar> listaWpisow = database.localWpisPomiarDao().getAllbetwenData(date.getTime(), dateJutro.getTime());
+        List<EtapTerapiPosiaRelacie> listaEtapow = database.localEtapTerapaDao().getAllWithRelationsBetwenData(date.getTime(), dateJutro.getTime());
 
-        adapter = new WpisyAdapter(listaWpisow, getApplicationContext());
+        adapter = new MainEtapAdapter(listaEtapow, getApplicationContext());
         rvPomiary.setAdapter(adapter);
     }
 

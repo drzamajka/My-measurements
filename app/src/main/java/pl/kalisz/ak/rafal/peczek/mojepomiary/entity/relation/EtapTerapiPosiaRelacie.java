@@ -6,9 +6,10 @@ import androidx.room.Relation;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
-public class EtapTerapiPosiadWpis {
+public class EtapTerapiPosiaRelacie {
     @Embedded
     public EtapTerapa etapTerapa;
     @Relation(
@@ -16,4 +17,10 @@ public class EtapTerapiPosiadWpis {
             entityColumn = "idEtapTerapi"
     )
     public List<WpisPomiar> wpist;
+
+    @Relation(
+            parentColumn = "idTerapi",
+            entityColumn = "id"
+    )
+    public Terapia terapia;
 }
