@@ -20,8 +20,8 @@ public class PomiarPosiadRelacie {
     public List<WpisPomiar> pomiary;
 
     @Relation(
-            parentColumn = "id",
-            entityColumn = "idJednostki"
+            parentColumn = "idJednostki",
+            entityColumn = "id"
     )
     public Jednostka jednostka;
 }

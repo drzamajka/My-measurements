@@ -65,12 +65,10 @@ public class EtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
                         switch (which){
                             case 0:{
-                                if(etapTerapa.getDataWykonania()==null){
-                                    Intent intent1 = new Intent( cardView.getContext(), EtapTerapiWykonaj.class);
-                                    cardView.getContext().startActivity(intent1);
-                                }
-                                Intent intent = new Intent(cardView.getContext(), EtapTerapiEdytuj.class);
-                                cardView.getContext().startActivity(intent);
+                                Intent intent5 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
+                                intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) etapTerapa.getId());
+                                intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
+                                cardView.getContext().startActivity(intent5);
                                 break;
                             }
                             case 1: {

@@ -13,17 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MojePomiary">
         <activity
-            android:name=".terapie.EtapTerapiEdytuj"
+            android:name=".terapie.EtapTerapiActivity"
             android:exported="false"
-            android:label="Etap edycia"
-            android:theme="@style/MyAppTheme">
-        </activity>
-        <activity
-            android:name=".terapie.EtapTerapiWykonaj"
-            android:exported="false"
-            android:label="@string/title_activity_etap_perapi_wykonaj"
-            android:theme="@style/MyAppTheme">
-        </activity>
+            android:label="Etap terapi"
+            android:theme="@style/MyAppTheme"/>
         <activity
             android:name=".wpisy.WpisyEdytuj"
             android:exported="false"

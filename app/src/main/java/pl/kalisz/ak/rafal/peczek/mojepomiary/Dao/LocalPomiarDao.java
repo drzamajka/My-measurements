@@ -10,6 +10,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.PomiarPosiadRelacie;
 
 
 @Dao
@@ -39,7 +40,7 @@ public interface LocalPomiarDao {
     List<Pomiar> getAll();
 
     @Query("SELECT * FROM pomiary WHERE id IN (:ids)")
-    List<Pomiar> loadAllByIds(int[] ids);
+    List<PomiarPosiadRelacie> loadAllByIds(int[] ids);
 
     @Query("SELECT * FROM pomiary WHERE nazwa LIKE :nazwa ")
     Pomiar findByName(String nazwa);
