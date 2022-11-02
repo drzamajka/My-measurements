@@ -13,38 +13,50 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MojePomiary">
         <activity
+            android:name=".terapie.EtapTerapiEdytuj"
+            android:exported="false"
+            android:label="Etap edycia"
+            android:theme="@style/MyAppTheme">
+        </activity>
+        <activity
+            android:name=".terapie.EtapTerapiWykonaj"
+            android:exported="false"
+            android:label="@string/title_activity_etap_perapi_wykonaj"
+            android:theme="@style/MyAppTheme">
+        </activity>
+        <activity
             android:name=".wpisy.WpisyEdytuj"
             android:exported="false"
             android:label="Edycia Wpisu"
             android:parentActivityName=".wpisy.WpisyActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".wpisy.WpisyDopisz"
             android:exported="false"
             android:label="Dodawanie Wpisu"
             android:parentActivityName=".wpisy.WpisyActivity"
-            android:theme="@style/MyAppTheme"/>
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".wpisy.WpisyActivity"
             android:exported="false"
             android:label="Wpisy"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme"/>
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".terapie.TerapiaEdytuj"
             android:exported="false"
             android:label="Edycia Terapi"
             android:parentActivityName=".terapie.TerapiaActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".terapie.TerapiaDopisz"
             android:exported="false"
             android:label="Dodawanie Terapi"
             android:parentActivityName=".terapie.TerapiaActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".terapie.TerapiaActivity"
             android:exported="false"
@@ -57,7 +69,7 @@
             android:label="Edycia pomiaru"
             android:parentActivityName=".pomiary.PomiaryActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".pomiary.PomiaryDopisz"
             android:exported="false"
@@ -76,7 +88,7 @@
             android:label="Edycja jednostki"
             android:parentActivityName=".jednostki.JednostkiActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".jednostki.JednostkiDopisz"
             android:exported="false"
@@ -101,10 +113,6 @@
             android:label="@string/title_activity_ustawienia"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme" />
-
-
-
-
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"

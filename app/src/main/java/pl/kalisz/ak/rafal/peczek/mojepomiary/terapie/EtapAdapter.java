@@ -1,5 +1,7 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +12,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.RVAdapter;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 
 public class EtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
@@ -52,15 +51,39 @@ public class EtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             obiektOpis.setText( "Jescze nie wykonano etapu");
         }
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-//                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaTerapi.get(position).getId());
-//                cardView.getContext().startActivity(intent);
-//            }
-//        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
+                String[] colors = {"Edytuj", "Usuń"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                builder.setTitle("Etap "+(position+1)+". "+sdf.format(etapTerapa.getDataZaplanowania()));
+                builder.setItems(colors, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (which){
+                            case 0:{
+                                if(etapTerapa.getDataWykonania()==null){
+                                    Intent intent1 = new Intent( cardView.getContext(), EtapTerapiWykonaj.class);
+                                    cardView.getContext().startActivity(intent1);
+                                }
+                                Intent intent = new Intent(cardView.getContext(), EtapTerapiEdytuj.class);
+                                cardView.getContext().startActivity(intent);
+                                break;
+                            }
+                            case 1: {
+                                // usuń
+                                break;
+                            }
+                        }
+                    }
+                });
+                builder.show();
+                return false;
+            }
+        });
     }
 
     @Override

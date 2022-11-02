@@ -1,8 +1,9 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +14,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.WpisPomiarPosiadaPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyEdytuj;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiEdytuj;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiWykonaj;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
 
 public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
@@ -45,13 +46,15 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
         TextView obiektNazwa = (TextView) cardView.findViewById(R.id.nazwa);
 
         ArrayList<Integer> listaElementow = listaEtapow.get(position).terapia.getIdsCzynnosci();
+        String nazwa = "";
         for (int id: listaElementow) {
             Pomiar pomiar = database.localPomiarDao().findById(id);
             if(id != listaElementow.get(0))
-                obiektNazwa.setText(obiektNazwa.getText()+",\n"+pomiar.getNazwa());
+                nazwa += obiektNazwa.getText()+",\n"+pomiar.getNazwa();
             else
-                obiektNazwa.setText(pomiar.getNazwa());
+                nazwa = pomiar.getNazwa();
         }
+        obiektNazwa.setText(nazwa);
 
         TextView obiektData = (TextView) cardView.findViewById(R.id.data);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -64,28 +67,70 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
             obiektOpis.setText( "Jescze nie wykonano etapu");
         }
 
-//        obiektNazwa.setText(listaWpisow.get(position).wpis.getId()+": "+listaWpisow.get(position).pomiary.getNazwa());
-//        TextView obiektOpis = (TextView) cardView.findViewById(R.id.opis);
-//
-//        Jednostka jednostka = database.localJednostkaDao().findById(listaWpisow.get(position).pomiary.getIdJednostki());
-//
-//        obiektOpis.setText("wynik pomiaru: "+listaWpisow.get(position).wpis.getWynikPomiary()+ " "+jednostka.getWartosc());
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-//        Date dataWykonania =  listaWpisow.get(position).wpis.getDataWykonania();
-//        TextView obiektData = (TextView) cardView.findViewById(R.id.data);
-//        if(new Date().getYear() == dataWykonania.getYear())
-//            simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM");
-//        obiektData.setText(simpleDateFormat.format(dataWykonania));
-//
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(cardView.getContext(), WpisyEdytuj.class);
-//                intent.putExtra(WpisyEdytuj.EXTRA_Wpisu_ID, (int) listaWpisow.get(position).wpis.getId());
-//                cardView.getContext().startActivity(intent);
-//            }
-//        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
+                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
+                cardView.getContext().startActivity(intent);
+            }
+        });
+        Calendar dataZaplanowana = Calendar.getInstance();
+        dataZaplanowana.setTime(listaEtapow.get(position).etapTerapa.getDataZaplanowania());
+        Calendar dataAktualna = Calendar.getInstance();
+        if(dataZaplanowana.get(Calendar.DATE)==dataAktualna.get(Calendar.DATE)){
+            String finalNazwa = nazwa;
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
+                    if(listaEtapow.get(position).etapTerapa.getDataWykonania()==null) {
+                        String[] akcie = {"wykonaj"};
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                        builder.setTitle(finalNazwa);
+                        builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which) {
+                                    case 0: {
+                                        Intent intent4 = new Intent(cardView.getContext(), EtapTerapiWykonaj.class);
+                                        intent4.putExtra(EtapTerapiWykonaj.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
+                                        cardView.getContext().startActivity(intent4);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        builder.show();
+                    }
+                    else {
+                        String[] akcie = {"edytuj"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                        builder.setTitle(finalNazwa);
+                        builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which) {
+                                    case 0: {
+                                        Intent intent5 = new Intent(cardView.getContext(), EtapTerapiEdytuj.class);
+                                        intent5.putExtra(EtapTerapiEdytuj.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
+                                        cardView.getContext().startActivity(intent5);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        builder.show();
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
 
