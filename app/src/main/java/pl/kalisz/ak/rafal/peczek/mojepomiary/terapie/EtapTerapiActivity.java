@@ -3,6 +3,7 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -81,7 +82,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
             viewListyElementow.addView(elementView);
         }
 
-        if(etapId != 0) {
+        if(aktywnosc != 1) {
             przycisk.setText("Wykonaj etap");
             przycisk.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,18 +99,17 @@ public class EtapTerapiActivity extends AppCompatActivity {
                         }
                     }
 
+                    Calendar c = Calendar.getInstance();
+                    c.set(Calendar.HOUR, timePicker.getHour());
+                    c.set(Calendar.MINUTE, timePicker.getMinute());
                     int index = 0;
                     for (PomiarPosiadRelacie pomiar: listaCzynnosci) {
-
-                        Calendar c = Calendar.getInstance();
-                        c.set(Calendar.HOUR, timePicker.getHour());
-                        c.set(Calendar.MINUTE, timePicker.getMinute());
-
-                        int id = database.localWpisPomiarDao().countAll();
+                        int id = database.localWpisPomiarDao().getMaxId();
+                        Log.i("Tag-wpis", "liczba wpisów: " + id);
                         database.localWpisPomiarDao().insert(new WpisPomiar((id+1),listaWynikow.get(index).toString(), pomiar.pomiar.getId(), etapTerapiPosiaRelacie.etapTerapa.getId(), c.getTime(), new Date(), new Date() ));
                         index++;
                     }
-                    etapTerapiPosiaRelacie.etapTerapa.setDataWykonania(new Date());
+                    etapTerapiPosiaRelacie.etapTerapa.setDataWykonania(c.getTime());
                     etapTerapiPosiaRelacie.etapTerapa.setDataAktualizacji(new Date());
                     etapTerapiPosiaRelacie.etapTerapa.setNotatka(notatka.getText().toString());
                     database.localEtapTerapaDao().insert(etapTerapiPosiaRelacie.etapTerapa);
@@ -121,6 +121,47 @@ public class EtapTerapiActivity extends AppCompatActivity {
         }
         else {
             przycisk.setText("Aktualizuj");
+            int i = 0;
+            notatka.setText(etapTerapiPosiaRelacie.etapTerapa.getNotatka());
+            for( WpisPomiar wpis : etapTerapiPosiaRelacie.wpisy){
+                EditText editText = (EditText) listaElementowL.get(i).findViewById(R.id.editTextWynik);
+                editText.setText(wpis.getWynikPomiary());
+                i++;
+            }
+            przycisk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ArrayList<Double> listaWynikow = new ArrayList<>();
+                    for (View element : listaElementowL) {
+                        String wynikOdczyt = ((EditText) element.findViewById(R.id.editTextWynik)).getText().toString();
+                        if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
+                            Double wynik = Double.parseDouble(wynikOdczyt);
+                            listaWynikow.add(wynik);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                    Calendar c = Calendar.getInstance();
+                    c.set(Calendar.HOUR, timePicker.getHour());
+                    c.set(Calendar.MINUTE, timePicker.getMinute());
+                    int index = 0;
+                    for( WpisPomiar wpis : etapTerapiPosiaRelacie.wpisy){
+                        wpis.setWynikPomiary(listaWynikow.get(index).toString());
+                        wpis.setDataAktualizacji(new Date());
+                        database.localWpisPomiarDao().insert(wpis);
+                        index++;
+                    }
+                    etapTerapiPosiaRelacie.etapTerapa.setDataWykonania(c.getTime());
+                    etapTerapiPosiaRelacie.etapTerapa.setDataAktualizacji(new Date());
+                    etapTerapiPosiaRelacie.etapTerapa.setNotatka(notatka.getText().toString());
+                    database.localEtapTerapaDao().insert(etapTerapiPosiaRelacie.etapTerapa);
+                    Toast.makeText(getApplicationContext(), "zapisano", Toast.LENGTH_SHORT).show();
+                    finish();
+
+                }
+            });
         }
     }
 

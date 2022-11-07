@@ -56,4 +56,7 @@ public interface LocalTerapiaDao {
 
     @Query("SELECT COUNT(id) FROM terapie")
     int countAll();
+
+    @Query("SELECT MAX(id) FROM terapie")
+    int getMaxId();
 }

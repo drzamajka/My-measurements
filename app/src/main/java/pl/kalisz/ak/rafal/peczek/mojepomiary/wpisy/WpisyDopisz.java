@@ -68,7 +68,7 @@ public class WpisyDopisz extends AppCompatActivity {
             data.setHours(this.dataWykonania.getCurrentHour());
             data.setMinutes(this.dataWykonania.getCurrentMinute());
 
-            int id = database.localWpisPomiarDao().countAll();
+            int id = database.localWpisPomiarDao().getMaxId();
             database.localWpisPomiarDao().insert(new WpisPomiar((id+1),wynik, pomiary, 0, data, new Date(), new Date() ));
             finish();
         }

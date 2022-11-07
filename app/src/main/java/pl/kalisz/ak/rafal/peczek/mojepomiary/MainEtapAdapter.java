@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.PomiarPosiadRelacie;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
@@ -60,8 +63,21 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
         obiektData.setText(sdf.format(listaEtapow.get(position).etapTerapa.getDataZaplanowania()));
         TextView obiektOpis = (TextView) cardView.findViewById(R.id.opis);
 
-        if(listaEtapow.get(position).etapTerapa.getDataWykonania() != null)
-            obiektOpis.setText( "wykonany: "+sdf.format(listaEtapow.get(position).etapTerapa.getDataWykonania()));
+        if(listaEtapow.get(position).etapTerapa.getDataWykonania() != null) {
+            List<WpisPomiar> listaWpisow = listaEtapow.get(position).wpisy;
+            Log.i("Tag-main-RV", "lista wpisów:" + listaWpisow);
+            String opis = "";
+            int i = 0;
+            for (WpisPomiar wpis : listaWpisow) {
+                PomiarPosiadRelacie pomiar = database.localPomiarDao().findPomiarPosiadRelacieById(wpis.getIdPomiar());
+                if(i!=0)
+                    opis += "\n";
+                opis += " "+wpis.getWynikPomiary()+" "+pomiar.jednostka.getWartosc();
+                i++;
+            }
+            obiektOpis.setText(opis);
+            //obiektOpis.setText("wykonany: " + sdf.format(listaEtapow.get(position).etapTerapa.getDataWykonania()));
+        }
         else{
             obiektOpis.setText( "Jescze nie wykonano etapu");
         }

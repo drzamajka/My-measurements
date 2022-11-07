@@ -54,4 +54,7 @@ public interface LocalUzytkownikDao {
     @Query("SELECT * FROM urzytkownicy")
     List<UztrkownikPosiadaPomiary>  getAllwithPomiary();
 
+    @Query("SELECT MAX(id) FROM urzytkownicy")
+    int getMaxId();
+
 }

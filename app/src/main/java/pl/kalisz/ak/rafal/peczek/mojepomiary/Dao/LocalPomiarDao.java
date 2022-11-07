@@ -48,6 +48,12 @@ public interface LocalPomiarDao {
     @Query("SELECT COUNT(id) FROM pomiary")
     int countAll();
 
+    @Query("SELECT MAX(id) FROM pomiary")
+    int getMaxId();
+
     @Query("SELECT * FROM pomiary WHERE id LIKE :id")
     Pomiar findById(int id);
+
+    @Query("SELECT * FROM pomiary WHERE id LIKE :id")
+    PomiarPosiadRelacie findPomiarPosiadRelacieById(int id);
 }

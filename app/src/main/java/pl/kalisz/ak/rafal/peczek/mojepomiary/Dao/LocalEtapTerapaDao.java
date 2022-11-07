@@ -55,4 +55,7 @@ public interface LocalEtapTerapaDao {
 
     @Query("SELECT COUNT(id) FROM etap_terapa")
     int countAll();
+
+    @Query("SELECT MAX(id) FROM etap_terapa")
+    int getMaxId();
 }

@@ -16,7 +16,7 @@ public class EtapTerapiPosiaRelacie {
             parentColumn = "id",
             entityColumn = "idEtapTerapi"
     )
-    public List<WpisPomiar> wpist;
+    public List<WpisPomiar> wpisy;
 
     @Relation(
             parentColumn = "idTerapi",

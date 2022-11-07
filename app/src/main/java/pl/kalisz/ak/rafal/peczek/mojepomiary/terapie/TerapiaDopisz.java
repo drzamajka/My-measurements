@@ -341,13 +341,13 @@ public class TerapiaDopisz extends AppCompatActivity {
         Toast.makeText(this, "liczba wybranych="+listaWybranych, Toast.LENGTH_LONG).show();
 
 
-        int id = database.localTerapiaDao().countAll();
+        int id = database.localTerapiaDao().getMaxId();
         int idUzytkownika = database.localUzytkownikDao().getAll().get(0).getId();
         Terapia terapia = new Terapia((id + 1), idUzytkownika, 1, notatka.getText().toString(), idsCzynnosci, dataRozpoczecia, dataZakonczenia, new Date(), new Date());
         database.localTerapiaDao().insert( terapia);
         ArrayList<EtapTerapa> listaEtapowTerapi = new ArrayList<>();
         for (Date data: listaDatZaplanowanychTerapi ) {
-            int idE = database.localEtapTerapaDao().countAll();
+            int idE = database.localEtapTerapaDao().getMaxId();
             EtapTerapa etapTerapa = new EtapTerapa( idE, data, null, "", terapia.getId(), new Date(), new Date());
             listaEtapowTerapi.add(etapTerapa);
             database.localEtapTerapaDao().insert(etapTerapa);

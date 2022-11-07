@@ -65,7 +65,7 @@ public class PomiaryDopisz extends AppCompatActivity {
                 notatka += '.';
             jednostka = listaJednostek.get(jednostka - 1).getId();
 
-            int id = database.localPomiarDao().countAll();
+            int id = database.localPomiarDao().getMaxId();
             int userid = database.localUzytkownikDao().getAll().get(0).getId();
             database.localPomiarDao().insert(new Pomiar((id + 1), nazwa, notatka, userid, jednostka, new Date(), new Date()));
             finish();

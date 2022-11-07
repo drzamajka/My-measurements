@@ -52,6 +52,9 @@ public interface LocalWpisPomiarDao {
     @Query("SELECT COUNT(id) FROM wpis_pomiar")
     int countAll();
 
+    @Query("SELECT MAX(id) FROM wpis_pomiar")
+    int getMaxId();
+
 
     //Relacia
     @Transaction

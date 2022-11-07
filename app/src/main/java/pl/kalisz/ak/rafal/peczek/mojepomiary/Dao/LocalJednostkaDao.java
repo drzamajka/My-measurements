@@ -50,4 +50,7 @@ public interface LocalJednostkaDao {
 
     @Query("SELECT COUNT(id) FROM jednostki")
     int countAll();
+
+    @Query("SELECT MAX(id) FROM jednostki")
+    int getMaxId();
 }
