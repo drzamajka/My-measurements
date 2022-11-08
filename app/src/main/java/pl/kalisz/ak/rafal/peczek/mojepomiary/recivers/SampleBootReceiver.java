@@ -19,7 +19,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED") || intent.getAction().equals("android.intent.action.PACKAGE_RESTARTED")) {
 
             UsersRoomDatabase database = UsersRoomDatabase.getInstance(context);
             List<EtapTerapa> etapyTerapi = database.localEtapTerapaDao().getAllAfterData(new Date().getTime());
