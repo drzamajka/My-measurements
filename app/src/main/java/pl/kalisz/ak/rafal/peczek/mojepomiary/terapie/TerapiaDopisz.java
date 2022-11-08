@@ -2,8 +2,15 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -27,6 +34,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import pl.kalisz.ak.rafal.peczek.mojepomiary.OdbiornikPowiadomien;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
@@ -41,6 +49,9 @@ public class TerapiaDopisz extends AppCompatActivity {
     private EditText dataRozpoczecia, dataZakonczenia, notatka;
     private LinearLayout viewListyElementow, viewListyCzestotliwosci;
     private UsersRoomDatabase database;
+
+//    private AlarmManager alarmManager;
+//    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +92,25 @@ public class TerapiaDopisz extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "nic nnie wybrano", Toast.LENGTH_LONG).show();
             }
         });
+
+        //powiadomienia
+        createNotificationChannel();
+
+    }
+
+    private void createNotificationChannel() {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence nazwa = "mojePomiaryChanell";
+            String opis = "Źródło powiadomień";
+            int znaczenie = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel chanel = new NotificationChannel("mojepomiary", nazwa, znaczenie);
+            chanel.setDescription(opis);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(chanel);
+
+        }
 
     }
 
@@ -348,10 +378,24 @@ public class TerapiaDopisz extends AppCompatActivity {
         ArrayList<EtapTerapa> listaEtapowTerapi = new ArrayList<>();
         for (Date data: listaDatZaplanowanychTerapi ) {
             int idE = database.localEtapTerapaDao().getMaxId();
-            EtapTerapa etapTerapa = new EtapTerapa( idE, data, null, "", terapia.getId(), new Date(), new Date());
+            EtapTerapa etapTerapa = new EtapTerapa( idE+1, data, null, "", terapia.getId(), new Date(), new Date());
             listaEtapowTerapi.add(etapTerapa);
             database.localEtapTerapaDao().insert(etapTerapa);
+            setAlarm(etapTerapa);
         }
         finish();
+    }
+
+    private void setAlarm(EtapTerapa etapTerapa) {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, OdbiornikPowiadomien.class);
+        intent.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, etapTerapa.getId(), intent,PendingIntent.FLAG_MUTABLE);
+
+        alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime()-60*1000, pendingIntent);
+
+        Log.v("Tag-powiadomienie", "lista dat:"+intent.toString());
     }
 }
