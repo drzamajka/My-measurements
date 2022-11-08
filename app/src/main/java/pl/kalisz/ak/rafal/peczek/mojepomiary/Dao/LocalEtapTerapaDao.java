@@ -44,6 +44,9 @@ public interface LocalEtapTerapaDao {
     @Query("SELECT * FROM etap_terapa WHERE dataZaplanowania BETWEEN :dataOd AND :dataDo ORDER BY dataZaplanowania ASC")
     List<EtapTerapiPosiaRelacie> getAllWithRelationsBetwenData(Long  dataOd, Long  dataDo);
 
+    @Query("SELECT * FROM etap_terapa WHERE dataZaplanowania > :dataOd ORDER BY dataZaplanowania ASC")
+    List<EtapTerapa> getAllAfterData(Long  dataOd);
+
     @Query("SELECT * FROM etap_terapa WHERE id IN (:ids)")
     List<EtapTerapa> findAllByIds(int[] ids);
 

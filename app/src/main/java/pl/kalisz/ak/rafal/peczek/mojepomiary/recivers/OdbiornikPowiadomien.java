@@ -1,4 +1,4 @@
-package pl.kalisz.ak.rafal.peczek.mojepomiary;
+package pl.kalisz.ak.rafal.peczek.mojepomiary.recivers;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
 
+import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;

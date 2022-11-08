@@ -8,8 +8,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -31,14 +33,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.OdbiornikPowiadomien;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.OdbiornikPowiadomien;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.SampleBootReceiver;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 
 public class TerapiaDopisz extends AppCompatActivity {
@@ -383,6 +385,14 @@ public class TerapiaDopisz extends AppCompatActivity {
             database.localEtapTerapaDao().insert(etapTerapa);
             setAlarm(etapTerapa);
         }
+
+        ComponentName receiver = new ComponentName(this, SampleBootReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
         finish();
     }
 
@@ -392,7 +402,7 @@ public class TerapiaDopisz extends AppCompatActivity {
 
         Intent intent = new Intent(this, OdbiornikPowiadomien.class);
         intent.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, etapTerapa.getId(), intent,PendingIntent.FLAG_MUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), etapTerapa.getId(), intent,PendingIntent.FLAG_MUTABLE);
 
         alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime()-60*1000, pendingIntent);
 
