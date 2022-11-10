@@ -48,7 +48,7 @@ public class OdbiornikPowiadomien  extends BroadcastReceiver {
             }
 
             NotificationCompat.Builder bilder = new NotificationCompat.Builder(context, "mojepomiary")
-                    .setSmallIcon(R.mipmap.ic_launcher_wlasna_round)
+                    .setSmallIcon(R.drawable.ic_notyfication_deafalt)
                     .setContentTitle("Wykonaj etap terapii: "+etapId)
                     .setContentText(opis)
                     .setAutoCancel(true)

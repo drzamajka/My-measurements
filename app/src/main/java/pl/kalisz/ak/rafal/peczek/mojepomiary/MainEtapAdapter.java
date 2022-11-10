@@ -14,8 +14,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
@@ -89,38 +93,66 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
+                Date za3Godziny = Date.from( LocalDateTime.now().plusHours(3).atZone(ZoneId.systemDefault()).toInstant());
+                Date dzienTemu = Date.from( LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                if(listaEtapow.get(position).etapTerapa.getDataZaplanowania().after(dzienTemu) && listaEtapow.get(position).etapTerapa.getDataZaplanowania().before(za3Godziny)) {
+                    if (listaEtapow.get(position).etapTerapa.getDataWykonania() == null) {
+                        String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
 
-                if(listaEtapow.get(position).etapTerapa.getDataWykonania()==null) {
-                    String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                        builder.setTitle(finalNazwa);
+                        builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
-                    builder.setTitle(finalNazwa);
-                    builder.setItems(akcie, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            switch (which) {
-                                case 0: {
-                                    Intent intent4 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
-                                    intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
-                                    intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
-                                    cardView.getContext().startActivity(intent4);
-                                    break;
-                                }
-                                case 1: {
-                                    Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-                                    intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
-                                    cardView.getContext().startActivity(intent);
-                                    break;
+                                switch (which) {
+                                    case 0: {
+                                        Intent intent4 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
+                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
+                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
+                                        cardView.getContext().startActivity(intent4);
+                                        break;
+                                    }
+                                    case 1: {
+                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
+                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
+                                        cardView.getContext().startActivity(intent);
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                    });
-                    builder.show();
-                }
-                else {
-                    String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
+                        });
+                        builder.show();
+                    } else {
+                        String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                        builder.setTitle(finalNazwa);
+                        builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which) {
+                                    case 0: {
+                                        Intent intent5 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
+                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
+                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
+                                        cardView.getContext().startActivity(intent5);
+                                        break;
+                                    }
+                                    case 1: {
+                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
+                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
+                                        cardView.getContext().startActivity(intent);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        builder.show();
+                    }
+                }else{
+                    String[] akcie = {"Wyświetl sczegóły terapi"};
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
                     builder.setTitle(finalNazwa);
                     builder.setItems(akcie, new DialogInterface.OnClickListener() {
@@ -129,13 +161,6 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
 
                             switch (which) {
                                 case 0: {
-                                    Intent intent5 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
-                                    intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
-                                    intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
-                                    cardView.getContext().startActivity(intent5);
-                                    break;
-                                }
-                                case 1: {
                                     Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
                                     intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
                                     cardView.getContext().startActivity(intent);

@@ -289,7 +289,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         listaElementow.addView(elementView);
     }
 
-    public void zapiszNowaPozycia(View view) throws ParseException {
+    public void zapiszNowaTerapie(View view) throws ParseException {
         Date dataRozpoczecia, dataZakonczenia;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         dataRozpoczecia = sdf.parse(this.dataRozpoczecia.getText().toString());
