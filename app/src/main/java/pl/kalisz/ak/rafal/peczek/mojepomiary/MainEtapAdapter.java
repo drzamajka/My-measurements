@@ -1,6 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -99,7 +100,7 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
                     if (listaEtapow.get(position).etapTerapa.getDataWykonania() == null) {
                         String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
                         builder.setTitle(finalNazwa);
                         builder.setItems(akcie, new DialogInterface.OnClickListener() {
                             @Override
@@ -125,7 +126,7 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
                         builder.show();
                     } else {
                         String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
-                        AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
                         builder.setTitle(finalNazwa);
                         builder.setItems(akcie, new DialogInterface.OnClickListener() {
                             @Override
@@ -153,7 +154,7 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
                 }else{
                     String[] akcie = {"Wyświetl sczegóły terapi"};
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(cardView.getContext());
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
                     builder.setTitle(finalNazwa);
                     builder.setItems(akcie, new DialogInterface.OnClickListener() {
                         @Override

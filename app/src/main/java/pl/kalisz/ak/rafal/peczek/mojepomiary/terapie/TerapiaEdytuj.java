@@ -1,6 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
             case R.id.drop:
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(TerapiaEdytuj.this);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TerapiaEdytuj.this);
                 builder.setMessage("Czy na pewno usunąć");
 //                builder.setTitle("Alert !");
                 builder.setCancelable(false);
@@ -122,8 +123,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
                 builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
                     dialog.cancel();
                 });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                builder.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

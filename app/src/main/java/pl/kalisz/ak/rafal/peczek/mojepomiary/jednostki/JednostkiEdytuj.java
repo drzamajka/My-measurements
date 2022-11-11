@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Date;
 
@@ -22,8 +25,9 @@ public class JednostkiEdytuj extends AppCompatActivity {
     public static final String EXTRA_JEDNOSTKA_ID = "jednostkaId";
     private int jednostkaId;
 
-    private EditText nazwa, wartosc;
-    private Spinner dokladnosc, przeznaczenie;
+    private TextInputLayout nazwa, wartosc;
+    private AutoCompleteTextView dokladnosc, przeznaczenie;
+    private TextInputLayout dokladnoscL, przeznaczenieL;
     private UsersRoomDatabase database;
     private Jednostka jednostka;
 
@@ -35,18 +39,22 @@ public class JednostkiEdytuj extends AppCompatActivity {
 
         jednostkaId = (Integer) getIntent().getExtras().get(EXTRA_JEDNOSTKA_ID);
 
-        nazwa = (EditText) findViewById(R.id.editTextNazwa);
-        wartosc = (EditText) findViewById(R.id.editTextJednostka);
-        dokladnosc = (Spinner) findViewById(R.id.spinner);
-        przeznaczenie = (Spinner) findViewById(R.id.spinner2);
+        nazwa = (TextInputLayout) findViewById(R.id.editTextNazwaLayout);
+        wartosc = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
+        dokladnosc = (AutoCompleteTextView) findViewById(R.id.spinner);
+        przeznaczenie = (AutoCompleteTextView) findViewById(R.id.spinner2);
+        dokladnoscL = (TextInputLayout) findViewById(R.id.spinnerLayout);
+        przeznaczenieL = (TextInputLayout) findViewById(R.id.spinner2Layout);
 
 
         database = UsersRoomDatabase.getInstance(getApplicationContext());
         jednostka = database.localJednostkaDao().findById(jednostkaId);
-        nazwa.setText(jednostka.getNazwa());
-        wartosc.setText(jednostka.getWartosc());
-        dokladnosc.setSelection(jednostka.getDokladnosc());
-        przeznaczenie.setSelection(jednostka.getPrzeznaczenie());
+        nazwa.getEditText().setText(jednostka.getNazwa());
+        wartosc.getEditText().setText(jednostka.getWartosc());
+        String[] listaDokladnosci = getResources().getStringArray(R.array.dokladnosc);
+        dokladnosc.setText(dokladnosc.getAdapter().getItem(jednostka.getDokladnosc()).toString(), true);
+        przeznaczenie.setText(przeznaczenie.getAdapter().getItem(jednostka.getPrzeznaczenie()).toString(), true);
+
 
         Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
         Button anuluj = (Button) findViewById(R.id.button_disable_edit);
@@ -54,8 +62,10 @@ public class JednostkiEdytuj extends AppCompatActivity {
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
         wartosc.setEnabled(false);
-        dokladnosc.setEnabled(false);
-        przeznaczenie.setEnabled(false);
+//        dokladnosc.setEnabled(false);
+        dokladnoscL.setEnabled(false);
+//        przeznaczenie.setEnabled(false);
+        przeznaczenieL.setEnabled(false);
 
 
     }
@@ -79,8 +89,8 @@ public class JednostkiEdytuj extends AppCompatActivity {
                     anuluj.setEnabled(true);
                     nazwa.setEnabled(true);
                     wartosc.setEnabled(true);
-                    dokladnosc.setEnabled(true);
-                    przeznaczenie.setEnabled(true);
+                    dokladnoscL.setEnabled(true);
+                    przeznaczenieL.setEnabled(true);
                 }
                 else {
                     Toast.makeText(this, "Nie mozna edytować domyślnej jednostki", Toast.LENGTH_LONG).show();
@@ -111,15 +121,15 @@ public class JednostkiEdytuj extends AppCompatActivity {
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
         wartosc.setEnabled(false);
-        dokladnosc.setEnabled(false);
-        przeznaczenie.setEnabled(false);
+        dokladnoscL.setEnabled(false);
+        przeznaczenieL.setEnabled(false);
     }
 
     public void aktualizujJednostke(View view) {
-        String nazwa = this.nazwa.getText().toString();
-        String wartosc = this.wartosc.getText().toString();
-        int dokladnosc = (int) this.dokladnosc.getSelectedItemId();
-        int przeznaczenie = (int) this.przeznaczenie.getSelectedItemId();
+        String nazwa = this.nazwa.getEditText().getText().toString();
+        String wartosc = this.wartosc.getEditText().getText().toString();
+        int dokladnosc = (int) this.dokladnosc.getText().length();
+        int przeznaczenie = (int) this.przeznaczenie.getText().length();
 
         if(dokladnosc != 0 && przeznaczenie != 0 && nazwa.length() >= 2 && wartosc.length() >= 1) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();

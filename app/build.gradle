@@ -11,7 +11,7 @@ android {
             keyPassword 'asdasdasd'
         }
     }
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "pl.kalisz.ak.rafal.peczek.mojepomiary"
@@ -63,5 +63,11 @@ dependencies {
     def room_version = '2.4.3'
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+
+
+    implementation "androidx.compose.material3:material3:1.1.0-alpha02"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.0-alpha02"
+
+
 
 }

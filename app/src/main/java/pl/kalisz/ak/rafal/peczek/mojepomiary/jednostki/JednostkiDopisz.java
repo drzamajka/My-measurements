@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -18,7 +19,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 public class JednostkiDopisz extends AppCompatActivity {
 
     private EditText nazwa, wartosc;
-    private Spinner dokladnosc, przeznaczenie;
+    private AutoCompleteTextView dokladnosc, przeznaczenie;
     private UsersRoomDatabase database;
 
     @Override
@@ -28,8 +29,8 @@ public class JednostkiDopisz extends AppCompatActivity {
 
         nazwa = (EditText) findViewById(R.id.editTextNazwa);
         wartosc = (EditText) findViewById(R.id.editTextJednostka);
-        dokladnosc = (Spinner) findViewById(R.id.spinner);
-        przeznaczenie = (Spinner) findViewById(R.id.spinner2);
+        dokladnosc = (AutoCompleteTextView) findViewById(R.id.spinner);
+        przeznaczenie = (AutoCompleteTextView) findViewById(R.id.spinner2);
 
         try{
             database = UsersRoomDatabase.getInstance(getApplicationContext());
@@ -43,8 +44,8 @@ public class JednostkiDopisz extends AppCompatActivity {
     public void zapiszNowaPozycia(View view){
         String nazwa = this.nazwa.getText().toString();
         String wartosc = this.wartosc.getText().toString();
-        int dokladnosc = (int) this.dokladnosc.getSelectedItemId();
-        int przeznaczenie = (int) this.przeznaczenie.getSelectedItemId();
+        int dokladnosc = (int) this.dokladnosc.getListSelection();
+        int przeznaczenie = (int) this.przeznaczenie.getListSelection();
 
         if(dokladnosc != 0 && przeznaczenie != 0 && nazwa.length() >= 2 && wartosc.length() >= 1)
         {

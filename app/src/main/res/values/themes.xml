@@ -1,23 +1,23 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.MojePomiary" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.MojePomiary" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="logo">@mipmap/ic_launcher_wlasna</item>
-        <item name="colorOnBackground">@color/cardview_light_background</item>
+
+        <item name="logo">@drawable/ic_launcher_wlasna_foreground</item>
+
         <item name="android:textColor">@color/black</item>
 
     </style>
 
-    <style name="MyAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="MyAppTheme" parent="Theme.Material3.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="colorOnBackground">@color/cardview_light_background</item>
+
     </style>
 
-    <style name="MySnackbar" parent="@style/Widget.MaterialComponents.Snackbar">
+    <style name="MySnackbar" parent="@style/Widget.Material3.Snackbar">
         <item name="android:layout_marginLeft">50dp</item>
         <item name="android:layout_marginRight">50dp</item>
         <item name="android:layout_marginBottom">100dp</item>
