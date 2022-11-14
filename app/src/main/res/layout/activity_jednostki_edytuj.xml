@@ -82,19 +82,19 @@
 
     <Button
         android:id="@+id/button_save_edit"
-        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+        style="@style/Widget.Material3.Button.Icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="24dp"
         android:onClick="aktualizujJednostke"
         android:enabled="false"
-        android:text="Zapisz nową jednostkę"
+        android:text="Aktualizuj jednostkę"
         app:icon="@drawable/ic_update_24" />
 
     <Button
         android:id="@+id/button_disable_edit"
-        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+        style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"

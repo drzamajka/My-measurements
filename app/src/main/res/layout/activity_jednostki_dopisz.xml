@@ -69,6 +69,7 @@
             android:layout_marginBottom="16dp"
             android:hint="Zastosowanie">
 
+
             <AutoCompleteTextView
                 android:id="@+id/spinner2"
                 android:layout_width="match_parent"
@@ -81,9 +82,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
+
         <Button
             android:id="@+id/button_save_edit"
-            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            style="@style/Widget.Material3.Button.Icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

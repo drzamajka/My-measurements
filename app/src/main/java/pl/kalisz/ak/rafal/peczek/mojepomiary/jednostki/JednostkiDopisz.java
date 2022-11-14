@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,6 +22,7 @@ public class JednostkiDopisz extends AppCompatActivity {
     private EditText nazwa, wartosc;
     private AutoCompleteTextView dokladnosc, przeznaczenie;
     private UsersRoomDatabase database;
+    private int dokladnoscSelectedId, przeznaczenieSelectedId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,22 @@ public class JednostkiDopisz extends AppCompatActivity {
         wartosc = (EditText) findViewById(R.id.editTextJednostka);
         dokladnosc = (AutoCompleteTextView) findViewById(R.id.spinner);
         przeznaczenie = (AutoCompleteTextView) findViewById(R.id.spinner2);
+        dokladnoscSelectedId = 0;
+        przeznaczenieSelectedId = 0;
+
+        dokladnosc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dokladnoscSelectedId = position;
+            }
+        });
+
+        przeznaczenie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                przeznaczenieSelectedId = position;
+            }
+        });
 
         try{
             database = UsersRoomDatabase.getInstance(getApplicationContext());
@@ -44,16 +62,14 @@ public class JednostkiDopisz extends AppCompatActivity {
     public void zapiszNowaPozycia(View view){
         String nazwa = this.nazwa.getText().toString();
         String wartosc = this.wartosc.getText().toString();
-        int dokladnosc = (int) this.dokladnosc.getListSelection();
-        int przeznaczenie = (int) this.przeznaczenie.getListSelection();
 
-        if(dokladnosc != 0 && przeznaczenie != 0 && nazwa.length() >= 2 && wartosc.length() >= 1)
+        if(nazwa.length() >= 2 && wartosc.length() >= 1)
         {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
             int userid = database.localUzytkownikDao().getAll().get(0).getId();
 
             int id = database.localJednostkaDao().getMaxId();
-            database.localJednostkaDao().insert(new Jednostka((id+1), nazwa, wartosc, dokladnosc, 1, false, userid, new Date(), new Date() ));
+            database.localJednostkaDao().insert(new Jednostka((id+1), nazwa, wartosc, dokladnoscSelectedId, przeznaczenieSelectedId, false, userid, new Date(), new Date() ));
             finish();
         }else
                 Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();

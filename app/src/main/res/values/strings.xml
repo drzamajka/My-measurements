@@ -8,34 +8,6 @@
     <string name="owner">Autorem programu jest Rafał</string>
     <string name="submit">ok</string>
 
-    <!--    lab 2-->
-    <string name="activity_kierunki">Kierunki na Wydziałach</string>
-    <string name="wyswietl_kierunki">Wyświetl kierunki</string>
-    <string name="kierunki">Nie wybrano wydziału</string>
-    <string-array name="wydzialy">
-        <item>Politechniczny</item>
-        <item>Medyczny</item>
-        <item>Rehabilitacji i Sportu</item>
-        <item>Nauk Społecznych i Huumanistyczny</item>
-    </string-array>
-    <string-array name="wydzial0">
-        <item>Informatyka</item>
-        <item>Inzynieria</item>
-        <item>Mechanika maszyn</item>
-    </string-array>
-    <string-array name="wydzial1">
-        <item>Pielengniarstwo</item>
-        <item>kosmetologia</item>
-        <item>ratownictwo</item>
-    </string-array>
-    <string-array name="wydzial2">
-        <item>rehabilitacia</item>
-        <item>nauka o sporcie</item>
-    </string-array>
-    <string-array name="wydzial3">
-        <item>zarządanie</item>
-        <item>rachunkowość</item>
-    </string-array>
 
     <!--    lab 3-->
     <string name="send_mesage">Wyślij wiadomość - Nowa aktywność</string>
@@ -158,7 +130,6 @@
 
     <!--    jednostki-->
     <string-array name="dokladnosc">
-        <item>Wybież dokładność</item>
         <item>1000</item>
         <item>100</item>
         <item>10</item>
@@ -169,10 +140,9 @@
     </string-array>
 
     <string-array name="przeznaczenie">
-        <item>Wybież zastosowanie</item>
+        <item>Leki i Pomiary</item>
         <item>Leki</item>
         <item>Pomiary</item>
-        <item>Leki i Pomiary</item>
     </string-array>
 
     <string-array name="czestotliwosc">
