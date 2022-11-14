@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent3 = new Intent( this, TerapiaActivity.class);
                 startActivity(intent3);
                 break;
-            case R.id.naw_wpisy:
+            case R.id.naw_wpisy_pomiary:
                 Intent intent4 = new Intent( this, WpisyActivity.class);
                 startActivity(intent4);
                 break;

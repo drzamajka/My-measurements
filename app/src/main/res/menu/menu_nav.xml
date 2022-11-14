@@ -2,72 +2,60 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/naw_projekt">
+    <item android:id="@+id/naw_terapie"
+        android:icon="@drawable/ic_calendar_month_24"
+        android:title="Terapie"/>
+
+    <item android:id="@+id/naw_jednostki"
+        android:icon="@drawable/ic_skala_balance_24"
+        android:title="Jednostki"/>
+
+    <item android:title="Pomiary">
         <menu>
 
-            <item android:id="@+id/naw_jednostki"
-                android:title="Jednostki"/>
             <item android:id="@+id/naw_pomiary"
+                android:icon="@drawable/ic_pomiary_heart_24"
                 android:title="Pomiary"/>
-            <item android:id="@+id/naw_terapie"
-                android:title="Terapie"/>
-            <item android:id="@+id/naw_wpisy"
+            <item android:id="@+id/naw_wpisy_pomiary"
+                android:icon="@drawable/ic_lista_24"
+                android:title="Wpisy"/>
+
+        </menu>
+    </item>
+
+    <item android:title="Leki">
+        <menu>
+
+            <item android:id="@+id/naw_leki"
+                android:icon="@drawable/pill_icon_icons_com_64420"
+                android:title="Leki"/>
+            <item android:id="@+id/naw_wpisy_leki"
+                android:icon="@drawable/ic_lista_24"
                 android:title="Wpisy"/>
 
         </menu>
     </item>
 
 
-<!--    <group android:checkableBehavior="single">-->
-<!--        <item android:id="@+id/naw_12"-->
-<!--            android:icon="@android:drawable/ic_menu_search"-->
-<!--            android:title="@string/naw12"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_13"-->
-<!--            android:icon="@android:drawable/ic_menu_send"-->
-<!--            android:title="@string/naw_13"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_16"-->
-<!--            android:icon="@android:drawable/ic_menu_gallery"-->
-<!--            android:title="@string/naw_16"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_17"-->
-<!--            android:icon="@android:drawable/ic_menu_gallery"-->
-<!--            android:title="@string/naw_17"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_18"-->
-<!--            android:icon="@android:drawable/ic_menu_info_details"-->
-<!--            android:title="@string/naw_18"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_19"-->
-<!--            android:icon="@android:drawable/ic_menu_day"-->
-<!--            android:title="@string/naw_19"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_110"-->
-<!--            android:icon="@android:drawable/ic_menu_manage"-->
-<!--            android:title="Jednostki"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_111"-->
-<!--            android:icon="@android:drawable/ic_menu_call"-->
-<!--            android:title="@string/naw_111"-->
-<!--            android:checked="true"/>-->
-<!--        <item android:id="@+id/naw_112"-->
-<!--            android:icon="@android:drawable/ic_menu_search"-->
-<!--            android:title="@string/naw_112"-->
-<!--            android:checked="true"/>-->
-<!--    </group>-->
 
-
-<!--    <item android:title="@string/naw_projekt"-->
-<!--        >-->
+<!--    <item android:title="@string/naw_projekt">-->
 <!--        <menu>-->
 
-<!--            <item android:id="@+id/temat"-->
-<!--                android:title="@string/temat_projektu"/>-->
-<!--            <item android:id="@+id/ikonta"-->
-<!--                android:title="@string/naw_projekt_ikona"/>-->
-<!--            <item android:id="@+id/wyloguj"-->
-<!--                android:title="@string/wyloguj"/>-->
+<!--            <item android:id="@+id/naw_jednostki"-->
+<!--                android:icon="@drawable/ic_skala_balance_24"-->
+<!--                android:title="Jednostki"/>-->
+<!--            <item android:id="@+id/naw_pomiary"-->
+<!--                android:icon="@drawable/ic_pomiary_heart_24"-->
+<!--                android:title="Pomiary"/>-->
+<!--            <item android:id="@+id/naw_terapie"-->
+<!--                android:icon="@drawable/ic_calendar_month_24"-->
+<!--                android:title="Terapie"/>-->
+<!--            <item android:id="@+id/naw_wpisy"-->
+<!--                android:icon="@drawable/ic_lista_24"-->
+<!--                android:title="Wpisy"/>-->
+
 <!--        </menu>-->
 <!--    </item>-->
+
+
 </menu>
