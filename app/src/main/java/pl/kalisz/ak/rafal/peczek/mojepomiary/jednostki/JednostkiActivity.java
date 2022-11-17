@@ -29,14 +29,9 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 
 public class JednostkiActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-
-
     private RecyclerView rvJednostki;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-
-    private Cursor cursor;
     private UsersRoomDatabase database;
 
     @Override

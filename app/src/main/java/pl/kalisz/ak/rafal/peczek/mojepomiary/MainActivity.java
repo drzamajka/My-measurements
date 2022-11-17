@@ -15,8 +15,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import androidx.appcompat.widget.ShareActionProvider;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,31 +48,34 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.WpisPomiarPosiadaPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiActivity;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UserRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaDopisz;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyAdapter;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ShareActionProvider shareActionProvider;
     private Snackbar snackbar;
     private UserRepository localUser;
-    private TextView dataWpsiow;
+    private FrameLayout frame;
+    private NavigationView navigationView;
 
-    private RecyclerView rvPomiary;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
 
     private UsersRoomDatabase database;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
 
         localUser = new UserRepository(getApplicationContext());
@@ -84,31 +91,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.addDrawerListener(toggle);
             toggle.syncState();
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_viev);
+            navigationView = (NavigationView) findViewById(R.id.nav_viev);
             navigationView.setNavigationItemSelectedListener(this);
 
-            // lista
-            dataWpsiow = (TextView) findViewById(R.id.Data);
-            dodajDatePicker(dataWpsiow);
-            Date date = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            dataWpsiow.setText(simpleDateFormat.format(date));
-
-
-
-            rvPomiary = (RecyclerView) findViewById(R.id.recycleView);
-            rvPomiary.setHasFixedSize(true);
-
-            Configuration config = getResources().getConfiguration();
-            if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layoutManager = new GridLayoutManager(this, 2);
-            } else
-                layoutManager = new LinearLayoutManager(this);
-
-            rvPomiary.setLayoutManager(layoutManager);
-            rvPomiary.setItemAnimator(new DefaultItemAnimator());
-            rvPomiary = (RecyclerView) findViewById(R.id.recycleView);
             database = UsersRoomDatabase.getInstance(getApplicationContext());
+
+            frame = findViewById(R.id.fooFragment);
+            MainFragment mFragment = new MainFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(frame.getId(), mFragment).commit();
+
+            navigationView.getMenu().getItem(0).setChecked(true);
+
+
         }
         else{
             setContentView(R.layout.activity_login);
@@ -185,63 +180,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+
+        item.setChecked(true);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction().setCustomAnimations(
+                R.anim.fade_in,  // enter
+                R.anim.fade_out,  // exit
+                R.anim.fade_in,   // popEnter
+                R.anim.fade_out  // popExit
+        );
         switch (id){
+            case R.id.naw_etapy:
+                MainFragment mFragment = MainFragment.newInstance();
+                ft.replace(frame.getId(), mFragment).commit();
+                break;
             case R.id.naw_jednostki:
-                Intent intent1 = new Intent( this, JednostkiActivity.class);
-                startActivity(intent1);
+                JednostkiFragment jFragment = JednostkiFragment.newInstance();
+                ft.replace(frame.getId(), jFragment).commit();
                 break;
             case R.id.naw_pomiary:
-                Intent intent2 = new Intent( this, PomiaryActivity.class);
-                startActivity(intent2);
+                PomiarFragment pFragment = PomiarFragment.newInstance();
+                ft.replace(frame.getId(), pFragment).commit();
                 break;
             case R.id.naw_terapie:
-                Intent intent3 = new Intent( this, TerapiaActivity.class);
-                startActivity(intent3);
+                TerapiaFragment tFragment = TerapiaFragment.newInstance();
+                ft.replace(frame.getId(), tFragment).commit();
                 break;
             case R.id.naw_wpisy_pomiary:
-                Intent intent4 = new Intent( this, WpisyActivity.class);
-                startActivity(intent4);
+                WpisPomiarFragment wpFragment = WpisPomiarFragment.newInstance();
+                ft.replace(frame.getId(), wpFragment).commit();
                 break;
 
-//            case R.id.naw_12:
-//                Intent intent12 = new Intent( this, KierunkiActivity.class);
-//                startActivity(intent12);
-//                break;
-//            case R.id.naw_13:
-//                Intent intent13 = new Intent( this, WyslijWiadomosc.class);
-//                startActivity(intent13);
-//                break;
-//            case R.id.naw_16:
-//                Toast.makeText(this, "Lab.6", Toast.LENGTH_LONG).show();
-//                Intent intent16 = new Intent( this, Czujniki.class);
-//                startActivity(intent16);
-//                break;
-//            case R.id.naw_17:
-//                Toast.makeText(this, "Lab.7", Toast.LENGTH_LONG).show();
-//                Intent intent17 = new Intent( this, Formularz.class);
-//                startActivity(intent17);
-//                break;
-//            case R.id.naw_18:
-//                Toast.makeText(this, "Lab.8", Toast.LENGTH_LONG).show();
-//                Intent intent18 = new Intent( this, ObiektyUczelni.class);
-//                startActivity(intent18);
-//                break;
-//            case R.id.naw_19:
-//                Toast.makeText(this, "Lab.9", Toast.LENGTH_LONG).show();
-//                Intent intent19 = new Intent( this, ObiektyLista.class);
-//                startActivity(intent19);
-//                break;
-//            case R.id.naw_110:
-//                Toast.makeText(this, "Lab.10", Toast.LENGTH_LONG).show();
-//                Intent intent110 = new Intent( this, JednostkiActivity.class);
-//                startActivity(intent110);
-//                break;
-//            case R.id.naw_111:
-//                Toast.makeText(this, "Lab.11", Toast.LENGTH_LONG).show();
-//                Intent intent111 = new Intent( this, SprawdzajSiec.class);
-//                startActivity(intent111);
-//                break;
-//            case R.id.temat:
+
+
 //                snackbar = Snackbar.make( findViewById(android.R.id.content), R.string.naw_projekt_temat, Snackbar.LENGTH_LONG);
 //                snackbar.show();
 //                break;
@@ -259,8 +229,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        navigationView.setCheckedItem(item);;
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -353,95 +324,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume(){
         super.onResume();
 
-        if(database != null) {
-            odswiezListe();
-        }
+//        if(database != null) {
+//            odswiezListe();
+//        }
 
     }
 
-    private void odswiezListe(){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = simpleDateFormat.parse(dataWpsiow.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.DATE, 1);
-        Date dateJutro = c.getTime();
-
-
-        List<EtapTerapiPosiaRelacie> listaEtapow = database.localEtapTerapaDao().getAllWithRelationsBetwenData(date.getTime(), dateJutro.getTime());
-
-        adapter = new MainEtapAdapter(listaEtapow, getApplicationContext());
-        rvPomiary.setAdapter(adapter);
-    }
-
-    public void dalej(View view) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = simpleDateFormat.parse(dataWpsiow.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.DATE, 1);
-        date = c.getTime();
-        dataWpsiow.setText(simpleDateFormat.format(date));
-        odswiezListe();
-    }
-
-    public void wczesniej(View view) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = simpleDateFormat.parse(dataWpsiow.getText().toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.DATE, -1);
-        date = c.getTime();
-        dataWpsiow.setText(simpleDateFormat.format(date));
-        odswiezListe();
-    }
-
-    private void dodajDatePicker(TextView textView){
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                Date date = null;
-                try {
-                    date = simpleDateFormat.parse(dataWpsiow.getText().toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                Calendar c = Calendar.getInstance();
-                c.setTime(date);
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        MainActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                textView.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                odswiezListe();
-
-                            }
-                        },
-                        year, month, day);
-                datePickerDialog.show();
-            }
-        });
-    }
 }

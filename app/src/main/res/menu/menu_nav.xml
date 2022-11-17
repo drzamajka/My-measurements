@@ -1,36 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    android:animateLayoutChanges="true">
+
+
+
+    <item android:id="@+id/naw_etapy"
+        android:icon="@drawable/ic_launcher_wlasna"
+        android:checkable="true"
+        android:title="Etapy"/>
 
     <item android:id="@+id/naw_terapie"
         android:icon="@drawable/ic_calendar_month_24"
+        android:checkable="true"
         android:title="Terapie"/>
 
     <item android:id="@+id/naw_jednostki"
         android:icon="@drawable/ic_skala_balance_24"
+        android:checkable="true"
         android:title="Jednostki"/>
 
-    <item android:title="Pomiary">
+    <item android:title="Pomiary"
+        android:id="@+id/group_pomiary">
         <menu>
 
             <item android:id="@+id/naw_pomiary"
                 android:icon="@drawable/ic_pomiary_heart_24"
+                android:checkable="true"
                 android:title="Pomiary"/>
             <item android:id="@+id/naw_wpisy_pomiary"
                 android:icon="@drawable/ic_lista_24"
+                android:checkable="true"
                 android:title="Wpisy"/>
 
         </menu>
     </item>
 
-    <item android:title="Leki">
+    <item android:title="Leki"
+        android:id="@+id/group_leki">
         <menu>
 
             <item android:id="@+id/naw_leki"
                 android:icon="@drawable/pill_icon_icons_com_64420"
+                android:checkable="true"
                 android:title="Leki"/>
             <item android:id="@+id/naw_wpisy_leki"
                 android:icon="@drawable/ic_lista_24"
+                android:checkable="true"
                 android:title="Wpisy"/>
 
         </menu>
