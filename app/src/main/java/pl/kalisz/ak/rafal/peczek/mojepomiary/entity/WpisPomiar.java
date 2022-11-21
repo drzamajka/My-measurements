@@ -35,6 +35,15 @@ public class WpisPomiar {
         this.dataAktualizacji = dataAktualizacji;
     }
 
+    public WpisPomiar(int id, String wynikPomiary, int idPomiar, Date dataWykonania, Date dataUtwozenia, Date dataAktualizacji) {
+        this.id = id;
+        this.wynikPomiary = wynikPomiary;
+        this.idPomiar = idPomiar;
+        this.dataWykonania = dataWykonania;
+        this.dataUtwozenia = dataUtwozenia;
+        this.dataAktualizacji = dataAktualizacji;
+    }
+
     public int getId() {
         return id;
     }

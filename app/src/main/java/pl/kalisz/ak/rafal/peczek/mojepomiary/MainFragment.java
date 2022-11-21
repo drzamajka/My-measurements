@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +20,18 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.gson.internal.bind.SqlDateTypeAdapter;
+
+import java.sql.SQLData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
@@ -175,32 +184,33 @@ public class MainFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                Date date = null;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                Calendar ct = Calendar.getInstance();
                 try {
-                    date = simpleDateFormat.parse(dataWpsiow.getText().toString());
+                    ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Calendar c = Calendar.getInstance();
-                c.setTime(date);
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        getContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                textView.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                odswiezListe();
+                Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
 
-                            }
-                        },
-                        year, month, day);
-                datePickerDialog.show();
+
+                MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
+                        .setSelection(c.getTimeInMillis())
+                        .build();
+
+                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick(Object selection) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis((Long) selection);
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                        odswiezListe();
+                    }
+                });
+                materialDatePicker.show(getChildFragmentManager(), "tag");
+
             }
         });
     }

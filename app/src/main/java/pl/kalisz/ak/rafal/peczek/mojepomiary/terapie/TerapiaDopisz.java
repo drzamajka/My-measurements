@@ -1,6 +1,8 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -14,6 +16,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.support.v4.media.RatingCompat;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -24,8 +28,17 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 
 import java.sql.Time;
 import java.text.ParseException;
@@ -34,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.OdbiornikPowiadomien;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
@@ -75,8 +89,9 @@ public class TerapiaDopisz extends AppCompatActivity {
         database = UsersRoomDatabase.getInstance(getApplicationContext());
 
         this.dodajElement(new View(getApplicationContext()));
-        this.dodajDatePicker(dataRozpoczecia);
-        this.dodajDatePicker(dataZakonczenia);
+        this.dodajDateRangePicker(dataRozpoczecia, dataZakonczenia);
+//        this.dodajDatePicker(dataRozpoczecia);
+//        this.dodajDatePicker(dataZakonczenia);
 
         czestotliwosc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -194,61 +209,178 @@ public class TerapiaDopisz extends AppCompatActivity {
                 int hour = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(
-                        TerapiaDopisz.this,
-                        new TimePickerDialog.OnTimeSetListener(){
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                if((int) czestotliwosc.getSelectedItemId() != 1 && editText.getText().length() <= 0) {
-                                    View elementView = getczestotliwoscView((int) czestotliwosc.getSelectedItemId(), false);
-                                    listaGodzin.get(listaGodzin.size()-1).findViewById(R.id.usunGodzine).setEnabled(true);
-                                    listaGodzin.add(elementView);
-                                    viewListyCzestotliwosci.addView(elementView);
-                                }
-                                if(minute>9)
-                                    editText.setText(hourOfDay + ":" + minute);
-                                else
-                                    editText.setText(hourOfDay + ":0" + minute);
+                MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                        .setTimeFormat(TimeFormat.CLOCK_24H)
+                        .setHour(hour)
+                        .setTitleText("Okresl godzine etapu")
+                        .setMinute(minute)
+                        .build();
 
-                            }
-                        },
-                        hour, minute, DateFormat.is24HourFormat(TerapiaDopisz.super.getApplicationContext()));
-                timePickerDialog.show();
+                timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                    }
+                });
+
+                timePicker.show(getSupportFragmentManager(), "fragment_tag");
+
+
+
+//                TimePickerDialog timePickerDialog = new TimePickerDialog(
+//                        TerapiaDopisz.this,
+//                        new TimePickerDialog.OnTimeSetListener(){
+//                            @Override
+//                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                                if((int) czestotliwosc.getSelectedItemId() != 1 && editText.getText().length() <= 0) {
+//                                    View elementView = getczestotliwoscView((int) czestotliwosc.getSelectedItemId(), false);
+//                                    listaGodzin.get(listaGodzin.size()-1).findViewById(R.id.usunGodzine).setEnabled(true);
+//                                    listaGodzin.add(elementView);
+//                                    viewListyCzestotliwosci.addView(elementView);
+//                                }
+//                                if(minute>9)
+//                                    editText.setText(hourOfDay + ":" + minute);
+//                                else
+//                                    editText.setText(hourOfDay + ":0" + minute);
+//
+//                            }
+//                        },
+//                        hour, minute, DateFormat.is24HourFormat(TerapiaDopisz.super.getApplicationContext()));
+//                timePickerDialog.show();
             }
         });
     }
 
-    private void dodajDatePicker(EditText editText){
-        editText.setOnClickListener(new View.OnClickListener() {
+    private void dodajDateRangePicker(TextView textViewOd, TextView textViewDo){
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar c = Calendar.getInstance();
-                if(editText.getText().length() > 0){
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    try {
-                        Date data = sdf.parse(editText.getText().toString());
-                        c.setTime(data);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                Calendar ct = Calendar.getInstance();
+                try {
+                    ct.setTime(simpleDateFormat.parse(textViewOd.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
+                Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
+                Date dataWybranaOd = new Date(c.getTimeInMillis());
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        TerapiaDopisz.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                editText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                try {
+                    ct.setTime(simpleDateFormat.parse(textViewDo.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
+                Date dataWybranaDo = new Date(c.getTimeInMillis());
 
-                            }
-                        },
-                        year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(new Date().getTime());
-                datePickerDialog.show();
+
+
+                MaterialDatePicker dateRangePicker  = MaterialDatePicker.Builder.dateRangePicker ()
+                        .setSelection( new Pair<>(
+                                dataWybranaOd.getTime(),
+                                dataWybranaDo.getTime()
+                                )
+                        )
+                        .setCalendarConstraints(
+                                new CalendarConstraints.Builder()
+                                        .setValidator(
+                                                new CalendarConstraints.DateValidator() {
+                                                    @Override
+                                                    public boolean isValid(long date) {
+                                                        return MaterialDatePicker.todayInUtcMilliseconds() <= date ;
+                                                    }
+
+                                                    @Override
+                                                    public int describeContents() {
+                                                        return 0;
+                                                    }
+
+                                                    @Override
+                                                    public void writeToParcel(@NonNull Parcel dest, int flags) {
+
+                                                    }
+                                                }
+                                        )
+                                        .build()
+                        )
+                        .build();
+
+                dateRangePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick(Object selection) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis((Long) ((Pair<Long, Long>)selection).first);
+                        textViewOd.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                        calendar.setTimeInMillis((Long) ((Pair<Long, Long>)selection).second);
+                        textViewDo.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                    }
+                });
+
+                dateRangePicker.show(getSupportFragmentManager(), "tag");
+
+            }
+        };
+
+        textViewOd.setOnClickListener( onClickListener);
+        textViewDo.setOnClickListener( onClickListener);
+    }
+
+    private void dodajDatePicker(TextView textView){
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                Calendar ct = Calendar.getInstance();
+                try {
+                    ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
+                Date dataWybrana = new Date(c.getTimeInMillis());
+                Log.i("Tag-main", "data:" + dataWybrana.getTime());
+
+
+
+                MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
+                        .setSelection(dataWybrana.getTime())
+                        .setCalendarConstraints(
+                                new CalendarConstraints.Builder()
+                                        .setValidator(
+                                                new CalendarConstraints.DateValidator() {
+                                                    @Override
+                                                    public boolean isValid(long date) {
+                                                        return MaterialDatePicker.todayInUtcMilliseconds() <= date ;
+                                                    }
+
+                                                    @Override
+                                                    public int describeContents() {
+                                                        return 0;
+                                                    }
+
+                                                    @Override
+                                                    public void writeToParcel(@NonNull Parcel dest, int flags) {
+
+                                                    }
+                                                }
+                                        )
+                                        .build()
+                        )
+                        .build();
+
+                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick(Object selection) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis((Long) selection);
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                    }
+                });
+                materialDatePicker.show(getSupportFragmentManager(), "tag");
+
             }
         });
     }
