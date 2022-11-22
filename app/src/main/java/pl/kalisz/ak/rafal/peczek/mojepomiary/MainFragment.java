@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.gson.internal.bind.SqlDateTypeAdapter;
 
 import java.sql.SQLData;
 import java.text.ParseException;
@@ -146,6 +145,7 @@ public class MainFragment extends Fragment {
 
         adapter = new MainEtapAdapter(listaEtapow, getContext());
         rvPomiary.setAdapter(adapter);
+        rvPomiary.scheduleLayoutAnimation();
     }
 
     public void dalej() {

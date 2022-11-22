@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
@@ -61,13 +63,13 @@ public class TerapiaDopisz extends AppCompatActivity {
 
     private int czestotliwoscView;
     private ArrayList<View> listaElementowL, listaGodzin;
-    private Spinner czestotliwosc;
-    private EditText dataRozpoczecia, dataZakonczenia, notatka;
+    private AutoCompleteTextView czestotliwosc;
+    private int wybranaCzestotliwosc;
+    private TextInputLayout dataRozpoczecia, dataZakonczenia, notatka;
     private LinearLayout viewListyElementow, viewListyCzestotliwosci;
     private UsersRoomDatabase database;
 
-//    private AlarmManager alarmManager;
-//    private PendingIntent pendingIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,40 +77,58 @@ public class TerapiaDopisz extends AppCompatActivity {
         setContentView(R.layout.activity_terapia_dopisz);
         listaElementowL = new ArrayList<>();
         listaGodzin = new ArrayList<>();
-        notatka = (EditText) findViewById(R.id.editTextNotatka);
-        dataRozpoczecia = (EditText) findViewById(R.id.dataRozpoczecia);
-        dataZakonczenia = (EditText) findViewById(R.id.dataZakonczenia);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        wybranaCzestotliwosc = 0;
+        dataRozpoczecia = (TextInputLayout) findViewById(R.id.dataRozpoczeciaLayout);
+        dataZakonczenia = (TextInputLayout) findViewById(R.id.dataZakonczeniaLayout);
+        notatka = (TextInputLayout) findViewById(R.id.NotatkaLayout);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Calendar c = Calendar.getInstance();
-        dataRozpoczecia.setText(sdf.format(c.getTime()));
+        dataRozpoczecia.getEditText().setText(sdf.format(c.getTime()));
         c.add(Calendar.DAY_OF_MONTH, 1);
-        dataZakonczenia.setText(sdf.format(c.getTime()));
+        dataZakonczenia.getEditText().setText(sdf.format(c.getTime()));
         viewListyElementow = (LinearLayout) findViewById(R.id.listaElementow);
         viewListyCzestotliwosci = (LinearLayout) findViewById(R.id.listaCzestotliwosci);
-        czestotliwosc = (Spinner) findViewById(R.id.czestotliwosc);
+        czestotliwosc = (AutoCompleteTextView) findViewById(R.id.czestotliwosc);
         database = UsersRoomDatabase.getInstance(getApplicationContext());
 
         this.dodajElement(new View(getApplicationContext()));
-        this.dodajDateRangePicker(dataRozpoczecia, dataZakonczenia);
-//        this.dodajDatePicker(dataRozpoczecia);
-//        this.dodajDatePicker(dataZakonczenia);
+        this.dodajDateRangePicker(dataRozpoczecia.getEditText(), dataZakonczenia.getEditText());
 
-        czestotliwosc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        czestotliwosc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(), "wybrano id:"+i+l, Toast.LENGTH_LONG).show();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                wybranaCzestotliwosc = position;
+                Toast.makeText(getApplicationContext(), "wybrano id:"+wybranaCzestotliwosc, Toast.LENGTH_LONG).show();
                 viewListyCzestotliwosci.removeAllViews();
                 listaGodzin.clear();
-                View elementView = getczestotliwoscView((int) czestotliwosc.getSelectedItemId(), true);
+                View elementView = getczestotliwoscView((int) wybranaCzestotliwosc, true);
                 listaGodzin.add(elementView);
                 viewListyCzestotliwosci.addView(elementView);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(getApplicationContext(), "nic nnie wybrano", Toast.LENGTH_LONG).show();
-            }
         });
+        czestotliwosc.setText(czestotliwosc.getAdapter().getItem(0).toString(), false);
+        View elementView = getczestotliwoscView((int) wybranaCzestotliwosc, true);
+        listaGodzin.add(elementView);
+        viewListyCzestotliwosci.addView(elementView);
+
+
+//        czestotliwosc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Toast.makeText(getApplicationContext(), "wybrano id:"+i+l, Toast.LENGTH_LONG).show();
+//                viewListyCzestotliwosci.removeAllViews();
+//                listaGodzin.clear();
+//                View elementView = getczestotliwoscView((int) czestotliwosc.getSelectedItemId(), true);
+//                listaGodzin.add(elementView);
+//                viewListyCzestotliwosci.addView(elementView);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                Toast.makeText(getApplicationContext(), "nic nnie wybrano", Toast.LENGTH_LONG).show();
+//            }
+//        });
 
         //powiadomienia
         createNotificationChannel();
@@ -219,7 +239,16 @@ public class TerapiaDopisz extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        if(wybranaCzestotliwosc != 1 && editText.getText().length() <= 0) {
+                            View elementView = getczestotliwoscView(wybranaCzestotliwosc, false);
+                            listaGodzin.get(listaGodzin.size()-1).findViewById(R.id.usunGodzine).setEnabled(true);
+                            listaGodzin.add(elementView);
+                            viewListyCzestotliwosci.addView(elementView);
+                        }
+                        if(timePicker.getMinute() > 9)
+                            editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        else
+                            editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());
                     }
                 });
 
@@ -255,7 +284,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textViewOd.getText().toString()));
@@ -311,9 +340,9 @@ public class TerapiaDopisz extends AppCompatActivity {
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis((Long) ((Pair<Long, Long>)selection).first);
-                        textViewOd.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                        textViewOd.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
                         calendar.setTimeInMillis((Long) ((Pair<Long, Long>)selection).second);
-                        textViewDo.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                        textViewDo.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
                     }
                 });
 
@@ -376,7 +405,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis((Long) selection);
-                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
                     }
                 });
                 materialDatePicker.show(getSupportFragmentManager(), "tag");
@@ -391,13 +420,12 @@ public class TerapiaDopisz extends AppCompatActivity {
         listaElementowL.add(elementView);
         LinearLayout listaElementow = (LinearLayout) findViewById(R.id.listaElementow);
 
-        Spinner spinner = (Spinner) elementView.findViewById(R.id.spinnerPomiary);
+        AutoCompleteTextView spinner = (AutoCompleteTextView) elementView.findViewById(R.id.spinnerPomiary);
         Button button = (Button) elementView.findViewById(R.id.usunPomiar);
         List<Pomiar> listaPomiarow = database.localPomiarDao().getAll();
 
         //jednostka.
         ArrayList<String> data = new ArrayList<>();
-        data.add("Wybierz pomiar");
         for (Pomiar pomiar: listaPomiarow) {
             data.add(pomiar.getNazwa());
         }
@@ -423,16 +451,16 @@ public class TerapiaDopisz extends AppCompatActivity {
 
     public void zapiszNowaTerapie(View view) throws ParseException {
         Date dataRozpoczecia, dataZakonczenia;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        dataRozpoczecia = sdf.parse(this.dataRozpoczecia.getText().toString());
-        dataZakonczenia = sdf.parse(this.dataZakonczenia.getText().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        dataRozpoczecia = sdf.parse(this.dataRozpoczecia.getEditText().getText().toString());
+        dataZakonczenia = sdf.parse(this.dataZakonczenia.getEditText().getText().toString());
 
 
         ArrayList listaWybranych = new ArrayList();
         ArrayList<Integer> idsCzynnosci = new ArrayList<>();
         for(View v: listaElementowL){
-            Spinner spinner = (Spinner) v.findViewById(R.id.spinnerPomiary);
-            Pomiar pomiar = (database.localPomiarDao().findByName((String)spinner.getSelectedItem()));
+            AutoCompleteTextView spinner = (AutoCompleteTextView) v.findViewById(R.id.spinnerPomiary);
+            Pomiar pomiar = (database.localPomiarDao().findByName((String)spinner.getText().toString()));
             listaWybranych.add(pomiar);
             idsCzynnosci.add(pomiar.getId());
         }
@@ -440,7 +468,7 @@ public class TerapiaDopisz extends AppCompatActivity {
 
         ArrayList<Date> listaDatZaplanowanychTerapi = new ArrayList();
         ArrayList<Time> listaGodzin = new ArrayList<>();
-        switch ((int) czestotliwosc.getSelectedItemId()) {
+        switch (wybranaCzestotliwosc) {
             case 1: { // co x godzin
                 Calendar c =Calendar.getInstance();
                 SimpleDateFormat stf = new SimpleDateFormat("hh:mm");
@@ -490,8 +518,8 @@ public class TerapiaDopisz extends AppCompatActivity {
                 listaDatZaplanowanychTerapi.add(tmpC.getTime());
             }
 
-            if(czestotliwosc.getSelectedItemId() == 2) {
-                String coDni = ((Spinner)viewListyCzestotliwosci.findViewById(R.id.spinnerPomiary)).getSelectedItem().toString();
+            if(wybranaCzestotliwosc == 2) {
+                String coDni = ((AutoCompleteTextView)viewListyCzestotliwosci.findViewById(R.id.spinnerDni)).getText().toString();
                 c.add(Calendar.DATE, Integer.parseInt(coDni));
             }else
                 c.add(Calendar.DATE, 1);
@@ -499,15 +527,15 @@ public class TerapiaDopisz extends AppCompatActivity {
 
 
         for(View v: listaElementowL){
-            Spinner spinner = (Spinner) v.findViewById(R.id.spinnerPomiary);
-            listaWybranych.add(database.localPomiarDao().findByName((String)spinner.getSelectedItem()));
+            AutoCompleteTextView spinner = (AutoCompleteTextView) v.findViewById(R.id.spinnerPomiary);
+            listaWybranych.add(database.localPomiarDao().findByName((String)spinner.getText().toString()));
         }
         Toast.makeText(this, "liczba wybranych="+listaWybranych, Toast.LENGTH_LONG).show();
 
 
         int id = database.localTerapiaDao().getMaxId();
         int idUzytkownika = database.localUzytkownikDao().getAll().get(0).getId();
-        Terapia terapia = new Terapia((id + 1), idUzytkownika, 1, notatka.getText().toString(), idsCzynnosci, dataRozpoczecia, dataZakonczenia, new Date(), new Date());
+        Terapia terapia = new Terapia((id + 1), idUzytkownika, 1, notatka.getEditText().getText().toString(), idsCzynnosci, dataRozpoczecia, dataZakonczenia, new Date(), new Date());
         database.localTerapiaDao().insert( terapia);
         ArrayList<EtapTerapa> listaEtapowTerapi = new ArrayList<>();
         for (Date data: listaDatZaplanowanychTerapi ) {

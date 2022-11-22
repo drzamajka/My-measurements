@@ -1,24 +1,17 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -31,15 +24,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryEdytuj;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 
 public class WpisyEdytuj extends AppCompatActivity {
@@ -75,7 +65,7 @@ public class WpisyEdytuj extends AppCompatActivity {
         wynik.getEditText().setText(wpis.getWynikPomiary().toString());
 
         String textWybranegoPomiaru = "";
-        TextView textView5 = findViewById(R.id.textView5);
+        TextView textView5 = findViewById(R.id.jednostka);
         ArrayList<String> data = new ArrayList<>();
         for (Pomiar pomiar: listaPomiarow) {
             if(pomiar.getId() == wpis.getIdPomiar()) {
@@ -216,7 +206,10 @@ public class WpisyEdytuj extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        if(timePicker.getMinute() > 9)
+                            editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        else
+                            editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());
                     }
                 });
 

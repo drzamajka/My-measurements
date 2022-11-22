@@ -13,6 +13,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,11 +39,10 @@ public class EtapTerapiActivity extends AppCompatActivity {
 
     private int etapId, aktywnosc;
 
-    private TimePicker timePicker;
     private LinearLayout viewListyElementow;
     private ArrayList<View> listaElementowL;
     private Button przycisk;
-    private EditText notatka;
+    private TextInputLayout notatka, godzinaWykonania;
 
     private UsersRoomDatabase database;
     private EtapTerapiPosiaRelacie etapTerapiPosiaRelacie;
@@ -57,15 +62,13 @@ public class EtapTerapiActivity extends AppCompatActivity {
         int[] listaIdsCzynnosci = etapTerapiPosiaRelacie.terapia.getIdsCzynnosci().stream().mapToInt(i -> i).toArray();
         listaCzynnosci = database.localPomiarDao().loadAllByIds(listaIdsCzynnosci);
 
-        timePicker = (TimePicker) findViewById(R.id.dataWykonania);
+        godzinaWykonania = (TextInputLayout) findViewById(R.id.godzinaWykonaniaLayout);
+        notatka = (TextInputLayout) findViewById(R.id.editTextNotatkaLayout);
         viewListyElementow = (LinearLayout) findViewById(R.id.listaElementow);
-        notatka = (EditText) findViewById(R.id.editTextNotatka);
         przycisk = (Button) findViewById(R.id.button_save_edit);
 
         Date data = etapTerapiPosiaRelacie.etapTerapa.getDataZaplanowania();
-        timePicker.setIs24HourView(true);
-        timePicker.setHour(data.getHours());
-        timePicker.setMinute(data.getMinutes());
+
 
         for (PomiarPosiadRelacie pomiar: listaCzynnosci) {
             View elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element, null, false);
@@ -74,16 +77,21 @@ public class EtapTerapiActivity extends AppCompatActivity {
             TextView textView = (TextView) elementView.findViewById(R.id.textView3);
             textView.setText(pomiar.pomiar.getNazwa());
             TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
-            textView1.setText(textView1.getText()+" "+pomiar.pomiar.getNotatka());
+            textView1.setText(pomiar.pomiar.getNotatka());
             TextView textView2 = (TextView) elementView.findViewById(R.id.jednostka);
             textView2.setText(pomiar.jednostka.getWartosc());
             EditText editText = (EditText) elementView.findViewById(R.id.editTextWynik);
 
             viewListyElementow.addView(elementView);
         }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 
         if(aktywnosc != 1) {
             przycisk.setText("Wykonaj etap");
+            Date date = new Date();
+            godzinaWykonania.getEditText().setText(simpleDateFormat.format(date));
+            dodajTimePicker(godzinaWykonania.getEditText());
+
             przycisk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -100,8 +108,16 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     }
 
                     Calendar c = Calendar.getInstance();
-                    c.set(Calendar.HOUR, timePicker.getHour());
-                    c.set(Calendar.MINUTE, timePicker.getMinute());
+                    try {
+                        c.setTime(simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Calendar cData = Calendar.getInstance();
+                    cData.set(Calendar.HOUR, c.get(Calendar.HOUR));
+                    cData.set(Calendar.MONTH, c.get(Calendar.MONTH));
+                    cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
+
                     int index = 0;
                     for (PomiarPosiadRelacie pomiar: listaCzynnosci) {
                         int id = database.localWpisPomiarDao().getMaxId();
@@ -109,9 +125,9 @@ public class EtapTerapiActivity extends AppCompatActivity {
                         database.localWpisPomiarDao().insert(new WpisPomiar((id+1),listaWynikow.get(index).toString(), pomiar.pomiar.getId(), etapTerapiPosiaRelacie.etapTerapa.getId(), c.getTime(), new Date(), new Date() ));
                         index++;
                     }
-                    etapTerapiPosiaRelacie.etapTerapa.setDataWykonania(c.getTime());
+                    etapTerapiPosiaRelacie.etapTerapa.setDataWykonania(cData.getTime());
                     etapTerapiPosiaRelacie.etapTerapa.setDataAktualizacji(new Date());
-                    etapTerapiPosiaRelacie.etapTerapa.setNotatka(notatka.getText().toString());
+                    etapTerapiPosiaRelacie.etapTerapa.setNotatka(notatka.getEditText().getText().toString());
                     database.localEtapTerapaDao().insert(etapTerapiPosiaRelacie.etapTerapa);
                     Toast.makeText(getApplicationContext(), "zapisano", Toast.LENGTH_SHORT).show();
                     finish();
@@ -122,7 +138,10 @@ public class EtapTerapiActivity extends AppCompatActivity {
         else {
             przycisk.setText("Aktualizuj");
             int i = 0;
-            notatka.setText(etapTerapiPosiaRelacie.etapTerapa.getNotatka());
+            notatka.getEditText().setText(etapTerapiPosiaRelacie.etapTerapa.getNotatka());
+            godzinaWykonania.getEditText().setText(simpleDateFormat.format(etapTerapiPosiaRelacie.etapTerapa.getDataWykonania()));
+            dodajTimePicker(godzinaWykonania.getEditText());
+
             for( WpisPomiar wpis : etapTerapiPosiaRelacie.wpisy){
                 EditText editText = (EditText) listaElementowL.get(i).findViewById(R.id.editTextWynik);
                 editText.setText(wpis.getWynikPomiary());
@@ -144,8 +163,16 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     }
 
                     Calendar c = Calendar.getInstance();
-                    c.set(Calendar.HOUR, timePicker.getHour());
-                    c.set(Calendar.MINUTE, timePicker.getMinute());
+                    try {
+                        c.setTime(simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Calendar cData = Calendar.getInstance();
+                    cData.set(Calendar.HOUR, c.get(Calendar.HOUR));
+                    cData.set(Calendar.MONTH, c.get(Calendar.MONTH));
+                    cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
+
                     int index = 0;
                     for( WpisPomiar wpis : etapTerapiPosiaRelacie.wpisy){
                         wpis.setWynikPomiary(listaWynikow.get(index).toString());
@@ -155,7 +182,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     }
                     etapTerapiPosiaRelacie.etapTerapa.setDataWykonania(c.getTime());
                     etapTerapiPosiaRelacie.etapTerapa.setDataAktualizacji(new Date());
-                    etapTerapiPosiaRelacie.etapTerapa.setNotatka(notatka.getText().toString());
+                    etapTerapiPosiaRelacie.etapTerapa.setNotatka(notatka.getEditText().getText().toString());
                     database.localEtapTerapaDao().insert(etapTerapiPosiaRelacie.etapTerapa);
                     Toast.makeText(getApplicationContext(), "zapisano", Toast.LENGTH_SHORT).show();
                     finish();
@@ -163,6 +190,46 @@ public class EtapTerapiActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void dodajTimePicker(EditText editText){
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar c = Calendar.getInstance();
+                c.set(Calendar.MINUTE, 0);
+                if(editText.getText().length() > 0){
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    try {
+                        Date data = sdf.parse(editText.getText().toString());
+                        c.setTime(data);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+
+                MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                        .setTimeFormat(TimeFormat.CLOCK_24H)
+                        .setHour(hour)
+                        .setTitleText("Okresl godzine etapu")
+                        .setMinute(minute)
+                        .build();
+
+                timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(timePicker.getMinute() > 9)
+                            editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        else
+                            editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());
+                    }
+                });
+
+                timePicker.show(getSupportFragmentManager(), "fragment_tag");
+            }
+        });
     }
 
 }

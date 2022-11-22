@@ -10,76 +10,81 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Elementy terapi"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/listaElementow"
+                android:id="@+id/elementy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Elementy" />
+
+                <LinearLayout
+                    android:id="@+id/listaElementow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/addElement"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="dodajElement"
+                    android:text="Dodaj element"
+                    app:icon="@drawable/ic_add_24" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/addElement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:onClick="dodajElement"
-                android:text="Dodaj element" />
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:text="Pomiary"-->
-<!--                android:textColor="@color/colorPrimary"-->
-<!--                android:textStyle="bold" />-->
-
-<!--            <Spinner-->
-<!--                android:id="@+id/spinnerPomiary"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:minHeight="48dp"-->
-<!--                tools:ignore="SpeakableTextPresentCheck" />-->
-
-
             <LinearLayout
+                android:id="@+id/czestotliwosci"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/elementy">
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-
-                    android:text="Cęstotliwość:"
-                    android:textSize="15sp"
-
-                    />
-
-                <Spinner
-                    android:id="@+id/czestotliwosc"
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:entries="@array/czestotliwosc"
-                    android:minHeight="48dp"
-                    android:layout_weight="1" />
+                    android:layout_marginBottom="8dp"
+                    android:text="Harmonogram" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/czestotliwoscLayout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Cęstotliwość">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/czestotliwosc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        app:simpleItems="@array/czestotliwosc"
+
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:id="@+id/listaCzestotliwosci"
@@ -90,102 +95,96 @@
                 </LinearLayout>
 
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text = "Data rozpoczęcia terapi:"
-                    />
-<!--                <DatePicker-->
-<!--                    android:id="@+id/dataRozpoczecia"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:calendarViewShown="false"-->
-<!--                    android:datePickerMode="spinner" />-->
-                <EditText
-                    android:id="@+id/dataRozpoczecia"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dataRozpoczeciaLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="date" />
+                    android:layout_marginTop="16dp"
+                    android:hint="Data rozpoczęcia terapi"
+                    app:endIconMode="clear_text">
 
-            </LinearLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/dataRozpoczecia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
+                </com.google.android.material.textfield.TextInputLayout>
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text = "Data zakonczenia terapi:"
-                    />
-                <EditText
-                    android:id="@+id/dataZakonczenia"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dataZakonczeniaLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="date" />
+                    android:layout_marginTop="16dp"
+                    android:hint="Data zakonczenia terapi"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/dataZakonczenia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-
             <LinearLayout
+                android:id="@+id/notatka"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/czestotliwosci">
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Notatka"
-                    android:textSize="15sp"
-                    />
-
-                <EditText
-                    android:id="@+id/editTextNotatka"
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine"
-                    android:minLines="4"/>
+                    android:layout_marginBottom="8dp"
+                    android:text="Infirnacie dodatkowe" />
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/NotatkaLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Notatka"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/Notatka"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:minLines="4" />
+
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
+
 
             <Button
                 android:id="@+id/button_save_edit"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
-                android:focusable="true" android:focusableInTouchMode="true"
                 android:onClick="zapiszNowaTerapie"
-                android:text="Zapisz nową terapie" />
+                android:text="Zapisz nową terapie"
+                app:icon="@drawable/ic_add_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notatka" />
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
 </RelativeLayout>

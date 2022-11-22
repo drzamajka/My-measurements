@@ -11,12 +11,15 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,8 +36,9 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
     public static final String EXTRA_Terapia_ID = "terapiaId";
     private int terapiaId;
-    private TextView elementyTerapi;
-    private EditText dataRozpoczecia, dataZakonczenia, notatka;
+
+    private TextInputLayout elementyTerapi;
+    private TextInputLayout dataRozpoczecia, dataZakonczenia, notatka;
     private UsersRoomDatabase database;
     private Terapia terapia;
     private List<EtapTerapa> etapyTerapi;
@@ -47,12 +51,12 @@ public class TerapiaEdytuj extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terapia_edytuj);
-
         terapiaId = (Integer) getIntent().getExtras().get(EXTRA_Terapia_ID);
-        elementyTerapi = (TextView) findViewById(R.id.textViewElementy);
-        dataRozpoczecia = (EditText) findViewById(R.id.dataRozpoczecia);
-        dataZakonczenia = (EditText) findViewById(R.id.dataZakonczenia);
-        notatka = (EditText) findViewById(R.id.editTextNotatka);
+
+        elementyTerapi = (TextInputLayout) findViewById(R.id.elementyLayout);
+        dataRozpoczecia = (TextInputLayout) findViewById(R.id.dataRozpoczeciaLayout);
+        dataZakonczenia = (TextInputLayout) findViewById(R.id.dataZakonczeniaLayout);
+        notatka = (TextInputLayout) findViewById(R.id.NotatkaLayout);
 
         database = UsersRoomDatabase.getInstance(getApplicationContext());
         TerapiaPosiadEtay terapiaPosiadEtay = (TerapiaPosiadEtay) database.localTerapiaDao().findTerapieAndWpisyById(terapiaId);
@@ -64,16 +68,16 @@ public class TerapiaEdytuj extends AppCompatActivity {
         for (int id: listaElementow) {
             Pomiar pomiar = database.localPomiarDao().findById(id);
             if(id != listaElementow.get(0))
-                elementyTerapi.setText(elementyTerapi.getText()+"\n"+pomiar.getNazwa());
+                elementyTerapi.getEditText().setText(elementyTerapi.getEditText().getText()+"\n"+pomiar.getNazwa());
             else
-                elementyTerapi.setText(pomiar.getNazwa());
+                elementyTerapi.getEditText().setText(pomiar.getNazwa());
         }
-        dataRozpoczecia.setText(sdf.format(terapia.getDataRozpoczecia()));
-        dataZakonczenia.setText(sdf.format(terapia.getDataZakonczenia()));
-        notatka.setText(terapia.getNotatka());
+
+        dataRozpoczecia.getEditText().setText(sdf.format(terapia.getDataRozpoczecia()));
+        dataZakonczenia.getEditText().setText(sdf.format(terapia.getDataZakonczenia()));
+        notatka.getEditText().setText(terapia.getNotatka());
 
         rvPomiary = (RecyclerView) findViewById(R.id.recycleView);
-        //rvPomiary.setHasFixedSize(true);
 
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -84,6 +88,8 @@ public class TerapiaEdytuj extends AppCompatActivity {
         rvPomiary.setLayoutManager(layoutManager);
         //rvPomiary.setItemAnimator(new DefaultItemAnimator());
         rvPomiary = (RecyclerView) findViewById(R.id.recycleView);
+        rvPomiary.setHasFixedSize(true);
+        rvPomiary.setNestedScrollingEnabled(false);
     }
 
     @Override
@@ -109,7 +115,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TerapiaEdytuj.this);
                 builder.setMessage("Czy na pewno usunąć");
-//                builder.setTitle("Alert !");
+                builder.setTitle("Alert !");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
                     if (database != null) {

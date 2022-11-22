@@ -8,9 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -25,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
@@ -65,7 +62,7 @@ public class WpisyDopisz extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter ( this, android.R.layout.simple_spinner_dropdown_item, data);
         pomiary.setAdapter(adapter);
 
-        TextView textView5 = findViewById(R.id.textView5);
+        TextView textView5 = findViewById(R.id.jednostka);
         pomiary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -132,7 +129,10 @@ public class WpisyDopisz extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        if(timePicker.getMinute() > 9)
+                            editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
+                        else
+                            editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());
                     }
                 });
 
