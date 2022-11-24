@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -15,105 +15,86 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.ShareActionProvider;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.UzytkownikDao;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.RegisterActivity;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.WpisPomiarPosiadaPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiActivity;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiEdytuj;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryActivity;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UserRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaActivity;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaDopisz;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyActivity;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyAdapter;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Snackbar snackbar;
-    private UserRepository localUser;
     private FrameLayout frame;
     private NavigationView navigationView;
+    private Button wyloguj, konto;
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     private UsersRoomDatabase database;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        localUser = new UserRepository(getApplicationContext());
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance("https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app").getReference();
+        mDatabase.keepSynced(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        if(localUser.getLoggedInUser() != null) {
-            setContentView(R.layout.activity_main);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.naw_open, R.string.naw_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.naw_open, R.string.naw_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
-
-            navigationView = (NavigationView) findViewById(R.id.nav_viev);
-            navigationView.setNavigationItemSelectedListener(this);
-
-            database = UsersRoomDatabase.getInstance(getApplicationContext());
-
-            frame = findViewById(R.id.fooFragment);
-            MainFragment mFragment = new MainFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(frame.getId(), mFragment).commit();
-
-            navigationView.getMenu().getItem(0).setChecked(true);
+        konto = (Button) findViewById(R.id.konto);
+        wyloguj = (Button) findViewById(R.id.wyloguj);
 
 
-        }
-        else{
-            setContentView(R.layout.activity_login);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+        navigationView = (NavigationView) findViewById(R.id.nav_viev);
+        navigationView.setNavigationItemSelectedListener(this);
+        View elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_element, null, false);
 
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setHomeButtonEnabled(false);
+        database = UsersRoomDatabase.getInstance(getApplicationContext());
 
-        }
+        frame = findViewById(R.id.fooFragment);
+        MainFragment mFragment = new MainFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(frame.getId(), mFragment).commit();
+
+        navigationView.getMenu().getItem(0).setChecked(true);
+
+
     }
 
     @Override
@@ -126,9 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected (MenuItem item)
     {
         switch (item.getItemId() ) {
-//            case R.id.version:
-//                Toast.makeText(this, getAndroidVersion(), Toast.LENGTH_LONG).show();
-//                return true;
+
             case R.id.setings:
                 Toast.makeText(this, "Ustawienia", Toast.LENGTH_LONG).show();
                 Intent intent0 = new Intent( this, Ustawienia.class);
@@ -150,31 +129,78 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private String getAndroidVersion() {
-        String relese = Build.VERSION.RELEASE;
-        int sdkVersion = Build.VERSION.SDK_INT;
-        return getString(R.string.version)+" "+sdkVersion+" ("+relese+")";
-    }
-
-
-
-
-
-    //    zpais stanu
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences ustawienia = getSharedPreferences("PREFS", 0);
-        SharedPreferences.Editor edytor = ustawienia.edit();
-        //edytor.putString("wartosc", editText.getText().toString());
-        //edytor.commit();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        update();
-        SharedPreferences ustawienia = getSharedPreferences("PREFS", 0);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null){
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        }
+        else
+        {
+            mDatabase.child("users").child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    Uzytkownik user = dataSnapshot.getValue(Uzytkownik.class);
+                    konto.setText(user.getImie()+" "+user.getNazwisko());
+                }
+            });
+            mDatabase.child("users").child(mAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Uzytkownik user = snapshot.getValue(Uzytkownik.class);
+                    konto.setText(user.getImie()+" "+user.getNazwisko());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+            konto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDatabase.child("users").child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            Uzytkownik user = dataSnapshot.getValue(Uzytkownik.class);
+                            Toast.makeText(getApplicationContext(), user.getEMail() , Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+            wyloguj.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+                    builder.setMessage("Czy na pewno wylogować?");
+//                builder.setTitle("Alert !");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        Toast.makeText(getApplicationContext(), "Wylogowanie", Toast.LENGTH_LONG).show();
+                        FirebaseAuth.getInstance().signOut();
+                        finish();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    });
+                    builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+                        dialog.cancel();
+                    });
+                    builder.show();
+                }
+            });
+            Log.w("TAG", "user: "+currentUser.getUid());
+        }
+
     }
 
     @Override
@@ -209,23 +235,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 WpisPomiarFragment wpFragment = WpisPomiarFragment.newInstance();
                 ft.replace(frame.getId(), wpFragment).commit();
                 break;
-
-
-
-//                snackbar = Snackbar.make( findViewById(android.R.id.content), R.string.naw_projekt_temat, Snackbar.LENGTH_LONG);
-//                snackbar.show();
-//                break;
-//            case R.id.ikonta:
-//                snackbar = Snackbar.make( findViewById(android.R.id.content), R.string.naw_projekt_ikona, Snackbar.LENGTH_LONG);
-//                snackbar.show();
-//                break;
-//            case R.id.wyloguj:
-//                Toast.makeText(this, "Wylogowanie", Toast.LENGTH_LONG).show();
-//                localUser.setUserLoggedIn(false);
-//                localUser.clearUserData();
-//                finish();
-//                startActivity(getIntent());
-//                break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -258,76 +267,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //auth
-    public void reg(View view){
-
-        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-
-    }
-
-
-    public void login(View view){
-
-        EditText EditTextname = (EditText)findViewById(R.id.name);
-        EditText EditTextpassword = (EditText)findViewById(R.id.password);
-
-        new Thread(){
-            @Override
-            public void run() {
-
-                UzytkownikDao uzytkownikDao = new UzytkownikDao();
-
-                boolean aa = uzytkownikDao.login(EditTextname.getText().toString(),EditTextpassword.getText().toString());
-                if(aa){
-                    Uzytkownik uzytkownik = uzytkownikDao.findUser(EditTextname.getText().toString());
-                    if(uzytkownik != null) {
-                        localUser.storeUserData(uzytkownik);
-                        localUser.setUserLoggedIn(true);
-                    }else
-                    {
-                        Toast.makeText(getApplicationContext(), "Niepoprawne dane", Toast.LENGTH_LONG).show();
-                    }
-                    finish();
-                    startActivity(getIntent());
-                }
-            }
-        }.start();
-
-    }
-
-    public void update(){
-        if(localUser.getLoggedInUser()!=null) {
-
-            new Thread() {
-                @Override
-                public void run() {
-
-                    UzytkownikDao uzytkownikDao = new UzytkownikDao();
-
-                    Uzytkownik uzytkownik = uzytkownikDao.findUser(localUser.getLoggedInUser().getLogin());
-                    if(uzytkownik != null) {
-                        if (!localUser.getLoggedInUser().toString().equals(uzytkownik.toString())) {
-                            Log.i("Tag-main", "aktualizacia: z" + localUser.getLoggedInUser().toString());
-                            Log.i("Tag-main", "aktualizacia: na" + uzytkownik);
-                            localUser.storeUserData(uzytkownik);
-                            finish();
-                            startActivity(getIntent());
-                        }
-                    }
-                }
-            }.start();
-        }
-    }
-
-    // lista wpisów
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-//        if(database != null) {
-//            odswiezListe();
-//        }
-
-    }
 
 }

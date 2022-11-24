@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey;
 import androidx.room.Relation;
 import androidx.room.TypeConverters;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -15,16 +17,12 @@ import java.util.List;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
 
 
-@Entity(tableName = "urzytkownicy", indices = {@Index(value = {"login", "eMail"}, unique = true)})
-@TypeConverters(DateConverter.class)
+@IgnoreExtraProperties
 public class Uzytkownik {
 
-    @PrimaryKey
-    private int id;
-    private String login;
+
     private String imie;
     private String nazwisko;
-    private String haslo;
     private Date dataUrodzenia;
     private String eMail;
     private Date dataUtwozenia;
@@ -33,32 +31,13 @@ public class Uzytkownik {
     public Uzytkownik() {
     }
 
-    public Uzytkownik(int id, String login, String imie, String nazwisko, String haslo, Date dataUrodzenia, String eMail, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
-        this.login = login;
+    public Uzytkownik(String imie, String nazwisko, Date dataUrodzenia, String eMail, Date dataUtwozenia, Date dataAktualizacji) {
         this.imie = imie;
         this.nazwisko = nazwisko;
-        this.haslo = haslo;
         this.dataUrodzenia = dataUrodzenia;
         this.eMail = eMail;
         this.dataUtwozenia = dataUtwozenia;
         this.dataAktualizacji = dataAktualizacji;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getImie() {
@@ -75,14 +54,6 @@ public class Uzytkownik {
 
     public void setNazwisko(String nazwisko) {
         this.nazwisko = nazwisko;
-    }
-
-    public String getHaslo() {
-        return haslo;
-    }
-
-    public void setHaslo(String haslo) {
-        this.haslo = haslo;
     }
 
     public Date getDataUrodzenia() {
@@ -121,11 +92,8 @@ public class Uzytkownik {
     public String toString() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
         String tekst = "Użytkownik{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", imie='" + imie + '\'' +
-                ", nazwisko='" + nazwisko + '\'' +
-                ", haslo='" + haslo + '\'' ;
+                "imie='" + imie + '\'' +
+                ", nazwisko='" + nazwisko + '\'';
         if(dataUrodzenia!=null)
             tekst += ", dataUrodzenia=" + simpleDateFormat.format(dataUrodzenia) ;
         tekst += ", eMail='" + eMail + '\'' +

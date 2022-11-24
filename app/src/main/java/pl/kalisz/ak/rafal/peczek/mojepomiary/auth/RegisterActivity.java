@@ -1,129 +1,222 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.auth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Parcel;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+import java.util.regex.Pattern;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.UzytkownikDao;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.MainActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText login;
-    private EditText imie;
-    private EditText nazwisko;
-    private EditText haslo;
-    private DatePicker dataUrodzenia;
-    private EditText eMail;
+    private TextInputLayout eMail, imie, nazwisko, haslo, hasloPowtuz, dataUrodzenia;
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        login = findViewById(R.id.login);
-        imie = findViewById(R.id.imie);
-        nazwisko = findViewById(R.id.nazwisko);
-        haslo = findViewById(R.id.haslo);
-        dataUrodzenia = findViewById(R.id.dataUrodzenia);
-        eMail = findViewById(R.id.eMail);
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance("https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app").getReference();
+
+        eMail = findViewById(R.id.eMailLayout);
+        imie = findViewById(R.id.imieLayout);
+        nazwisko = findViewById(R.id.nazwiskoLayout);
+        haslo = findViewById(R.id.hasloLayout);
+        hasloPowtuz = findViewById(R.id.hasloPowtuzLayout);
+        dataUrodzenia = findViewById(R.id.dataUrodzeniaLayout);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        dataUrodzenia.getEditText().setText(sdf.format(c.getTime()));
+        dodajDatePicker(dataUrodzenia.getEditText());
+
     }
 
 
     public void register(View view){
 
-        String login = this.login.getText().toString();
-        String imie = this.imie.getText().toString();
-        String nazwisko = this.nazwisko.getText().toString();
-        String haslo = this.haslo.getText().toString();
-        //Data
+        String eMail = this.eMail.getEditText().getText().toString().trim();
+        String imie = this.imie.getEditText().getText().toString().trim();
+        String nazwisko = this.nazwisko.getEditText().getText().toString().trim();
+        String haslo = this.haslo.getEditText().getText().toString().trim();
+        String hasloPowtuz = this.hasloPowtuz.getEditText().getText().toString().trim();
+        //Data urodzenia
         Calendar calendar = Calendar.getInstance();
-        calendar.set(this.dataUrodzenia.getYear(), this.dataUrodzenia.getMonth(), this.dataUrodzenia.getDayOfMonth());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            calendar.setTime(sdf.parse(dataUrodzenia.getEditText().getText().toString()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Date dataUrodzenia = calendar.getTime();
 
-        String eMail = this.eMail.getText().toString();
 
 
 
-        if(login.length() < 2 || haslo.length() < 2 || eMail.length() < 2 ){
-            Toast.makeText (getApplicationContext(), "the input information does not meet the requirements, please re-enter", Toast.LENGTH_LONG). show();
-            return;
 
+        if( validateData(eMail, imie, nazwisko, haslo, hasloPowtuz, dataUrodzenia) ){
+            Uzytkownik uzytkownik = new Uzytkownik();
+            uzytkownik.setImie(imie);
+            uzytkownik.setNazwisko(nazwisko);
+            uzytkownik.setDataUrodzenia(dataUrodzenia);
+            uzytkownik.setEMail(eMail);
+            uzytkownik.setDataUtwozenia(new Date());
+            uzytkownik.setDataAktualizacji(new Date());
+
+            mAuth.createUserWithEmailAndPassword(eMail, haslo)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("TAG", "createUserWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                mDatabase.child("users").child(user.getUid()).setValue(uzytkownik);
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("TAG", "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
 
 
-        Uzytkownik uzytkownik = new Uzytkownik();
-        uzytkownik.setLogin(login);
-        uzytkownik.setImie(imie);
-        uzytkownik.setNazwisko(nazwisko);
-        uzytkownik.setHaslo(haslo);
-        uzytkownik.setDataUrodzenia(dataUrodzenia);
-        uzytkownik.setEMail(eMail);
-        uzytkownik.setDataUtwozenia(new Date());
-        uzytkownik.setDataAktualizacji(new Date());
-
-
-        new Thread(){
-            @Override
-            public void run() {
-
-                int msg = 0;
-
-                UzytkownikDao uzytkownikDao = new UzytkownikDao();
-
-                Uzytkownik uu = uzytkownikDao.findUser(uzytkownik.getLogin());
-
-                if(uu != null){
-                    msg = 1;
-                }
-
-                boolean flag = uzytkownikDao.register(uzytkownik);
-                if(flag){
-                    msg = 2;
-                }
-                hand.sendEmptyMessage(msg);
-
-            }
-        }.start();
 
 
     }
-    final Handler hand = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.what == 0)
-            {
-                Toast.makeText(getApplicationContext(), "registration failed", Toast.LENGTH_LONG). show();
+
+    boolean validateData(String eMail, String imie, String nazwisko, String haslo, String hasloPowtuz, Date dataUrodzenia){
+        boolean status = true;
+        if(!Patterns.EMAIL_ADDRESS.matcher(eMail).matches()){
+            this.eMail.setError("Niepoprawny Email");
+            status = false;
+        }else
+            this.eMail.setErrorEnabled(false);
+
+        if(imie.length()<3){
+            this.imie.setError("Nieprawidłowe imie");
+            status = false;
+        }else
+            this.imie.setErrorEnabled(false);
+
+        if(nazwisko.length()<3){
+            this.nazwisko.setError("Nieprawidłowe nazwisko");
+            status = false;
+        }else
+            this.nazwisko.setErrorEnabled(false);
+
+        if(haslo.length()<6){
+            this.haslo.setError("Minimum 6 znaków");
+            status = false;
+        }else
+            this.haslo.setErrorEnabled(false);
+
+        if(!haslo.equals(hasloPowtuz)){
+            this.hasloPowtuz.setError("Hasła nie są zgodne");
+            status = false;
+        }else
+            this.hasloPowtuz.setErrorEnabled(false);
+
+        return status;
+    }
+
+    private void dodajDatePicker(TextView textView){
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Calendar ct = Calendar.getInstance();
+                try {
+                    ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
+                Date dataWybrana = new Date(c.getTimeInMillis());
+                Log.i("Tag-main", "data:" + dataWybrana.getTime());
+
+
+
+                MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
+                        .setSelection(dataWybrana.getTime())
+                        .setCalendarConstraints(
+                                new CalendarConstraints.Builder()
+                                        .setValidator(
+                                                new CalendarConstraints.DateValidator() {
+                                                    @Override
+                                                    public boolean isValid(long date) {
+                                                        return MaterialDatePicker.todayInUtcMilliseconds() >= date ;
+                                                    }
+
+                                                    @Override
+                                                    public int describeContents() {
+                                                        return 0;
+                                                    }
+
+                                                    @Override
+                                                    public void writeToParcel(@NonNull Parcel dest, int flags) {
+
+                                                    }
+                                                }
+                                        )
+                                        .build()
+                        )
+                        .build();
+
+                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick(Object selection) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis((Long) selection);
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                    }
+                });
+                materialDatePicker.show(getSupportFragmentManager(), "tag");
 
             }
-            if(msg.what == 1)
-            {
-                Toast.makeText(getApplicationContext(), "this account already exists, please change another account", Toast.LENGTH_LONG). show();
-
-            }
-            if(msg.what == 2)
-            {
-                //startActivity(new Intent(getApplication(),MainActivity.class));
-
-                Intent intent = new Intent();
-                //Encapsulate the data you want to transfer in intent with putextra
-                intent.putExtra("a", "registration");
-                setResult(RESULT_CANCELED,intent);
-                finish();
-            }
-
-        }
-    };
+        });
+    }
 }

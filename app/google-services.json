@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "323526490686",
+    "firebase_url": "https://mojepomiary-fa7e0-default-rtdb.firebasedatabase.app",
+    "project_id": "mojepomiary-fa7e0",
+    "storage_bucket": "mojepomiary-fa7e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323526490686:android:57b8e8fc442101fb90af6f",
+        "android_client_info": {
+          "package_name": "pl.kalisz.ak.rafal.peczek.mojepomiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323526490686-96kelpthub8p7973i10q2g2rlqu76lr0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nrl2L0xWLYwtMoDRmd644Tkgx8DK6Kw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323526490686-96kelpthub8p7973i10q2g2rlqu76lr0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

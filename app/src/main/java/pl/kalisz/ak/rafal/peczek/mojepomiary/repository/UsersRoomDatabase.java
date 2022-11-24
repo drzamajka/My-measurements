@@ -14,7 +14,6 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.LocalEtapTerapaDao;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.LocalJednostkaDao;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.LocalPomiarDao;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.LocalTerapiaDao;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.LocalUzytkownikDao;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.LocalWpisPomiarDao;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
@@ -23,12 +22,11 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
-@Database(entities = {Uzytkownik.class, Jednostka.class, Pomiar.class, Terapia.class, EtapTerapa.class, WpisPomiar.class}, version = 19, exportSchema = false)
+@Database(entities = { Jednostka.class, Pomiar.class, Terapia.class, EtapTerapa.class, WpisPomiar.class}, version = 19, exportSchema = false)
 public abstract class UsersRoomDatabase extends RoomDatabase {
 
     private static UsersRoomDatabase instance;
 
-    public abstract LocalUzytkownikDao localUzytkownikDao();
     public abstract LocalJednostkaDao localJednostkaDao();
     public abstract LocalPomiarDao localPomiarDao();
     public abstract LocalTerapiaDao localTerapiaDao();

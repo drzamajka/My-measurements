@@ -66,7 +66,7 @@ public class JednostkiDopisz extends AppCompatActivity {
         if(nazwa.length() >= 2 && wartosc.length() >= 1)
         {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
-            int userid = database.localUzytkownikDao().getAll().get(0).getId();
+            int userid = 0;
 
             int id = database.localJednostkaDao().getMaxId();
             database.localJednostkaDao().insert(new Jednostka((id+1), nazwa, wartosc, dokladnoscSelectedId, przeznaczenieSelectedId, false, userid, new Date(), new Date() ));

@@ -98,6 +98,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     ArrayList<Double> listaWynikow = new ArrayList<>();
                     for (View element : listaElementowL) {
                         String wynikOdczyt = ((EditText) element.findViewById(R.id.editTextWynik)).getText().toString();
+                        wynikOdczyt = wynikOdczyt.replaceAll("\\,", ".");
                         if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
                             Double wynik = Double.parseDouble(wynikOdczyt);
                             listaWynikow.add(wynik);
@@ -153,6 +154,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     ArrayList<Double> listaWynikow = new ArrayList<>();
                     for (View element : listaElementowL) {
                         String wynikOdczyt = ((EditText) element.findViewById(R.id.editTextWynik)).getText().toString();
+                        wynikOdczyt = wynikOdczyt.replaceAll("\\,", ".");
                         if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
                             Double wynik = Double.parseDouble(wynikOdczyt);
                             listaWynikow.add(wynik);

@@ -54,25 +54,4 @@
     </item>
 
 
-
-<!--    <item android:title="@string/naw_projekt">-->
-<!--        <menu>-->
-
-<!--            <item android:id="@+id/naw_jednostki"-->
-<!--                android:icon="@drawable/ic_skala_balance_24"-->
-<!--                android:title="Jednostki"/>-->
-<!--            <item android:id="@+id/naw_pomiary"-->
-<!--                android:icon="@drawable/ic_pomiary_heart_24"-->
-<!--                android:title="Pomiary"/>-->
-<!--            <item android:id="@+id/naw_terapie"-->
-<!--                android:icon="@drawable/ic_calendar_month_24"-->
-<!--                android:title="Terapie"/>-->
-<!--            <item android:id="@+id/naw_wpisy"-->
-<!--                android:icon="@drawable/ic_lista_24"-->
-<!--                android:title="Wpisy"/>-->
-
-<!--        </menu>-->
-<!--    </item>-->
-
-
 </menu>

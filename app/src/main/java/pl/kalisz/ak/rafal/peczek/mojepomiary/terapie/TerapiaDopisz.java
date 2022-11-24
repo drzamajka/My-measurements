@@ -359,7 +359,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
@@ -534,7 +534,7 @@ public class TerapiaDopisz extends AppCompatActivity {
 
 
         int id = database.localTerapiaDao().getMaxId();
-        int idUzytkownika = database.localUzytkownikDao().getAll().get(0).getId();
+        int idUzytkownika = 0;
         Terapia terapia = new Terapia((id + 1), idUzytkownika, 1, notatka.getEditText().getText().toString(), idsCzynnosci, dataRozpoczecia, dataZakonczenia, new Date(), new Date());
         database.localTerapiaDao().insert( terapia);
         ArrayList<EtapTerapa> listaEtapowTerapi = new ArrayList<>();
