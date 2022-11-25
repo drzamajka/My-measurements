@@ -1,18 +1,22 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.auth;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,6 +58,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view){
+        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        if(getCurrentFocus() != null){
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            getCurrentFocus().clearFocus();
+        }
+
+
+        View elementView = getLayoutInflater().inflate(R.layout.progres_bar, null, false);
+        MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
+                .setCancelable(false)
+                .setTitle("Logowanie")
+                .setView(elementView);
+        AlertDialog progers = progresbilder.show();
+
         String eMail = this.eMail.getEditText().getText().toString().trim();
         String haslo = this.haslo.getEditText().getText().toString().trim();
 
@@ -63,18 +81,23 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("TAG", "signInWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();
                             } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("TAG", "signInWithEmail:failure", task.getException());
-                                LoginActivity.this.haslo.setError("Niepoprawne hasło");
+                                MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
+                                        .setTitle("Logowanie")
+                                        .setMessage(task.getException().getLocalizedMessage())
+                                        .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                            dialog.cancel();
+                                        });
+                                progresbilder.show();
+                                progers.cancel();
                             }
                         }
                     });
+        }else{
+            progers.cancel();
         }
 
     }
