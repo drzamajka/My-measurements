@@ -92,12 +92,6 @@
             android:parentActivityName=".jednostki.JednostkiActivity"
             android:theme="@style/MyAppTheme" />
         <activity
-            android:name=".jednostki.JednostkiActivity"
-            android:exported="false"
-            android:label="@string/title_activity_jednostki"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
-        <activity
             android:name=".auth.RegisterActivity"
             android:exported="false"
             android:label="Rejestracja"

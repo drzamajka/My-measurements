@@ -42,10 +42,7 @@ import java.util.regex.Pattern;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.MainActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisyEdytuj;
 
 public class RegisterActivity extends AppCompatActivity {
 

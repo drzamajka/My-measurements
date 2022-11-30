@@ -1,26 +1,16 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Embedded;
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-import androidx.room.Relation;
-import androidx.room.TypeConverters;
-
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
 
 
 @IgnoreExtraProperties
 public class Uzytkownik {
 
-
+    @Exclude
+    private String id;
     private String imie;
     private String nazwisko;
     private Date dataUrodzenia;
@@ -32,6 +22,7 @@ public class Uzytkownik {
     }
 
     public Uzytkownik(String imie, String nazwisko, Date dataUrodzenia, String eMail, Date dataUtwozenia, Date dataAktualizacji) {
+        id = null;
         this.imie = imie;
         this.nazwisko = nazwisko;
         this.dataUrodzenia = dataUrodzenia;
@@ -39,6 +30,10 @@ public class Uzytkownik {
         this.dataUtwozenia = dataUtwozenia;
         this.dataAktualizacji = dataAktualizacji;
     }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
 
     public String getImie() {
         return imie;

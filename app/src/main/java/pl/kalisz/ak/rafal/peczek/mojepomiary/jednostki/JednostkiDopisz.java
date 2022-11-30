@@ -8,26 +8,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Date;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 
 public class JednostkiDopisz extends AppCompatActivity {
 
     private EditText nazwa, wartosc;
     private AutoCompleteTextView dokladnosc, przeznaczenie;
-    private UsersRoomDatabase database;
+    private JednostkiRepository jednostkiRepository;
     private int dokladnoscSelectedId, przeznaczenieSelectedId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jednostki_dopisz);
+
+        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         nazwa = (EditText) findViewById(R.id.editTextNazwa);
         wartosc = (EditText) findViewById(R.id.editTextJednostka);
@@ -50,13 +53,8 @@ public class JednostkiDopisz extends AppCompatActivity {
             }
         });
 
-        try{
-            database = UsersRoomDatabase.getInstance(getApplicationContext());
-        }catch (SQLException e){
-            Toast toast = Toast.makeText(this, "Baza danych jest niedostępna", Toast.LENGTH_LONG);
-            toast.show();
-            finish();
-        }
+
+
     }
 
     public void zapiszNowaPozycia(View view){
@@ -66,10 +64,10 @@ public class JednostkiDopisz extends AppCompatActivity {
         if(nazwa.length() >= 2 && wartosc.length() >= 1)
         {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
-            int userid = 0;
+            String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            Jednostka jednostka = new Jednostka(nazwa, wartosc, dokladnoscSelectedId, przeznaczenieSelectedId, false, userid, new Date(), new Date() );
 
-            int id = database.localJednostkaDao().getMaxId();
-            database.localJednostkaDao().insert(new Jednostka((id+1), nazwa, wartosc, dokladnoscSelectedId, przeznaczenieSelectedId, false, userid, new Date(), new Date() ));
+            jednostkiRepository.insert(jednostka);
             finish();
         }else
                 Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();

@@ -1,34 +1,31 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import androidx.room.Embedded;
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-import androidx.room.Relation;
-import androidx.room.TypeConverters;
+
+
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
 import java.util.List;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
 
-@Entity(tableName = "pomiary", indices = {@Index(value = {"nazwa"}, unique = true)})
-@TypeConverters(DateConverter.class)
+@IgnoreExtraProperties
 public class Pomiar {
-    @PrimaryKey
-    private int id;
+
+    @Exclude
+    private String id;
     private String nazwa;
     private String notatka;
-    private int idUzytkownika;
-    private int idJednostki;
+    private String idUzytkownika;
+    private String idJednostki;
     private Date dataUtwozenia;
     private Date dataAktualizacji;
 
     public Pomiar() {
     }
 
-    public Pomiar(int id, String nazwa, String notatka, int idUzytkownika, int idJednostki, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
+    public Pomiar(String nazwa, String notatka, String idUzytkownika, String idJednostki, Date dataUtwozenia, Date dataAktualizacji) {
+        id = null;
         this.nazwa = nazwa;
         this.notatka = notatka;
         this.idUzytkownika = idUzytkownika;
@@ -37,13 +34,9 @@ public class Pomiar {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
     public String getNazwa() {
         return nazwa;
@@ -61,19 +54,19 @@ public class Pomiar {
         this.notatka = notatka;
     }
 
-    public int getIdUzytkownika() {
+    public String getIdUzytkownika() {
         return idUzytkownika;
     }
 
-    public void setIdUzytkownika(int idUzytkownika) {
+    public void setIdUzytkownika(String idUzytkownika) {
         this.idUzytkownika = idUzytkownika;
     }
 
-    public int getIdJednostki() {
+    public String getIdJednostki() {
         return idJednostki;
     }
 
-    public void setIdJednostki(int idJednostki) {
+    public void setIdJednostki(String idJednostki) {
         this.idJednostki = idJednostki;
     }
 
@@ -96,8 +89,7 @@ public class Pomiar {
     @Override
     public String toString() {
         return "Pomiar{" +
-                "id=" + id +
-                ", nazwa='" + nazwa + '\'' +
+                "nazwa='" + nazwa + '\'' +
                 ", notatka='" + notatka + '\'' +
                 ", idUzytkownika=" + idUzytkownika +
                 ", idJednostki=" + idJednostki +

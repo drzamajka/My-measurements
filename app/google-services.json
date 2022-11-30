@@ -1,14 +1,14 @@
 {
   "project_info": {
     "project_number": "323526490686",
-    "firebase_url": "https://mojepomiary-fa7e0-default-rtdb.firebasedatabase.app",
+    "firebase_url": "https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "mojepomiary-fa7e0",
     "storage_bucket": "mojepomiary-fa7e0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:323526490686:android:57b8e8fc442101fb90af6f",
+        "mobilesdk_app_id": "1:323526490686:android:70714597ee602e0690af6f",
         "android_client_info": {
           "package_name": "pl.kalisz.ak.rafal.peczek.mojepomiary"
         }

@@ -1,32 +1,29 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
 
-@Entity(tableName = "etap_terapa")
-@TypeConverters(DateConverter.class)
+
+@IgnoreExtraProperties
 public class EtapTerapa {
 
-    @PrimaryKey
-    private int id;
+    @Exclude
+    private String id;
     private Date dataZaplanowania;
     private Date dataWykonania;
     private String notatka;
-    private int idTerapi;
+    private String idTerapi;
     private Date dataUtwozenia;
     private Date dataAktualizacji;
 
     public EtapTerapa() {
     }
 
-    public EtapTerapa(int id, Date dataZaplanowania, Date dataWykonania, String notatka, int idTerapi, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
+    public EtapTerapa(Date dataZaplanowania, Date dataWykonania, String notatka, String idTerapi, Date dataUtwozenia, Date dataAktualizacji) {
+        this.id = null;
         this.dataZaplanowania = dataZaplanowania;
         this.dataWykonania = dataWykonania;
         this.notatka = notatka;
@@ -35,13 +32,9 @@ public class EtapTerapa {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
     public Date getDataZaplanowania() {
         return dataZaplanowania;
@@ -61,11 +54,11 @@ public class EtapTerapa {
         this.notatka = notatka;
     }
 
-    public int getIdTerapi() {
+    public String getIdTerapi() {
         return idTerapi;
     }
 
-    public void setIdTerapi(int idTerapi) {
+    public void setIdTerapi(String idTerapi) {
         this.idTerapi = idTerapi;
     }
 
@@ -88,8 +81,7 @@ public class EtapTerapa {
     @Override
     public String toString() {
         return "EtapTerapa{" +
-                "id=" + id +
-                ", dataZaplanowania=" + dataZaplanowania +
+                "dataZaplanowania=" + dataZaplanowania +
                 ", dataWykonania=" + dataWykonania +
                 ", notatka='" + notatka +
                 ", idTerapi=" + idTerapi +

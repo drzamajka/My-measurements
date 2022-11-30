@@ -1,36 +1,34 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import androidx.annotation.Nullable;
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
+
+
+
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
 
 
-@Entity(tableName = "jednostki", indices = {@Index(value = {"nazwa", "wartosc"}, unique = true)})
-@TypeConverters(DateConverter.class)
+@IgnoreExtraProperties
 public class Jednostka {
 
-    @PrimaryKey
-    private int id;
+    @Exclude
+    private String id;
     private String nazwa;
     private String wartosc;
     private int dokladnosc;
     private int przeznaczenie;
     private boolean czyDomyslna;
-    private int idUzytkownika;
+    private String idUzytkownika;
     private Date dataUtwozenia;
     private Date dataAktualizacji;
 
     public Jednostka() {
     }
 
-    public Jednostka(int id, String nazwa, String wartosc, int dokladnosc, int przeznaczenie, boolean czyDomyslna,  int idUzytkownika, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
+    public Jednostka(String nazwa, String wartosc, int dokladnosc, int przeznaczenie, boolean czyDomyslna,  String idUzytkownika, Date dataUtwozenia, Date dataAktualizacji) {
+        this.id = null;
         this.nazwa = nazwa;
         this.wartosc = wartosc;
         this.dokladnosc = dokladnosc;
@@ -41,22 +39,17 @@ public class Jednostka {
         this.dataAktualizacji = dataAktualizacji;
     }
 
+    public String getId() { return id; }
 
-    public int getIdUzytkownika() {  return idUzytkownika; }
+    public void setId(String id) { this.id = id; }
 
-    public void setIdUzytkownika(int idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+    public String getIdUzytkownika() {  return idUzytkownika; }
+
+    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
 
     public int getDokladnosc() { return dokladnosc; }
 
     public void setDokladnosc(int dokladnosc) { this.dokladnosc = dokladnosc; }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getNazwa() {
         return nazwa;
@@ -109,8 +102,7 @@ public class Jednostka {
     @Override
     public String toString() {
         return "Jednostka{" +
-                "id=" + id +
-                ", nazwa='" + nazwa + '\'' +
+                "nazwa='" + nazwa + '\'' +
                 ", wartosc='" + wartosc + '\'' +
                 ", dokladnosc=" + dokladnosc +
                 ", przeznaczenie=" + przeznaczenie +

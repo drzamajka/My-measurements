@@ -13,9 +13,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -23,22 +25,31 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.PomiarPosiadRelacie;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
+//import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
+//import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
 
 public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
-    private List<EtapTerapiPosiaRelacie> listaEtapow;
-    private UsersRoomDatabase database;
+    private List<EtapTerapa> listaEtapow;
+    private PomiarRepository pomiarRepository;
+    private TerapiaRepository terapiaRepository;
+    private WpisPomiarRepository wpisPomiarRepository;
+    private JednostkiRepository jednostkiRepository;
 
-    public MainEtapAdapter(List<EtapTerapiPosiaRelacie> listaEtapow, Context context) {
+
+    public MainEtapAdapter(List<EtapTerapa> listaEtapow, Context context) {
         this.listaEtapow = listaEtapow;
-        database = UsersRoomDatabase.getInstance(context);
+        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        terapiaRepository = new TerapiaRepository();
+        wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
     @Override
@@ -52,10 +63,10 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
         CardView cardView = holder.cardView;
         TextView obiektNazwa = (TextView) cardView.findViewById(R.id.nazwa);
 
-        ArrayList<Integer> listaElementow = listaEtapow.get(position).terapia.getIdsCzynnosci();
+        ArrayList<String> listaElementow = terapiaRepository.findById(listaEtapow.get(position).getIdTerapi()).getIdsCzynnosci();
         String nazwa = "";
-        for (int id: listaElementow) {
-            Pomiar pomiar = database.localPomiarDao().findById(id);
+        for (String id: listaElementow) {
+            Pomiar pomiar = pomiarRepository.findById(id);
             if(id != listaElementow.get(0))
                 nazwa += obiektNazwa.getText()+",\n"+pomiar.getNazwa();
             else
@@ -65,19 +76,19 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
 
         TextView obiektData = (TextView) cardView.findViewById(R.id.data);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        obiektData.setText(sdf.format(listaEtapow.get(position).etapTerapa.getDataZaplanowania()));
+        obiektData.setText(sdf.format(listaEtapow.get(position).getDataZaplanowania()));
         TextView obiektOpis = (TextView) cardView.findViewById(R.id.opis);
 
-        if(listaEtapow.get(position).etapTerapa.getDataWykonania() != null) {
-            List<WpisPomiar> listaWpisow = listaEtapow.get(position).wpisy;
+        if(listaEtapow.get(position).getDataWykonania() != null) {
+            List<WpisPomiar> listaWpisow = wpisPomiarRepository.findByEtapId(listaEtapow.get(position).getId());
             Log.i("Tag-main-RV", "lista wpisów:" + listaWpisow);
             String opis = "";
             int i = 0;
             for (WpisPomiar wpis : listaWpisow) {
-                PomiarPosiadRelacie pomiar = database.localPomiarDao().findPomiarPosiadRelacieById(wpis.getIdPomiar());
+                Pomiar pomiar =pomiarRepository.findById(wpis.getIdPomiar());
                 if(i!=0)
                     opis += "\n";
-                opis += " "+wpis.getWynikPomiary()+" "+pomiar.jednostka.getWartosc();
+                opis += " "+wpis.getWynikPomiary()+" "+jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc();
                 i++;
             }
             obiektOpis.setText(opis);
@@ -88,7 +99,7 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
         }
 
         Calendar dataZaplanowana = Calendar.getInstance();
-        dataZaplanowana.setTime(listaEtapow.get(position).etapTerapa.getDataZaplanowania());
+        dataZaplanowana.setTime(listaEtapow.get(position).getDataZaplanowania());
         Calendar dataAktualna = Calendar.getInstance();
         String finalNazwa = nazwa;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +107,8 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
             public void onClick(View v) {
                 Date za3Godziny = Date.from( LocalDateTime.now().plusHours(3).atZone(ZoneId.systemDefault()).toInstant());
                 Date dzienTemu = Date.from( LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-                if(listaEtapow.get(position).etapTerapa.getDataZaplanowania().after(dzienTemu) && listaEtapow.get(position).etapTerapa.getDataZaplanowania().before(za3Godziny)) {
-                    if (listaEtapow.get(position).etapTerapa.getDataWykonania() == null) {
+                if(listaEtapow.get(position).getDataZaplanowania().after(dzienTemu) && listaEtapow.get(position).getDataZaplanowania().before(za3Godziny)) {
+                    if (listaEtapow.get(position).getDataWykonania() == null) {
                         String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
 
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
@@ -106,21 +117,21 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                switch (which) {
-                                    case 0: {
-                                        Intent intent4 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
-                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
-                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
-                                        cardView.getContext().startActivity(intent4);
-                                        break;
-                                    }
-                                    case 1: {
-                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
-                                        cardView.getContext().startActivity(intent);
-                                        break;
-                                    }
-                                }
+//                                switch (which) {
+//                                    case 0: {
+//                                        Intent intent4 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
+//                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) listaEtapow.get(position).getId());
+//                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
+//                                        cardView.getContext().startActivity(intent4);
+//                                        break;
+//                                    }
+//                                    case 1: {
+//                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
+//                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) listaEtapow.get(position).getIdTerapi());
+//                                        cardView.getContext().startActivity(intent);
+//                                        break;
+//                                    }
+//                                }
                             }
                         });
                         builder.show();
@@ -132,21 +143,21 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                switch (which) {
-                                    case 0: {
-                                        Intent intent5 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
-                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (int) listaEtapow.get(position).etapTerapa.getId());
-                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
-                                        cardView.getContext().startActivity(intent5);
-                                        break;
-                                    }
-                                    case 1: {
-                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
-                                        cardView.getContext().startActivity(intent);
-                                        break;
-                                    }
-                                }
+//                                switch (which) {
+//                                    case 0: {
+//                                        Intent intent5 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
+//                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) listaEtapow.get(position).getId());
+//                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
+//                                        cardView.getContext().startActivity(intent5);
+//                                        break;
+//                                    }
+//                                    case 1: {
+//                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
+//                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) listaEtapow.get(position).getIdTerapi());
+//                                        cardView.getContext().startActivity(intent);
+//                                        break;
+//                                    }
+//                                }
                             }
                         });
                         builder.show();
@@ -160,14 +171,14 @@ public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            switch (which) {
-                                case 0: {
-                                    Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-                                    intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (int) listaEtapow.get(position).terapia.getId());
-                                    cardView.getContext().startActivity(intent);
-                                    break;
-                                }
-                            }
+//                            switch (which) {
+//                                case 0: {
+//                                    Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
+//                                    intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) listaEtapow.get(position).getIdTerapi());
+//                                    cardView.getContext().startActivity(intent);
+//                                    break;
+//                                }
+//                            }
                         }
                     });
                     builder.show();

@@ -48,10 +48,24 @@
             <item android:id="@+id/naw_wpisy_leki"
                 android:icon="@drawable/ic_lista_24"
                 android:checkable="true"
-                android:title="Wpisy"/>
+                android:title="Wpisy"
+                android:paddingBottom="100dp"/>
 
         </menu>
     </item>
 
+
+    <item
+        android:id="@+id/footer_spacer_1"
+        android:checkable="false"
+        android:enabled="false"
+        android:orderInCategory="200"
+        android:title="" />
+    <item
+        android:id="@+id/footer_spacer_2"
+        android:checkable="false"
+        android:enabled="false"
+        android:orderInCategory="200"
+        android:title="" />
 
 </menu>

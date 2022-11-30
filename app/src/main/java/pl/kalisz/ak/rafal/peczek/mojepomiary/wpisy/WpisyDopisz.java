@@ -1,8 +1,10 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,9 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,9 +29,13 @@ import java.util.Date;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryDopisz;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 
 public class WpisyDopisz extends AppCompatActivity {
 
@@ -33,15 +43,21 @@ public class WpisyDopisz extends AppCompatActivity {
     private TextInputLayout wynik, godzinaWykonania;
     private AutoCompleteTextView pomiary;
     private TextInputLayout pomiaryL;
-    private UsersRoomDatabase database;
     private List<Pomiar> listaPomiarow;
     private int idWybranegoPomiaru;
+
+    private PomiarRepository pomiarRepository;
+    private JednostkiRepository jednostkiRepository;
+    private WpisPomiarRepository wpisPomiarRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wpisy_dopisz);
 
+        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         idWybranegoPomiaru = 0;
 
         wynik = (TextInputLayout) findViewById(R.id.editTextWynikLayout);
@@ -50,25 +66,34 @@ public class WpisyDopisz extends AppCompatActivity {
         pomiaryL = (TextInputLayout) findViewById(R.id.spinnerPomiaryLayout);
 
 
-        database = UsersRoomDatabase.getInstance(getApplicationContext());
-        listaPomiarow = database.localPomiarDao().getAll();
+        listaPomiarow = new ArrayList<>();
+        pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<String> data = new ArrayList<>();
+                    for (DataSnapshot postSnapshot: task.getResult().getChildren()) {
+                        Pomiar pomiar = postSnapshot.getValue(Pomiar.class);
+                        listaPomiarow.add(pomiar);
+                        data.add(pomiar.getNazwa());
+                    }
 
-
-        ArrayList<String> data = new ArrayList<>();
-        for (Pomiar pomiar: listaPomiarow) {
-            data.add(pomiar.getNazwa());
-        }
-
-        ArrayAdapter adapter = new ArrayAdapter ( this, android.R.layout.simple_spinner_dropdown_item, data);
-        pomiary.setAdapter(adapter);
+                    ArrayAdapter adapter = new ArrayAdapter ( WpisyDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    pomiary.setAdapter(adapter);
+                }
+                else {
+                    Log.i("Tag", "błąd odczytu jednostek" );
+                }
+            }
+        });
 
         TextView textView5 = findViewById(R.id.jednostka);
         pomiary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 idWybranegoPomiaru = position;
-                textView5.setText(database.localJednostkaDao().findById(listaPomiarow.get(position).getIdJednostki()).getWartosc());
-
+                Jednostka jednostka = jednostkiRepository.findById(listaPomiarow.get(position).getIdJednostki());
+                textView5.setText(jednostka.getWartosc());
             }
         });
 
@@ -83,7 +108,7 @@ public class WpisyDopisz extends AppCompatActivity {
     public void zapiszNowaPozycia(View view) throws ParseException {
         String wynik = this.wynik.getEditText().getText().toString();
         if( wynik.length()>0) {
-            int pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
+            String pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
             Calendar c = Calendar.getInstance();
@@ -93,8 +118,7 @@ public class WpisyDopisz extends AppCompatActivity {
             cData.set(Calendar.MONTH, c.get(Calendar.MONTH));
             cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
 
-            int id = database.localWpisPomiarDao().getMaxId();
-            database.localWpisPomiarDao().insert(new WpisPomiar((id+1),wynik, pomiarId, cData.getTime(), new Date(), new Date() ));
+            wpisPomiarRepository.insert(new WpisPomiar(wynik, pomiarId, FirebaseAuth.getInstance().getCurrentUser().getUid(), cData.getTime(), new Date(), new Date() ));
             finish();
         }
         else

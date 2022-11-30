@@ -10,29 +10,28 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Date;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 
 public class JednostkiEdytuj extends AppCompatActivity {
 
     public static final String EXTRA_JEDNOSTKA_ID = "jednostkaId";
-    private int jednostkaId;
+    private String jednostkaId;
 
     private TextInputLayout nazwa, wartosc;
     private AutoCompleteTextView dokladnosc, przeznaczenie;
     private TextInputLayout dokladnoscL, przeznaczenieL;
     private Button aktualizuj, anuluj;
-    private UsersRoomDatabase database;
+    private JednostkiRepository jednostkiRepository;
     private Jednostka jednostka;
     private int dokladnoscSelectedId, przeznaczenieSelectedId;
 
@@ -41,8 +40,8 @@ public class JednostkiEdytuj extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jednostki_edytuj);
 
-
-        jednostkaId = (Integer) getIntent().getExtras().get(EXTRA_JEDNOSTKA_ID);
+        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        jednostkaId = (String) getIntent().getExtras().get(EXTRA_JEDNOSTKA_ID);
 
         nazwa = (TextInputLayout) findViewById(R.id.editTextNazwaLayout);
         wartosc = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
@@ -54,8 +53,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
         przeznaczenieL = (TextInputLayout) findViewById(R.id.spinner2Layout);
 
 
-        database = UsersRoomDatabase.getInstance(getApplicationContext());
-        jednostka = database.localJednostkaDao().findById(jednostkaId);
+        jednostka = jednostkiRepository.findById(jednostkaId);
         nazwa.getEditText().setText(jednostka.getNazwa());
         wartosc.getEditText().setText(jednostka.getWartosc());
         dokladnoscSelectedId = jednostka.getDokladnosc();
@@ -122,9 +120,8 @@ public class JednostkiEdytuj extends AppCompatActivity {
 //                builder.setTitle("Alert !");
                     builder.setCancelable(false);
                     builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
-                        if (database != null) {
-                            Jednostka jednostka = database.localJednostkaDao().findById(jednostkaId);
-                            database.localJednostkaDao().delete(jednostka);
+                        if (jednostka != null) {
+                            jednostkiRepository.delete(jednostka);
                         }
                         finish();
                     });
@@ -162,13 +159,13 @@ public class JednostkiEdytuj extends AppCompatActivity {
         if(nazwa.length() >= 2 && wartosc.length() >= 1) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
 
-            Jednostka jednostka = database.localJednostkaDao().findById(jednostkaId);
+
             jednostka.setNazwa(nazwa);
             jednostka.setWartosc(wartosc);
             jednostka.setDokladnosc(dokladnoscSelectedId);
             jednostka.setPrzeznaczenie(przeznaczenieSelectedId);
             jednostka.setDataAktualizacji(new Date());
-            database.localJednostkaDao().insert(jednostka);
+            jednostkiRepository.update(jednostka);
             finish();
         }else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();

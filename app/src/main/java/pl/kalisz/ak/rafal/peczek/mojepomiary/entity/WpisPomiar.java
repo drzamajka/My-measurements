@@ -1,23 +1,20 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Date;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
 
-@Entity(tableName = "wpis_pomiar")
-@TypeConverters(DateConverter.class)
+@IgnoreExtraProperties
 public class WpisPomiar {
 
-    @PrimaryKey
-    private int id;
+    @Exclude
+    private String id;
     private String wynikPomiary;
-    private int idPomiar;
-    private int idEtapTerapi;
+    private String idUzytkownika;
+    private String idPomiar;
+    private String idEtapTerapi;
     private Date dataWykonania;
     private Date dataUtwozenia;
     private Date dataAktualizacji;
@@ -25,32 +22,30 @@ public class WpisPomiar {
     public WpisPomiar() {
     }
 
-    public WpisPomiar(int id, String wynikPomiary, int idPomiar, int idEtapTerapi, Date dataWykonania, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
+    public WpisPomiar(String wynikPomiary, String idPomiar, String idUzytkownika, String idEtapTerapi, Date dataWykonania, Date dataUtwozenia, Date dataAktualizacji) {
+        id = null;
         this.wynikPomiary = wynikPomiary;
         this.idPomiar = idPomiar;
+        this.idUzytkownika = idUzytkownika;
         this.idEtapTerapi = idEtapTerapi;
         this.dataWykonania = dataWykonania;
         this.dataUtwozenia = dataUtwozenia;
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public WpisPomiar(int id, String wynikPomiary, int idPomiar, Date dataWykonania, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
+    public WpisPomiar(String wynikPomiary, String idPomiar, String idUzytkownika, Date dataWykonania, Date dataUtwozenia, Date dataAktualizacji) {
+        id = null;
         this.wynikPomiary = wynikPomiary;
         this.idPomiar = idPomiar;
+        this.idUzytkownika = idUzytkownika;
         this.dataWykonania = dataWykonania;
         this.dataUtwozenia = dataUtwozenia;
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getId() {return id;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(String id) {this.id = id;}
 
     public String getWynikPomiary() {
         return wynikPomiary;
@@ -60,19 +55,21 @@ public class WpisPomiar {
         this.wynikPomiary = wynikPomiary;
     }
 
-    public int getIdPomiar() {
-        return idPomiar;
-    }
+    public String getIdUzytkownika() { return idUzytkownika; }
 
-    public void setIdPomiar(int idPomiar) {
+    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+
+    public String getIdPomiar() {return idPomiar;}
+
+    public void setIdPomiar(String idPomiar) {
         this.idPomiar = idPomiar;
     }
 
-    public int getIdEtapTerapi() {
+    public String getIdEtapTerapi() {
         return idEtapTerapi;
     }
 
-    public void setIdEtapTerapi(int idEtapTerapi) {
+    public void setIdEtapTerapi(String idEtapTerapi) {
         this.idEtapTerapi = idEtapTerapi;
     }
 
@@ -103,8 +100,7 @@ public class WpisPomiar {
     @Override
     public String toString() {
         return "WpisPomiar{" +
-                "id=" + id +
-                ", wynikPomiary='" + wynikPomiary + '\'' +
+                "wynikPomiary='" + wynikPomiary + '\'' +
                 ", idPomiar=" + idPomiar +
                 ", idEtapTerapi=" + idEtapTerapi +
                 ", dataWykonania=" + dataWykonania +

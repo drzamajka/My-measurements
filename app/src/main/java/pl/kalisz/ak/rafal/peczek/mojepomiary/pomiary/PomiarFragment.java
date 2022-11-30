@@ -16,13 +16,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkaAdapter;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,17 +37,16 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 public class PomiarFragment extends Fragment {
 
     private RecyclerView rvPomiary;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
-    private UsersRoomDatabase database;
+    private PomiarAdapter pomiarAdapter;
+    private static PomiarRepository pomiarRepository;
 
     public PomiarFragment() {
-        // Required empty public constructor
     }
 
 
     public static PomiarFragment newInstance() {
         PomiarFragment fragment = new PomiarFragment();
+        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getUid());
         return fragment;
     }
 
@@ -68,37 +72,37 @@ public class PomiarFragment extends Fragment {
         button.setOnClickListener(buttonClickListener);
 
         rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-        rvPomiary.setHasFixedSize(true);
+        rvPomiary.setLayoutManager(
+                new LinearLayoutManager(getContext()));
 
-        Configuration config = getResources().getConfiguration();
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutManager = new GridLayoutManager(getContext(), 2);
-        } else
-            layoutManager = new LinearLayoutManager(getContext());
+        FirebaseRecyclerOptions<Pomiar> options
+                = new FirebaseRecyclerOptions.Builder<Pomiar>()
+                .setQuery(pomiarRepository.getQuery(), Pomiar.class)
+                .build();
 
+        pomiarAdapter = new PomiarAdapter(options);
 
-        rvPomiary.setLayoutManager(layoutManager);
-        rvPomiary.setItemAnimator(new DefaultItemAnimator());
-
-        rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-
-
-        database = UsersRoomDatabase.getInstance(getContext());
 
         return view;
     }
 
     @Override
-    public void onResume(){
+    public void onStart()
+    {
+        super.onStart();
+        pomiarAdapter.startListening();
+        rvPomiary.setAdapter(pomiarAdapter);
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        pomiarAdapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
-
-        if(database != null) {
-            List<Pomiar> listapomiarow = database.localPomiarDao().getAll();
-            Toast.makeText(getContext(), "posiadasz: " + database.localPomiarDao().countAll() + " pomiarów", Toast.LENGTH_SHORT).show();
-
-            adapter = new PomiarAdapter(listapomiarow);
-            rvPomiary.setAdapter(adapter);
-        }
-
     }
 }

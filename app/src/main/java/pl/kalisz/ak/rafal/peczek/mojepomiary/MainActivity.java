@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,15 +36,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiEdytuj;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
+//import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
+//import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
+//import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
-    private UsersRoomDatabase database;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -66,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance("https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app").getReference();
         mDatabase.keepSynced(true);
@@ -85,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_element, null, false);
 
-        database = UsersRoomDatabase.getInstance(getApplicationContext());
 
         frame = findViewById(R.id.fooFragment);
         MainFragment mFragment = new MainFragment();
@@ -227,10 +224,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 PomiarFragment pFragment = PomiarFragment.newInstance();
                 ft.replace(frame.getId(), pFragment).commit();
                 break;
-            case R.id.naw_terapie:
-                TerapiaFragment tFragment = TerapiaFragment.newInstance();
-                ft.replace(frame.getId(), tFragment).commit();
-                break;
+//            case R.id.naw_terapie:
+//                TerapiaFragment tFragment = TerapiaFragment.newInstance();
+//                ft.replace(frame.getId(), tFragment).commit();
+//                break;
             case R.id.naw_wpisy_pomiary:
                 WpisPomiarFragment wpFragment = WpisPomiarFragment.newInstance();
                 ft.replace(frame.getId(), wpFragment).commit();

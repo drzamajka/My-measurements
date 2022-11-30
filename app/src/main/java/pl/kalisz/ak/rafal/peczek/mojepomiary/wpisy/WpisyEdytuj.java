@@ -1,9 +1,11 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,12 +14,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,30 +34,42 @@ import java.util.List;
 import java.util.TimeZone;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 
 public class WpisyEdytuj extends AppCompatActivity {
 
     public static final String EXTRA_Wpisu_ID = "wpisId";
-    private int wpisId;
+    private String wpisId;
 
     private TextInputLayout wynik, godzinaWykonania, dataWykonania;
     private AutoCompleteTextView pomiary;
     private TextInputLayout pomiaryL;
-    private UsersRoomDatabase database;
+    private WpisPomiar wpisPomiar;
     private List<Pomiar> listaPomiarow;
     private int idWybranegoPomiaru;
+    private String textWybranegoPomiaru;
+
+    private PomiarRepository pomiarRepository;
+    private JednostkiRepository jednostkiRepository;
+    private WpisPomiarRepository wpisPomiarRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wpisy_edytuj);
 
-        wpisId = (Integer) getIntent().getExtras().get(EXTRA_Wpisu_ID);
+        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+        wpisId = (String) getIntent().getExtras().get(EXTRA_Wpisu_ID);
         idWybranegoPomiaru = 0;
+        textWybranegoPomiaru = "";
 
         wynik = (TextInputLayout) findViewById(R.id.editTextWynikLayout);
         godzinaWykonania = (TextInputLayout) findViewById(R.id.godzinaWykonaniaLayout);
@@ -59,39 +77,55 @@ public class WpisyEdytuj extends AppCompatActivity {
         pomiary = (AutoCompleteTextView) findViewById(R.id.spinnerPomiary);
         pomiaryL = (TextInputLayout) findViewById(R.id.spinnerPomiaryLayout);
 
-        database = UsersRoomDatabase.getInstance(getApplicationContext());
-        listaPomiarow = database.localPomiarDao().getAll();
-        WpisPomiar wpis = database.localWpisPomiarDao().findById(wpisId);
-        wynik.getEditText().setText(wpis.getWynikPomiary().toString());
-
-        String textWybranegoPomiaru = "";
-        TextView textView5 = findViewById(R.id.jednostka);
-        ArrayList<String> data = new ArrayList<>();
-        for (Pomiar pomiar: listaPomiarow) {
-            if(pomiar.getId() == wpis.getIdPomiar()) {
-                idWybranegoPomiaru = data.size();
-                textWybranegoPomiaru = pomiar.getNazwa();
-                textView5.setText(database.localJednostkaDao().findById(pomiar.getIdJednostki()).getWartosc());
-            }
-            data.add(pomiar.getNazwa());
+        wpisPomiar = wpisPomiarRepository.findById(wpisId);
+        if(wpisPomiar == null){
+            finish();
         }
 
-        ArrayAdapter adapter = new ArrayAdapter ( this, android.R.layout.simple_spinner_dropdown_item, data);
-        pomiary.setAdapter(adapter);
-        pomiary.setText(textWybranegoPomiaru, false);
+        listaPomiarow = new ArrayList<>();
+        pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<String> data = new ArrayList<>();
+                    for (DataSnapshot postSnapshot: task.getResult().getChildren()) {
+                        Pomiar pomiar = postSnapshot.getValue(Pomiar.class);
+                        listaPomiarow.add(pomiar);
+                        data.add(pomiar.getNazwa());
+                        if(wpisPomiar.getIdPomiar() == pomiar.getId()) {
+                            idWybranegoPomiaru = data.size();
+                        }
+                    }
 
+                    textWybranegoPomiaru = data.get(idWybranegoPomiaru);
+                    pomiary.setText(textWybranegoPomiaru, false);
+                    ArrayAdapter adapter = new ArrayAdapter ( WpisyEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    pomiary.setAdapter(adapter);
+                }
+                else {
+                    Log.i("Tag", "błąd odczytu jednostek" );
+                }
+            }
+        });
+
+
+
+        wynik.getEditText().setText(wpisPomiar.getWynikPomiary().toString());
+
+        TextView textView5 = findViewById(R.id.jednostka);
         pomiary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 idWybranegoPomiaru = position;
-                textView5.setText(database.localJednostkaDao().findById(listaPomiarow.get(position).getIdJednostki()).getWartosc());
+                Jednostka jednostka = jednostkiRepository.findById(listaPomiarow.get(position).getIdJednostki());
+                textView5.setText(jednostka.getWartosc());
             }
         });
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-        godzinaWykonania.getEditText().setText(simpleDateFormat.format(wpis.getDataWykonania()));
+        godzinaWykonania.getEditText().setText(simpleDateFormat.format(wpisPomiar.getDataWykonania()));
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        dataWykonania.getEditText().setText(simpleDateFormat.format(wpis.getDataWykonania()));
+        dataWykonania.getEditText().setText(simpleDateFormat.format(wpisPomiar.getDataWykonania()));
 
         dodajTimePicker(godzinaWykonania.getEditText());
         dodajDatePicker(dataWykonania.getEditText());
@@ -106,9 +140,8 @@ public class WpisyEdytuj extends AppCompatActivity {
         builder.setMessage("Czy na pewno usunąć");
         builder.setCancelable(false);
         builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
-            if (database != null) {
-                WpisPomiar wpis = database.localWpisPomiarDao().findById(wpisId);
-                database.localWpisPomiarDao().delete(wpis);
+            if (wpisPomiar != null) {
+                wpisPomiarRepository.delete(wpisPomiar);
             }
             finish();
         });
@@ -122,19 +155,18 @@ public class WpisyEdytuj extends AppCompatActivity {
     public void aktualizuj(View view) throws ParseException {
         String wynik = this.wynik.getEditText().getText().toString();
         if( wynik.length()>0) {
-            int pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
+            String pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
 
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
             Date data = simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString()+" "+dataWykonania.getEditText().getText().toString());
 
-            WpisPomiar wpis = database.localWpisPomiarDao().findById(wpisId);
-            wpis.setWynikPomiary(wynik);
-            wpis.setIdPomiar(pomiarId);
-            wpis.setDataWykonania(data);
-            wpis.setDataAktualizacji(new Date());
+            wpisPomiar.setWynikPomiary(wynik);
+            wpisPomiar.setIdPomiar(pomiarId);
+            wpisPomiar.setDataWykonania(data);
+            wpisPomiar.setDataAktualizacji(new Date());
 
-            database.localWpisPomiarDao().insert(wpis);
+            wpisPomiarRepository.update(wpisPomiar);
             finish();
         }
         else

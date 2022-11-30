@@ -2,7 +2,6 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.SQLException;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,13 +16,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.List;
+import java.util.Queue;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,17 +38,16 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
 public class JednostkiFragment extends Fragment {
 
     private RecyclerView rvJednostki;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
-    private UsersRoomDatabase database;
+    private JednostkaAdapter jednostkaAdapter;
+    private static JednostkiRepository jednostkiRepository;
 
 
     public JednostkiFragment() {
-        // Required empty public constructor
     }
 
     public static JednostkiFragment newInstance() {
         JednostkiFragment fragment = new JednostkiFragment();
+        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getUid());
         return fragment;
     }
 
@@ -65,44 +69,43 @@ public class JednostkiFragment extends Fragment {
                 startActivity(intent);
             }
         };
-
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
+
         rvJednostki = (RecyclerView) view.findViewById(R.id.recycleView);
-        rvJednostki.setHasFixedSize(true);
+        rvJednostki.setLayoutManager(
+                new LinearLayoutManager(getContext()));
 
-        Configuration config = getResources().getConfiguration();
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutManager = new GridLayoutManager(getContext(), 2);
-        } else
-            layoutManager = new LinearLayoutManager(getContext());
+        FirebaseRecyclerOptions<Jednostka> options
+                = new FirebaseRecyclerOptions.Builder<Jednostka>()
+                .setQuery(jednostkiRepository.getQuery(), Jednostka.class)
+                .build();
 
-
-        rvJednostki.setLayoutManager(layoutManager);
-        rvJednostki.setItemAnimator(new DefaultItemAnimator());
-
-
-
-
-        database = UsersRoomDatabase.getInstance(getContext());
-
+        jednostkaAdapter = new JednostkaAdapter(options);
 
 
         return view;
     }
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+        jednostkaAdapter.startListening();
+        rvJednostki.setAdapter(jednostkaAdapter);
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        jednostkaAdapter.stopListening();
+    }
+
+    @Override
     public void onResume(){
         super.onResume();
-
-        if(database != null) {
-            List<Jednostka> listaJednostek = database.localJednostkaDao().getAll();
-            Toast.makeText(getContext(), "posiadasz: " + database.localJednostkaDao().countAll() + " jednostek", Toast.LENGTH_SHORT).show();
-
-            adapter = new JednostkiAdapter(listaJednostek);
-            rvJednostki.setAdapter(adapter);
-        }
 
     }
 }

@@ -1,27 +1,21 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import org.json.JSONArray;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.Dao.DateConverter;
-
-@Entity(tableName = "terapie")
-@TypeConverters(DateConverter.class)
+@IgnoreExtraProperties
 public class Terapia {
 
-    @PrimaryKey
-    private int id;
-    private int idUzytkownika;
+    @Exclude
+    private String id;
+    private String idUzytkownika;
     private int typ;
     private String notatka;
-    private ArrayList<Integer> idsCzynnosci;
+    private ArrayList<String> idsCzynnosci;
     private Date dataRozpoczecia;
     private Date dataZakonczenia;
     private Date dataUtwozenia;
@@ -30,8 +24,8 @@ public class Terapia {
     public Terapia() {
     }
 
-    public Terapia(int id, int idUzytkownika, int typ, String notatka, ArrayList<Integer> idsCzynnosci, Date dataRozpoczecia, Date dataZakonczenia, Date dataUtwozenia, Date dataAktualizacji) {
-        this.id = id;
+    public Terapia(String idUzytkownika, int typ, String notatka, ArrayList<String> idsCzynnosci, Date dataRozpoczecia, Date dataZakonczenia, Date dataUtwozenia, Date dataAktualizacji) {
+        id = null;
         this.idUzytkownika = idUzytkownika;
         this.typ = typ;
         this.notatka = notatka;
@@ -42,19 +36,15 @@ public class Terapia {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getId() {return id;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public int getIdUzytkownika() {
+    public String getIdUzytkownika() {
         return idUzytkownika;
     }
 
-    public void setIdUzytkownika(int idUzytkownika) {
+    public void setIdUzytkownika(String idUzytkownika) {
         this.idUzytkownika = idUzytkownika;
     }
 
@@ -70,11 +60,11 @@ public class Terapia {
 
     public void setNotatka(String notatka) { this.notatka = notatka; }
 
-    public ArrayList<Integer> getIdsCzynnosci() {
+    public ArrayList<String> getIdsCzynnosci() {
         return idsCzynnosci;
     }
 
-    public void setIdsCzynnosci(ArrayList<Integer> idsCzynnosci) { this.idsCzynnosci = idsCzynnosci; }
+    public void setIdsCzynnosci(ArrayList<String> idsCzynnosci) { this.idsCzynnosci = idsCzynnosci; }
 
     public Date getDataRozpoczecia() {
         return dataRozpoczecia;
@@ -111,8 +101,7 @@ public class Terapia {
     @Override
     public String toString() {
         return "Terapia{" +
-                "id=" + id +
-                ", idUzytkownika=" + idUzytkownika +
+                "idUzytkownika=" + idUzytkownika +
                 ", notatka=" + notatka +
                 ", typ=" + typ +
                 ", idsCzynnosci=" + idsCzynnosci.toString() +

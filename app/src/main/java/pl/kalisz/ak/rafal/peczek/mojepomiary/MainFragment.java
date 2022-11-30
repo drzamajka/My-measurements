@@ -1,6 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
-import android.app.DatePickerDialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -10,21 +9,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
-import java.sql.SQLData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,10 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.EtapTerapiPosiaRelacie;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaAdapter;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.EtapTerapiaRepository;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,11 +36,11 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaAdapter;
  */
 public class MainFragment extends Fragment {
 
+    private EtapTerapiaRepository etapTerapiaRepository;
     private TextView dataWpsiow;
     private RecyclerView rvPomiary;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-    private UsersRoomDatabase database;
 
 
     public MainFragment() {
@@ -72,6 +64,7 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        etapTerapiaRepository = new EtapTerapiaRepository();
 
         Button wczesniej = (Button) view.findViewById(R.id.button1);
         wczesniej.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +103,6 @@ public class MainFragment extends Fragment {
             rvPomiary.setLayoutManager(layoutManager);
             rvPomiary.setItemAnimator(new DefaultItemAnimator());
             rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-            database = UsersRoomDatabase.getInstance(getContext());
 
         //database = UsersRoomDatabase.getInstance(getContext());
 
@@ -121,9 +113,7 @@ public class MainFragment extends Fragment {
     public void onResume(){
         super.onResume();
 
-        if(database != null) {
-            this.odswiezListe();
-        }
+        this.odswiezListe();
 
     }
 
@@ -141,7 +131,7 @@ public class MainFragment extends Fragment {
         Date dateJutro = c.getTime();
 
 
-        List<EtapTerapiPosiaRelacie> listaEtapow = database.localEtapTerapaDao().getAllWithRelationsBetwenData(date.getTime(), dateJutro.getTime());
+        List<EtapTerapa> listaEtapow = etapTerapiaRepository.getAllBetwenData(date.getTime(), dateJutro.getTime());
 
         adapter = new MainEtapAdapter(listaEtapow, getContext());
         rvPomiary.setAdapter(adapter);

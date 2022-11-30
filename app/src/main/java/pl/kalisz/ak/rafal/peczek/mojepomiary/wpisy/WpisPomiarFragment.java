@@ -16,25 +16,25 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.List;
+import com.google.firebase.auth.FirebaseAuth;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.relation.WpisPomiarPosiadaPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.UsersRoomDatabase;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarAdapter;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WpisPomiarFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class WpisPomiarFragment extends Fragment {
 
-    private RecyclerView rvPomiary;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
-    private UsersRoomDatabase database;
+
+    private RecyclerView rvWpisPomiary;
+    private WpisPomiarAdapter wpisPomiarAdapter;
+    private static WpisPomiarRepository wpisPomiarRepository;
 
     public WpisPomiarFragment() {
         // Required empty public constructor
@@ -43,6 +43,7 @@ public class WpisPomiarFragment extends Fragment {
 
     public static WpisPomiarFragment newInstance() {
         WpisPomiarFragment fragment = new WpisPomiarFragment();
+        wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getUid());
         return fragment;
     }
 
@@ -67,38 +68,51 @@ public class WpisPomiarFragment extends Fragment {
         FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
-        rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-        rvPomiary.setHasFixedSize(true);
 
+
+        rvWpisPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutManager = new GridLayoutManager(getContext(), 2);
+            rvWpisPomiary.setLayoutManager(
+                    new GridLayoutManager(getContext(), 2));
         } else
-            layoutManager = new LinearLayoutManager(getContext());
+            rvWpisPomiary.setLayoutManager(
+                    new LinearLayoutManager(getContext()));
+
+        rvWpisPomiary.setLayoutManager(
+                new LinearLayoutManager(getContext()));
+
+        FirebaseRecyclerOptions<WpisPomiar> options
+                = new FirebaseRecyclerOptions.Builder<WpisPomiar>()
+                .setQuery(wpisPomiarRepository.getQuery(), WpisPomiar.class)
+                .build();
+
+        wpisPomiarAdapter = new WpisPomiarAdapter(options);
 
 
-        rvPomiary.setLayoutManager(layoutManager);
-        rvPomiary.setItemAnimator(new DefaultItemAnimator());
-
-        rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-
-
-        database = UsersRoomDatabase.getInstance(getContext());
+        rvWpisPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvWpisPomiary.setHasFixedSize(true);
 
         return view;
     }
 
     @Override
-    public void onResume(){
+    public void onStart()
+    {
+        super.onStart();
+        wpisPomiarAdapter.startListening();
+        rvWpisPomiary.setAdapter(wpisPomiarAdapter);
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        wpisPomiarAdapter.stopListening();
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
-
-        if(database != null) {
-            List<WpisPomiarPosiadaPomiar> listaWpisow = database.localWpisPomiarDao().getAllwithPomiar();
-            Toast.makeText(getContext(), "posiadasz: " + database.localWpisPomiarDao().countAll() + " wpisów", Toast.LENGTH_SHORT).show();
-
-            adapter = new WpisyAdapter(listaWpisow, getContext());
-            rvPomiary.setAdapter(adapter);
-        }
-
     }
 }
