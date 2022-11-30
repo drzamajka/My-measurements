@@ -1,7 +1,7 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.Date;
 
@@ -10,24 +10,26 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class EtapTerapa {
 
-    @Exclude
+    @DocumentId
     private String id;
     private Date dataZaplanowania;
     private Date dataWykonania;
     private String notatka;
     private String idTerapi;
+    private String idUzytkownika;
     private Date dataUtwozenia;
     private Date dataAktualizacji;
 
     public EtapTerapa() {
     }
 
-    public EtapTerapa(Date dataZaplanowania, Date dataWykonania, String notatka, String idTerapi, Date dataUtwozenia, Date dataAktualizacji) {
+    public EtapTerapa(Date dataZaplanowania, Date dataWykonania, String notatka, String idTerapi, String idUzytkownika, Date dataUtwozenia, Date dataAktualizacji) {
         this.id = null;
         this.dataZaplanowania = dataZaplanowania;
         this.dataWykonania = dataWykonania;
         this.notatka = notatka;
         this.idTerapi = idTerapi;
+        this.idUzytkownika = idUzytkownika;
         this.dataUtwozenia = dataUtwozenia;
         this.dataAktualizacji = dataAktualizacji;
     }
@@ -62,6 +64,10 @@ public class EtapTerapa {
         this.idTerapi = idTerapi;
     }
 
+    public String getIdUzytkownika() { return idUzytkownika; }
+
+    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+
     public Date getDataUtwozenia() {
         return dataUtwozenia;
     }
@@ -74,17 +80,17 @@ public class EtapTerapa {
         return dataAktualizacji;
     }
 
-    public void setDataAktualizacji(Date dataAktualizacji) {
-        this.dataAktualizacji = dataAktualizacji;
-    }
+    public void setDataAktualizacji(Date dataAktualizacji) { this.dataAktualizacji = dataAktualizacji; }
 
     @Override
     public String toString() {
         return "EtapTerapa{" +
-                "dataZaplanowania=" + dataZaplanowania +
+                "id='" + id + '\'' +
+                ", dataZaplanowania=" + dataZaplanowania +
                 ", dataWykonania=" + dataWykonania +
-                ", notatka='" + notatka +
-                ", idTerapi=" + idTerapi +
+                ", notatka='" + notatka + '\'' +
+                ", idTerapi='" + idTerapi + '\'' +
+                ", idUzytkownika='" + idUzytkownika + '\'' +
                 ", dataUtwozenia=" + dataUtwozenia +
                 ", dataAktualizacji=" + dataAktualizacji +
                 '}';

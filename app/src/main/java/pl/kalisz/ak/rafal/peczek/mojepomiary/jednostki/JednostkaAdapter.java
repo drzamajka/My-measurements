@@ -11,15 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 
-public class JednostkaAdapter extends FirebaseRecyclerAdapter<
+
+public class JednostkaAdapter extends FirestoreRecyclerAdapter<
         Jednostka, JednostkaAdapter.jednostkaViewholder> {
 
-    public JednostkaAdapter(@NonNull FirebaseRecyclerOptions<Jednostka> options) {
+    public JednostkaAdapter(@NonNull FirestoreRecyclerOptions<Jednostka> options) {
         super(options);
     }
 

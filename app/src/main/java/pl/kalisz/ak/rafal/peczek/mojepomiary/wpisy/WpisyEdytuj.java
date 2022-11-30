@@ -23,7 +23,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -83,13 +84,14 @@ public class WpisyEdytuj extends AppCompatActivity {
         }
 
         listaPomiarow = new ArrayList<>();
-        pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    for (DataSnapshot postSnapshot: task.getResult().getChildren()) {
-                        Pomiar pomiar = postSnapshot.getValue(Pomiar.class);
+                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                        Pomiar pomiar = queryDocumentSnapshot.toObject(Pomiar.class);
+                        pomiar.setId(queryDocumentSnapshot.getId());
                         listaPomiarow.add(pomiar);
                         data.add(pomiar.getNazwa());
                         if(wpisPomiar.getIdPomiar() == pomiar.getId()) {
@@ -103,7 +105,7 @@ public class WpisyEdytuj extends AppCompatActivity {
                     pomiary.setAdapter(adapter);
                 }
                 else {
-                    Log.i("Tag", "błąd odczytu jednostek" );
+                    Log.i("Tag-1", "błąd odczytu jednostek"+task.getResult() );
                 }
             }
         });

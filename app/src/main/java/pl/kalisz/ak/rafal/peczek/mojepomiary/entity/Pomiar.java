@@ -2,17 +2,16 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
 
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.Date;
-import java.util.List;
 
 
 @IgnoreExtraProperties
 public class Pomiar {
 
-    @Exclude
+    @DocumentId
     private String id;
     private String nazwa;
     private String notatka;
@@ -89,10 +88,11 @@ public class Pomiar {
     @Override
     public String toString() {
         return "Pomiar{" +
-                "nazwa='" + nazwa + '\'' +
+                "id='" + id + '\'' +
+                ", nazwa='" + nazwa + '\'' +
                 ", notatka='" + notatka + '\'' +
-                ", idUzytkownika=" + idUzytkownika +
-                ", idJednostki=" + idJednostki +
+                ", idUzytkownika='" + idUzytkownika + '\'' +
+                ", idJednostki='" + idJednostki + '\'' +
                 ", dataUtwozenia=" + dataUtwozenia +
                 ", dataAktualizacji=" + dataAktualizacji +
                 '}';

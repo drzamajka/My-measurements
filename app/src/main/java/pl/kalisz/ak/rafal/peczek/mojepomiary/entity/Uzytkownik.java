@@ -1,7 +1,7 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class Uzytkownik {
 
-    @Exclude
+    @DocumentId
     private String id;
     private String imie;
     private String nazwisko;
@@ -85,17 +85,14 @@ public class Uzytkownik {
 
     @Override
     public String toString() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        String tekst = "Użytkownik{" +
-                "imie='" + imie + '\'' +
-                ", nazwisko='" + nazwisko + '\'';
-        if(dataUrodzenia!=null)
-            tekst += ", dataUrodzenia=" + simpleDateFormat.format(dataUrodzenia) ;
-        tekst += ", eMail='" + eMail + '\'' +
-                ", dataUtwozenia=" + simpleDateFormat.format(dataUtwozenia) +
-                ", dataAktualizacji=" + simpleDateFormat.format(dataAktualizacji) +
+        return "Uzytkownik{" +
+                "id='" + id + '\'' +
+                ", imie='" + imie + '\'' +
+                ", nazwisko='" + nazwisko + '\'' +
+                ", dataUrodzenia=" + dataUrodzenia +
+                ", eMail='" + eMail + '\'' +
+                ", dataUtwozenia=" + dataUtwozenia +
+                ", dataAktualizacji=" + dataAktualizacji +
                 '}';
-
-        return tekst;
     }
 }

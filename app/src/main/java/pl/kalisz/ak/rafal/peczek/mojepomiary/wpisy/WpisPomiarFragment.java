@@ -3,29 +3,19 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
-
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarAdapter;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 
 
@@ -71,6 +61,7 @@ public class WpisPomiarFragment extends Fragment {
 
 
         rvWpisPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvWpisPomiary.setHasFixedSize(true);
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             rvWpisPomiary.setLayoutManager(
@@ -82,8 +73,8 @@ public class WpisPomiarFragment extends Fragment {
         rvWpisPomiary.setLayoutManager(
                 new LinearLayoutManager(getContext()));
 
-        FirebaseRecyclerOptions<WpisPomiar> options
-                = new FirebaseRecyclerOptions.Builder<WpisPomiar>()
+        FirestoreRecyclerOptions<WpisPomiar> options
+                = new FirestoreRecyclerOptions.Builder<WpisPomiar>()
                 .setQuery(wpisPomiarRepository.getQuery(), WpisPomiar.class)
                 .build();
 

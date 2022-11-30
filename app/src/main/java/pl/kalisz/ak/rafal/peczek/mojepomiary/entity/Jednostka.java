@@ -3,8 +3,8 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
 
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class Jednostka {
 
-    @Exclude
+    @DocumentId
     private String id;
     private String nazwa;
     private String wartosc;
@@ -102,11 +102,13 @@ public class Jednostka {
     @Override
     public String toString() {
         return "Jednostka{" +
-                "nazwa='" + nazwa + '\'' +
+                "id='" + id + '\'' +
+                ", nazwa='" + nazwa + '\'' +
                 ", wartosc='" + wartosc + '\'' +
                 ", dokladnosc=" + dokladnosc +
                 ", przeznaczenie=" + przeznaczenie +
                 ", czyDomyslna=" + czyDomyslna +
+                ", idUzytkownika='" + idUzytkownika + '\'' +
                 ", dataUtwozenia=" + dataUtwozenia +
                 ", dataAktualizacji=" + dataAktualizacji +
                 '}';

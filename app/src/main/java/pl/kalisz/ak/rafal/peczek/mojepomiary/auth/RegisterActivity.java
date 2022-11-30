@@ -26,19 +26,19 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.FirebaseApp;
+
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
+
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.MainActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputLayout eMail, imie, nazwisko, haslo, hasloPowtuz, dataUrodzenia;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private FirebaseFirestore mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app").getReference();
+        mDatabase = FirebaseFirestore.getInstance();
 
         eMail = findViewById(R.id.eMailLayout);
         imie = findViewById(R.id.imieLayout);
@@ -122,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                mDatabase.child("users").child(user.getUid()).setValue(uzytkownik);
+                                mDatabase.collection("users").document(user.getUid()).set(uzytkownik);
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();
                             } else {

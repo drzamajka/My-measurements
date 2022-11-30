@@ -23,27 +23,23 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
-//import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
-//import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
-//import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Button wyloguj, konto;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private FirebaseFirestore mDatabase;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -62,11 +58,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance("https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app").getReference();
-        mDatabase.keepSynced(true);
+        mDatabase = FirebaseFirestore.getInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,13 +77,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_element, null, false);
 
-
-        frame = findViewById(R.id.fooFragment);
-        MainFragment mFragment = new MainFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(frame.getId(), mFragment).commit();
-
-        navigationView.getMenu().getItem(0).setChecked(true);
+        if(mAuth.getCurrentUser() != null) {
+            frame = findViewById(R.id.fooFragment);
+            MainFragment mFragment = new MainFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(frame.getId(), mFragment).commit();
+            navigationView.getMenu().getItem(0).setChecked(true);
+        }
 
 
     }
@@ -110,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent0 = new Intent( this, Ustawienia.class);
                 startActivity(intent0);
                 return true;
-            case R.id.about:
-                snackbar = Snackbar.make( findViewById(android.R.id.content), "Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji" , Snackbar.LENGTH_INDEFINITE);
+            case R.id.about: {
+                snackbar = Snackbar.make(findViewById(android.R.id.content), "Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction(R.string.submit, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -119,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 snackbar.show();
+            }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -146,34 +141,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else
         {
-            mDatabase.child("users").child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            mDatabase.collection("users").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    Uzytkownik user = dataSnapshot.getValue(Uzytkownik.class);
-                    konto.setText(user.getImie()+" "+user.getNazwisko());
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        Uzytkownik user = task.getResult().toObject(Uzytkownik.class);
+                        konto.setText(user.getImie() + " " + user.getNazwisko());
+                    }
                 }
             });
-            mDatabase.child("users").child(mAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Uzytkownik user = snapshot.getValue(Uzytkownik.class);
-                    konto.setText(user.getImie()+" "+user.getNazwisko());
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
             konto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mDatabase.child("users").child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    mDatabase.collection("users").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            Uzytkownik user = dataSnapshot.getValue(Uzytkownik.class);
-                            Toast.makeText(getApplicationContext(), user.getEMail() , Toast.LENGTH_LONG).show();
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()) {
+                                Uzytkownik user = task.getResult().toObject(Uzytkownik.class);
+                                Toast.makeText(getApplicationContext(), user.getEMail(), Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
+
                 }
             });
             wyloguj.setOnClickListener(new View.OnClickListener() {
@@ -224,10 +214,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 PomiarFragment pFragment = PomiarFragment.newInstance();
                 ft.replace(frame.getId(), pFragment).commit();
                 break;
-//            case R.id.naw_terapie:
-//                TerapiaFragment tFragment = TerapiaFragment.newInstance();
-//                ft.replace(frame.getId(), tFragment).commit();
-//                break;
+            case R.id.naw_terapie:
+                TerapiaFragment tFragment = TerapiaFragment.newInstance();
+                ft.replace(frame.getId(), tFragment).commit();
+                break;
             case R.id.naw_wpisy_pomiary:
                 WpisPomiarFragment wpFragment = WpisPomiarFragment.newInstance();
                 ft.replace(frame.getId(), wpFragment).commit();

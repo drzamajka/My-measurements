@@ -19,7 +19,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,7 +33,6 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryDopisz;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
@@ -67,13 +67,14 @@ public class WpisyDopisz extends AppCompatActivity {
 
 
         listaPomiarow = new ArrayList<>();
-        pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    for (DataSnapshot postSnapshot: task.getResult().getChildren()) {
-                        Pomiar pomiar = postSnapshot.getValue(Pomiar.class);
+                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                        Pomiar pomiar = queryDocumentSnapshot.toObject(Pomiar.class);
+                        pomiar.setId(queryDocumentSnapshot.getId());
                         listaPomiarow.add(pomiar);
                         data.add(pomiar.getNazwa());
                     }
@@ -82,10 +83,11 @@ public class WpisyDopisz extends AppCompatActivity {
                     pomiary.setAdapter(adapter);
                 }
                 else {
-                    Log.i("Tag", "błąd odczytu jednostek" );
+                    Log.i("Tag-1", "błąd odczytu jednostek"+task.getResult() );
                 }
             }
         });
+
 
         TextView textView5 = findViewById(R.id.jednostka);
         pomiary.setOnItemClickListener(new AdapterView.OnItemClickListener() {

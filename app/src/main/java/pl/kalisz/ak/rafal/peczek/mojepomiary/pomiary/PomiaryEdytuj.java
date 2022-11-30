@@ -20,7 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,20 +72,20 @@ public class PomiaryEdytuj extends AppCompatActivity {
         }
 
         listaJednostek = new ArrayList<>();
-        jednostkiRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        jednostkiRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    for (DataSnapshot postSnapshot: task.getResult().getChildren()) {
-                        Jednostka jednostka = postSnapshot.getValue(Jednostka.class);
+                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                        Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
+                        jednostka.setId(queryDocumentSnapshot.getId());
                         listaJednostek.add(jednostka);
                         data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
                         if(pomiar.getIdJednostki() == jednostka.getId()) {
                             idWybranejJednostki = data.size();
                         }
                     }
-
                     ArrayAdapter adapter = new ArrayAdapter ( PomiaryEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
 

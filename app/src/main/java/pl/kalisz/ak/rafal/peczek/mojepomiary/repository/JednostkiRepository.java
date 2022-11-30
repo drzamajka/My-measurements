@@ -1,51 +1,48 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
-import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 
 public class JednostkiRepository {
 
-    private DatabaseReference mDatabase;
+    private CollectionReference mDatabase;
     String userUid;
 
     public JednostkiRepository(@NonNull String uid) {
-        mDatabase = FirebaseDatabase.getInstance("https://mojepomiary-fa7e0-default-rtdb.europe-west1.firebasedatabase.app").getReference("Jednostki");
+        mDatabase = FirebaseFirestore.getInstance().collection("Jednostki");
         userUid = uid;
     }
 
     public Query getQuery(){
-        return mDatabase.orderByChild("idUzytkownika").equalTo(userUid);
+        return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
     public List<Jednostka> getAll() {
         List<Jednostka> lista = new ArrayList<>();
 
-        Task<DataSnapshot> task = mDatabase.get();
+        Task<QuerySnapshot> task = mDatabase.get();
         while(!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            for (DataSnapshot postSnapshot: task.getResult().getChildren()) {
-                Jednostka jednostka = postSnapshot.getValue(Jednostka.class);
+            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                 lista.add(jednostka);
             }
         }
@@ -54,37 +51,39 @@ public class JednostkiRepository {
     }
 
     public int countAll() {
-        Task<DataSnapshot> task = mDatabase.get();
+        Task<QuerySnapshot> task = mDatabase.get();
         while(!task.isComplete()) {
 
         }
         if (task.isSuccessful())
-            return (int) task.getResult().getChildrenCount();
+            return (int) task.getResult().toObjects(Jednostka.class).size();
         return 0;
     }
 
     public void insert(@NonNull Jednostka jednostka) {
-        jednostka.setId(mDatabase.push().getKey());
-        mDatabase.child(jednostka.getId()).setValue(jednostka);
+        mDatabase.add(jednostka);
     }
 
     public Jednostka findById(@NonNull String jednostkaId) {
         Jednostka jednostka = null;
-        Task<DataSnapshot> task = mDatabase.child(jednostkaId).get();
+        Task<DocumentSnapshot> task = mDatabase.document(jednostkaId).get();
+
         while(!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            jednostka = task.getResult().getValue(Jednostka.class);
+            jednostka = task.getResult().toObject(Jednostka.class);
         }
+
         return jednostka;
     }
 
-    public void delete(@NonNull Jednostka jednostka) {
-        mDatabase.child(jednostka.getId()).removeValue();
+    public void update(@NonNull Jednostka jednostka) {
+        mDatabase.document(jednostka.getId()).set(jednostka);
     }
 
-    public void update(@NonNull Jednostka jednostka) {
-        mDatabase.child(jednostka.getId()).setValue(jednostka);
+    public void delete(@NonNull Jednostka jednostka) {
+        mDatabase.document(jednostka.getId()).delete();
     }
+
 }

@@ -16,12 +16,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+
 
 import java.util.List;
 import java.util.Queue;
@@ -74,11 +73,12 @@ public class JednostkiFragment extends Fragment {
 
 
         rvJednostki = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvJednostki.setHasFixedSize(true);
         rvJednostki.setLayoutManager(
                 new LinearLayoutManager(getContext()));
 
-        FirebaseRecyclerOptions<Jednostka> options
-                = new FirebaseRecyclerOptions.Builder<Jednostka>()
+        FirestoreRecyclerOptions<Jednostka> options
+                = new FirestoreRecyclerOptions.Builder<Jednostka>()
                 .setQuery(jednostkiRepository.getQuery(), Jednostka.class)
                 .build();
 

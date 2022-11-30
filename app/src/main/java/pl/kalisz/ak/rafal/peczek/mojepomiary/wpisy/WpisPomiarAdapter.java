@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
@@ -20,17 +20,16 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryEdytuj;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 
-public class WpisPomiarAdapter extends FirebaseRecyclerAdapter<
+public class WpisPomiarAdapter extends FirestoreRecyclerAdapter<
         WpisPomiar, WpisPomiarAdapter.wpisPomiarViewholder> {
 
     private PomiarRepository pomiarRepository;
     private JednostkiRepository jednostkiRepository;
 
-public WpisPomiarAdapter(@NonNull FirebaseRecyclerOptions<WpisPomiar> options) {
+public WpisPomiarAdapter(@NonNull FirestoreRecyclerOptions<WpisPomiar> options) {
         super(options);
         pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getUid());
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getUid());

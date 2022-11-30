@@ -1,5 +1,6 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,200 +10,207 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
-//import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
-//import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
 
-public class MainEtapAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
+public class MainEtapAdapter extends FirestoreRecyclerAdapter<
+        EtapTerapa, MainEtapAdapter.etapViewholder> {
 
-    private List<EtapTerapa> listaEtapow;
-    private PomiarRepository pomiarRepository;
-    private TerapiaRepository terapiaRepository;
-    private WpisPomiarRepository wpisPomiarRepository;
-    private JednostkiRepository jednostkiRepository;
+    static String userUid;
+    static PomiarRepository pomiarRepository;
+    static TerapiaRepository terapiaRepository;
+    static WpisPomiarRepository wpisPomiarRepository;
+    static JednostkiRepository jednostkiRepository;
 
-
-    public MainEtapAdapter(List<EtapTerapa> listaEtapow, Context context) {
-        this.listaEtapow = listaEtapow;
-        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        terapiaRepository = new TerapiaRepository();
-        wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    public MainEtapAdapter(@NonNull FirestoreRecyclerOptions<EtapTerapa> options) {
+        super(options);
+        userUid = FirebaseAuth.getInstance().getUid();
+        pomiarRepository = new PomiarRepository(userUid);
+        terapiaRepository = new TerapiaRepository(userUid);
+        wpisPomiarRepository = new WpisPomiarRepository(userUid);
+        jednostkiRepository = new JednostkiRepository(userUid);
     }
 
     @Override
-    public RVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_wpisy_cardview, parent, false);
-        return new RVAdapter.ViewHolder(cv);
-    }
-
-    @Override
-    public void onBindViewHolder(RVAdapter.ViewHolder holder, int position) {
-        CardView cardView = holder.cardView;
-        TextView obiektNazwa = (TextView) cardView.findViewById(R.id.nazwa);
-
-        ArrayList<String> listaElementow = terapiaRepository.findById(listaEtapow.get(position).getIdTerapi()).getIdsCzynnosci();
-        String nazwa = "";
-        for (String id: listaElementow) {
-            Pomiar pomiar = pomiarRepository.findById(id);
-            if(id != listaElementow.get(0))
-                nazwa += obiektNazwa.getText()+",\n"+pomiar.getNazwa();
-            else
-                nazwa = pomiar.getNazwa();
-        }
-        obiektNazwa.setText(nazwa);
-
-        TextView obiektData = (TextView) cardView.findViewById(R.id.data);
+    protected void onBindViewHolder(@NonNull MainEtapAdapter.etapViewholder holder, int position, @NonNull EtapTerapa model) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        obiektData.setText(sdf.format(listaEtapow.get(position).getDataZaplanowania()));
-        TextView obiektOpis = (TextView) cardView.findViewById(R.id.opis);
+        holder.obiektData.setText(sdf.format(model.getDataZaplanowania()));
 
-        if(listaEtapow.get(position).getDataWykonania() != null) {
-            List<WpisPomiar> listaWpisow = wpisPomiarRepository.findByEtapId(listaEtapow.get(position).getId());
-            Log.i("Tag-main-RV", "lista wpisów:" + listaWpisow);
-            String opis = "";
-            int i = 0;
-            for (WpisPomiar wpis : listaWpisow) {
-                Pomiar pomiar =pomiarRepository.findById(wpis.getIdPomiar());
-                if(i!=0)
-                    opis += "\n";
-                opis += " "+wpis.getWynikPomiary()+" "+jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc();
-                i++;
-            }
-            obiektOpis.setText(opis);
-            //obiektOpis.setText("wykonany: " + sdf.format(listaEtapow.get(position).etapTerapa.getDataWykonania()));
-        }
-        else{
-            obiektOpis.setText( "Jescze nie wykonano etapu");
-        }
 
-        Calendar dataZaplanowana = Calendar.getInstance();
-        dataZaplanowana.setTime(listaEtapow.get(position).getDataZaplanowania());
-        Calendar dataAktualna = Calendar.getInstance();
-        String finalNazwa = nazwa;
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+        terapiaRepository.getById(model.getIdTerapi()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
-                Date za3Godziny = Date.from( LocalDateTime.now().plusHours(3).atZone(ZoneId.systemDefault()).toInstant());
-                Date dzienTemu = Date.from( LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-                if(listaEtapow.get(position).getDataZaplanowania().after(dzienTemu) && listaEtapow.get(position).getDataZaplanowania().before(za3Godziny)) {
-                    if (listaEtapow.get(position).getDataWykonania() == null) {
-                        String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
-
-                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
-                        builder.setTitle(finalNazwa);
-                        builder.setItems(akcie, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-//                                switch (which) {
-//                                    case 0: {
-//                                        Intent intent4 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
-//                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) listaEtapow.get(position).getId());
-//                                        intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
-//                                        cardView.getContext().startActivity(intent4);
-//                                        break;
-//                                    }
-//                                    case 1: {
-//                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-//                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) listaEtapow.get(position).getIdTerapi());
-//                                        cardView.getContext().startActivity(intent);
-//                                        break;
-//                                    }
-//                                }
-                            }
-                        });
-                        builder.show();
-                    } else {
-                        String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
-                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
-                        builder.setTitle(finalNazwa);
-                        builder.setItems(akcie, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-//                                switch (which) {
-//                                    case 0: {
-//                                        Intent intent5 = new Intent(cardView.getContext(), EtapTerapiActivity.class);
-//                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) listaEtapow.get(position).getId());
-//                                        intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
-//                                        cardView.getContext().startActivity(intent5);
-//                                        break;
-//                                    }
-//                                    case 1: {
-//                                        Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-//                                        intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) listaEtapow.get(position).getIdTerapi());
-//                                        cardView.getContext().startActivity(intent);
-//                                        break;
-//                                    }
-//                                }
-                            }
-                        });
-                        builder.show();
-                    }
-                }else{
-                    String[] akcie = {"Wyświetl sczegóły terapi"};
-
-                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(cardView.getContext());
-                    builder.setTitle(finalNazwa);
-                    builder.setItems(akcie, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-//                            switch (which) {
-//                                case 0: {
-//                                    Intent intent = new Intent(cardView.getContext(), TerapiaEdytuj.class);
-//                                    intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) listaEtapow.get(position).getIdTerapi());
-//                                    cardView.getContext().startActivity(intent);
-//                                    break;
-//                                }
-//                            }
-                        }
-                    });
-                    builder.show();
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                ArrayList<String> listaElementow = documentSnapshot.toObject(Terapia.class).getIdsCzynnosci();
+                String nazwa = "";
+                for (String id: listaElementow) {
+                    Pomiar pomiar = pomiarRepository.findById(id);
+                    if(id != listaElementow.get(0))
+                        nazwa += ",\n"+pomiar.getNazwa();
+                    else
+                        nazwa = pomiar.getNazwa();
                 }
+                holder.obiektNazwa.setText(nazwa);
+
+                String finalNazwa = nazwa;
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Date za3Godziny = Date.from( LocalDateTime.now().plusHours(3).atZone(ZoneId.systemDefault()).toInstant());
+                        Date dzienTemu = Date.from( LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                        if(model.getDataZaplanowania().after(dzienTemu) && model.getDataZaplanowania().before(za3Godziny)) {
+                            if (model.getDataWykonania() == null) {
+                                String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
+
+                                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
+                                builder.setTitle(finalNazwa);
+                                builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        switch (which) {
+                                            case 0: {
+                                                Intent intent4 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
+                                                intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
+                                                intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
+                                                holder.view.getContext().startActivity(intent4);
+                                                break;
+                                            }
+                                            case 1: {
+                                                Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
+                                                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
+                                                holder.view.getContext().startActivity(intent);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                });
+                                builder.show();
+                            } else {
+                                String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
+                                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
+                                builder.setTitle(finalNazwa);
+                                builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        switch (which) {
+                                            case 0: {
+                                                Intent intent5 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
+                                                intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
+                                                intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
+                                                holder.view.getContext().startActivity(intent5);
+                                                break;
+                                            }
+                                            case 1: {
+                                                Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
+                                                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
+                                                holder.view.getContext().startActivity(intent);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                });
+                                builder.show();
+                            }
+                        }else{
+                            String[] akcie = {"Wyświetl sczegóły terapi"};
+
+                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
+                            builder.setTitle(finalNazwa);
+                            builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    switch (which) {
+                                        case 0: {
+                                            Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
+                                            intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
+                                            holder.view.getContext().startActivity(intent);
+                                            break;
+                                        }
+                                    }
+                                }
+                            });
+                            builder.show();
+                        }
+                    }
+                });
             }
         });
 
-        if(dataZaplanowana.get(Calendar.DATE)==dataAktualna.get(Calendar.DATE)){
 
+
+        if(model.getDataWykonania() != null) {
+            wpisPomiarRepository.getByEtapId(model.getId()).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    List<WpisPomiar> listaWpisow = queryDocumentSnapshots.toObjects(WpisPomiar.class);
+                    String opis = "";
+                    int i = 0;
+                    for (WpisPomiar wpis : listaWpisow) {
+                        Pomiar pomiar =pomiarRepository.findById(wpis.getIdPomiar());
+                        if(i!=0)
+                            opis += "\n";
+                        opis += " "+wpis.getWynikPomiary()+" "+jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc();
+                        i++;
+                    }
+                    holder.obiektOpis.setMinLines(i);
+                    holder.obiektOpis.setText(opis);
+                }
+            });
         }
+        else{
+            holder.obiektOpis.setText( "Jescze nie wykonano etapu");
+        }
+
     }
 
-
-
+    @NonNull
     @Override
-    public int getItemCount() {
-        return listaEtapow.size();
+    public MainEtapAdapter.etapViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.activity_wpisy_cardview, parent, false);
+        return new MainEtapAdapter.etapViewholder(view);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public CardView cardView;
-        public ViewHolder( CardView itemView) {
+    class etapViewholder
+            extends RecyclerView.ViewHolder {
+        TextView obiektNazwa, obiektOpis, obiektData;
+        View view;
+
+        public etapViewholder(@NonNull View itemView) {
             super(itemView);
-            cardView = itemView;
+            view = itemView;
+            obiektNazwa = (TextView) itemView.findViewById(R.id.nazwa);
+            obiektOpis = (TextView) itemView.findViewById(R.id.opis);
+            obiektData = (TextView) itemView.findViewById(R.id.data);
         }
     }
 }

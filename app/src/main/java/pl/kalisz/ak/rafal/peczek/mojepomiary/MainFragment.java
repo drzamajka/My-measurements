@@ -9,14 +9,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +30,10 @@ import java.util.List;
 import java.util.TimeZone;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.EtapTerapiaRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaAdapter;
 
 
 /**
@@ -36,12 +43,11 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.EtapTerapiaRepository;
  */
 public class MainFragment extends Fragment {
 
-    private EtapTerapiaRepository etapTerapiaRepository;
-    private TextView dataWpsiow;
-    private RecyclerView rvPomiary;
-    private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
 
+    private TextView dataWpsiow;
+    private RecyclerView rvEtapy;
+    private MainEtapAdapter mainEtapAdapter;
+    private static EtapTerapiaRepository etapTerapiaRepository;
 
     public MainFragment() {
         // Required empty public constructor
@@ -63,8 +69,9 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getUid());
+
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        etapTerapiaRepository = new EtapTerapiaRepository();
 
         Button wczesniej = (Button) view.findViewById(R.id.button1);
         wczesniej.setOnClickListener(new View.OnClickListener() {
@@ -81,43 +88,54 @@ public class MainFragment extends Fragment {
             }
         });
 
-
-                    // lista
-            dataWpsiow = (TextView) view.findViewById(R.id.Data);
-            dodajDatePicker(dataWpsiow);
-            Date date = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            dataWpsiow.setText(simpleDateFormat.format(date));
+        dataWpsiow = (TextView) view.findViewById(R.id.Data);
+        dodajDatePicker(dataWpsiow);
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dataWpsiow.setText(simpleDateFormat.format(date));
 
 
+        try {
+            date = simpleDateFormat.parse(dataWpsiow.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        Date dateJutro = c.getTime();
+        rvEtapy = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvEtapy.setHasFixedSize(true);
+        rvEtapy.setLayoutManager(
+                new LinearLayoutManager(getContext()));
 
-            rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-            rvPomiary.setHasFixedSize(true);
-
-            Configuration config = getResources().getConfiguration();
-            if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layoutManager = new GridLayoutManager(getContext(), 2);
-            } else
-                layoutManager = new LinearLayoutManager(getContext());
-
-            rvPomiary.setLayoutManager(layoutManager);
-            rvPomiary.setItemAnimator(new DefaultItemAnimator());
-            rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-
-        //database = UsersRoomDatabase.getInstance(getContext());
+        FirestoreRecyclerOptions<EtapTerapa> options
+                = new FirestoreRecyclerOptions.Builder<EtapTerapa>()
+                .setQuery(etapTerapiaRepository.getQuery().whereGreaterThanOrEqualTo("dataZaplanowania", date).whereLessThanOrEqualTo("dataZaplanowania", dateJutro), EtapTerapa.class)
+                .build();
+        mainEtapAdapter = new MainEtapAdapter(options);
 
         return view;
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
+    public void onStart()
+    {
+        super.onStart();
+        mainEtapAdapter.startListening();
+        rvEtapy.setAdapter(mainEtapAdapter);
+    }
 
-        this.odswiezListe();
-
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        mainEtapAdapter.stopListening();
     }
 
     private void odswiezListe(){
+        mainEtapAdapter.stopListening();
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         try {
@@ -131,11 +149,18 @@ public class MainFragment extends Fragment {
         Date dateJutro = c.getTime();
 
 
-        List<EtapTerapa> listaEtapow = etapTerapiaRepository.getAllBetwenData(date.getTime(), dateJutro.getTime());
+        FirestoreRecyclerOptions<EtapTerapa> options
+                = new FirestoreRecyclerOptions.Builder<EtapTerapa>()
+                .setQuery(etapTerapiaRepository.getQuery().whereGreaterThanOrEqualTo("dataZaplanowania", date).whereLessThanOrEqualTo("dataZaplanowania", dateJutro), EtapTerapa.class)
+                .build();
 
-        adapter = new MainEtapAdapter(listaEtapow, getContext());
-        rvPomiary.setAdapter(adapter);
-        rvPomiary.scheduleLayoutAnimation();
+        mainEtapAdapter = new MainEtapAdapter(options);
+
+        mainEtapAdapter.startListening();
+        rvEtapy.setHasFixedSize(true);
+        rvEtapy.setAdapter(mainEtapAdapter);
+
+        rvEtapy.scheduleLayoutAnimation();
     }
 
     public void dalej() {

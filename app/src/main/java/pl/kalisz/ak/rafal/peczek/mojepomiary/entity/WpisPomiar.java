@@ -1,7 +1,7 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class WpisPomiar {
 
-    @Exclude
+    @DocumentId
     private String id;
     private String wynikPomiary;
     private String idUzytkownika;
@@ -100,9 +100,11 @@ public class WpisPomiar {
     @Override
     public String toString() {
         return "WpisPomiar{" +
-                "wynikPomiary='" + wynikPomiary + '\'' +
-                ", idPomiar=" + idPomiar +
-                ", idEtapTerapi=" + idEtapTerapi +
+                "id='" + id + '\'' +
+                ", wynikPomiary='" + wynikPomiary + '\'' +
+                ", idUzytkownika='" + idUzytkownika + '\'' +
+                ", idPomiar='" + idPomiar + '\'' +
+                ", idEtapTerapi='" + idEtapTerapi + '\'' +
                 ", dataWykonania=" + dataWykonania +
                 ", dataUtwozenia=" + dataUtwozenia +
                 ", dataAktualizacji=" + dataAktualizacji +

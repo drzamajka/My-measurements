@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.14'
     }
 }
 plugins {
@@ -8,6 +8,4 @@ plugins {
     id 'com.android.library' version '7.3.0' apply false
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+

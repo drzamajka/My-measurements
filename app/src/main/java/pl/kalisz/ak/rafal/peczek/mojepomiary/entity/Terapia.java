@@ -1,8 +1,8 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.Date;
 @IgnoreExtraProperties
 public class Terapia {
 
-    @Exclude
+    @DocumentId
     private String id;
     private String idUzytkownika;
     private int typ;
@@ -101,10 +101,11 @@ public class Terapia {
     @Override
     public String toString() {
         return "Terapia{" +
-                "idUzytkownika=" + idUzytkownika +
-                ", notatka=" + notatka +
+                "id='" + id + '\'' +
+                ", idUzytkownika='" + idUzytkownika + '\'' +
                 ", typ=" + typ +
-                ", idsCzynnosci=" + idsCzynnosci.toString() +
+                ", notatka='" + notatka + '\'' +
+                ", idsCzynnosci=" + idsCzynnosci +
                 ", dataRozpoczecia=" + dataRozpoczecia +
                 ", dataZakonczenia=" + dataZakonczenia +
                 ", dataUtwozenia=" + dataUtwozenia +

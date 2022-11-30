@@ -9,17 +9,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 
-public class PomiarAdapter extends FirebaseRecyclerAdapter<
+public class PomiarAdapter extends FirestoreRecyclerAdapter<
         Pomiar, PomiarAdapter.pomiarViewholder> {
 
-public PomiarAdapter(@NonNull FirebaseRecyclerOptions<Pomiar> options) {
+public PomiarAdapter(@NonNull FirestoreRecyclerOptions<Pomiar> options) {
         super(options);
         }
 
