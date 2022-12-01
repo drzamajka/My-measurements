@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,20 +32,38 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 public class TerapiaAdapter extends FirestoreRecyclerAdapter<
         Terapia, TerapiaAdapter.terapiaViewholder> {
 
+    PomiarRepository pomiarRepository;
+    static List<Pomiar> listaPomiaruw;
+
     public TerapiaAdapter(@NonNull FirestoreRecyclerOptions<Terapia> options) {
         super(options);
+        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getUid());
+        pomiarRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                listaPomiaruw = queryDocumentSnapshots.toObjects(Pomiar.class);
+            }
+        });
+
     }
 
     @Override
     protected void onBindViewHolder(@NonNull TerapiaAdapter.terapiaViewholder holder, int position, @NonNull Terapia model) {
-        PomiarRepository pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getUid());
-        ArrayList<Pomiar> listaCzynnosci = new ArrayList<>();
+        if(listaPomiaruw.isEmpty())
+            listaPomiaruw = pomiarRepository.getAll();
+
+
         String tytul = "";
         ArrayList<String> idsCzynnosci = model.getIdsCzynnosci();
         for(int i=0; i<idsCzynnosci.size();i++){
+            Pomiar pomiar = null;
+            for(Pomiar tmp : listaPomiaruw){
+                if(tmp.getId().equals(idsCzynnosci.get(i)))
+                    pomiar = tmp;
+            }
             if(i>0 && i<idsCzynnosci.size())
                 tytul += ", ";
-            tytul += pomiarRepository.findById(idsCzynnosci.get(i)).getNazwa();
+            tytul += pomiar.getNazwa();
         }
         holder.obiektNazwa.setText(tytul);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");

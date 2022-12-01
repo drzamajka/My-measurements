@@ -20,6 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
@@ -47,6 +49,8 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
     static TerapiaRepository terapiaRepository;
     static WpisPomiarRepository wpisPomiarRepository;
     static JednostkiRepository jednostkiRepository;
+    static List<Jednostka> listaJednostek;
+    static List<Pomiar> listaPomiaruw;
 
     public MainEtapAdapter(@NonNull FirestoreRecyclerOptions<EtapTerapa> options) {
         super(options);
@@ -55,13 +59,29 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         terapiaRepository = new TerapiaRepository(userUid);
         wpisPomiarRepository = new WpisPomiarRepository(userUid);
         jednostkiRepository = new JednostkiRepository(userUid);
+        jednostkiRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                listaJednostek = queryDocumentSnapshots.toObjects(Jednostka.class);
+            }
+        });
+
+        pomiarRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                listaPomiaruw = queryDocumentSnapshots.toObjects(Pomiar.class);
+            }
+        });
     }
 
     @Override
     protected void onBindViewHolder(@NonNull MainEtapAdapter.etapViewholder holder, int position, @NonNull EtapTerapa model) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         holder.obiektData.setText(sdf.format(model.getDataZaplanowania()));
-
+        if(listaJednostek.isEmpty())
+            listaJednostek = jednostkiRepository.getAll();
+        if(listaPomiaruw.isEmpty())
+            listaPomiaruw = pomiarRepository.getAll();
 
 
         terapiaRepository.getById(model.getIdTerapi()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -70,7 +90,11 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                 ArrayList<String> listaElementow = documentSnapshot.toObject(Terapia.class).getIdsCzynnosci();
                 String nazwa = "";
                 for (String id: listaElementow) {
-                    Pomiar pomiar = pomiarRepository.findById(id);
+                    Pomiar pomiar = null;
+                    for(Pomiar tmp : listaPomiaruw){
+                        if(tmp.getId().equals(id))
+                            pomiar = tmp;
+                    }
                     if(id != listaElementow.get(0))
                         nazwa += ",\n"+pomiar.getNazwa();
                     else
@@ -175,10 +199,19 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                     String opis = "";
                     int i = 0;
                     for (WpisPomiar wpis : listaWpisow) {
-                        Pomiar pomiar =pomiarRepository.findById(wpis.getIdPomiar());
+                        Pomiar pomiar = null;
+                        for(Pomiar tmp : listaPomiaruw){
+                            if(tmp.getId().equals(wpis.getIdPomiar()))
+                                pomiar = tmp;
+                        }
                         if(i!=0)
                             opis += "\n";
-                        opis += " "+wpis.getWynikPomiary()+" "+jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc();
+                        Jednostka jednostka = null;
+                        for(Jednostka tmp : listaJednostek){
+                            if(tmp.getId().equals(pomiar.getIdJednostki()))
+                                jednostka = tmp;
+                        }
+                        opis += " "+wpis.getWynikPomiary()+" "+jednostka.getWartosc();
                         i++;
                     }
                     holder.obiektOpis.setMinLines(i);

@@ -64,7 +64,7 @@ public class OdbiornikPowiadomien  extends BroadcastReceiver {
                     .setContentIntent(pendingIntent);
 
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            notificationManagerCompat.notify((int)etapTerapa.getDataZaplanowania().getTime(), bilder.build());
+            notificationManagerCompat.notify(25647, bilder.build());
         }
 
     }

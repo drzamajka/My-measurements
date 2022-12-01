@@ -5,8 +5,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
@@ -61,5 +65,22 @@ public class PomiarRepository {
             pomiar = task.getResult().toObjects(Pomiar.class).get(0);
         }
         return pomiar;
+    }
+
+    public List<Pomiar> getAll() {
+        List<Pomiar> lista = new ArrayList<>();
+
+        Task<QuerySnapshot> task = mDatabase.get();
+        while(!task.isComplete()) {
+
+        }
+        if (task.isSuccessful()) {
+            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                Pomiar pomiar = queryDocumentSnapshot.toObject(Pomiar.class);
+                lista.add(pomiar);
+            }
+        }
+
+        return lista;
     }
 }

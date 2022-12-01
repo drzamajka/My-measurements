@@ -33,7 +33,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
             TerapiaRepository terapiaRepository = new TerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
             PomiarRepository pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            etapTerapiaRepository.getQuery().whereGreaterThan("ss", new Date()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            etapTerapiaRepository.getQuery().whereEqualTo("dataWykonania", null).whereGreaterThanOrEqualTo("dataZaplanowania", new Date()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful())
