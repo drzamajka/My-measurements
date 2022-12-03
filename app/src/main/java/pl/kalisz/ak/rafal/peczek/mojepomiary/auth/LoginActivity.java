@@ -27,6 +27,7 @@ import java.util.Date;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.MainActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.SampleBootReceiver;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                new SampleBootReceiver().renewAlarmManager(getApplicationContext());
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();
                             } else {

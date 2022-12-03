@@ -5,8 +5,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +41,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.SampleBootReceiver;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
 
@@ -84,6 +88,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.replace(frame.getId(), mFragment).commit();
             navigationView.getMenu().getItem(0).setChecked(true);
         }
+
+
+        ComponentName receiver = new ComponentName(this, SampleBootReceiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
 
 
     }
@@ -175,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     builder.setCancelable(false);
                     builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
                         Toast.makeText(getApplicationContext(), "Wylogowanie", Toast.LENGTH_LONG).show();
+                        new SampleBootReceiver().cancleAlarmManager(getApplicationContext());
                         FirebaseAuth.getInstance().signOut();
                         finish();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));

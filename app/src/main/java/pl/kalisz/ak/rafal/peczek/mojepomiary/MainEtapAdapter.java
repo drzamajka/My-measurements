@@ -87,57 +87,87 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         terapiaRepository.getById(model.getIdTerapi()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ArrayList<String> listaElementow = documentSnapshot.toObject(Terapia.class).getIdsCzynnosci();
-                String nazwa = "";
-                for (String id: listaElementow) {
-                    Pomiar pomiar = null;
-                    for(Pomiar tmp : listaPomiaruw){
-                        if(tmp.getId().equals(id))
-                            pomiar = tmp;
+                Terapia terapia = documentSnapshot.toObject(Terapia.class);
+                if (terapia != null) {
+                    ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
+                    String nazwa = "";
+                    for (String id : listaElementow) {
+                        Pomiar pomiar = null;
+                        for (Pomiar tmp : listaPomiaruw) {
+                            if (tmp.getId().equals(id))
+                                pomiar = tmp;
+                        }
+                        if (id != listaElementow.get(0))
+                            nazwa += ",\n" + pomiar.getNazwa();
+                        else
+                            nazwa = pomiar.getNazwa();
                     }
-                    if(id != listaElementow.get(0))
-                        nazwa += ",\n"+pomiar.getNazwa();
-                    else
-                        nazwa = pomiar.getNazwa();
-                }
-                holder.obiektNazwa.setText(nazwa);
+                    holder.obiektNazwa.setText(nazwa);
 
-                String finalNazwa = nazwa;
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Date za3Godziny = Date.from( LocalDateTime.now().plusHours(3).atZone(ZoneId.systemDefault()).toInstant());
-                        Date dzienTemu = Date.from( LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
-                        if(model.getDataZaplanowania().after(dzienTemu) && model.getDataZaplanowania().before(za3Godziny)) {
-                            if (model.getDataWykonania() == null) {
-                                String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
+                    String finalNazwa = nazwa;
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Date za3Godziny = Date.from(LocalDateTime.now().plusHours(3).atZone(ZoneId.systemDefault()).toInstant());
+                            Date dzienTemu = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
+                            if (model.getDataZaplanowania().after(dzienTemu) && model.getDataZaplanowania().before(za3Godziny)) {
+                                if (model.getDataWykonania() == null) {
+                                    String[] akcie = {"Wykonaj", "Wyświetl sczegóły terapi"};
 
-                                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
-                                builder.setTitle(finalNazwa);
-                                builder.setItems(akcie, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
+                                    builder.setTitle(finalNazwa);
+                                    builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                        switch (which) {
-                                            case 0: {
-                                                Intent intent4 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
-                                                intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
-                                                intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
-                                                holder.view.getContext().startActivity(intent4);
-                                                break;
-                                            }
-                                            case 1: {
-                                                Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
-                                                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
-                                                holder.view.getContext().startActivity(intent);
-                                                break;
+                                            switch (which) {
+                                                case 0: {
+                                                    Intent intent4 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
+                                                    intent4.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
+                                                    intent4.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
+                                                    holder.view.getContext().startActivity(intent4);
+                                                    break;
+                                                }
+                                                case 1: {
+                                                    Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
+                                                    intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
+                                                    holder.view.getContext().startActivity(intent);
+                                                    break;
+                                                }
                                             }
                                         }
-                                    }
-                                });
-                                builder.show();
+                                    });
+                                    builder.show();
+                                } else {
+                                    String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
+                                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
+                                    builder.setTitle(finalNazwa);
+                                    builder.setItems(akcie, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            switch (which) {
+                                                case 0: {
+                                                    Intent intent5 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
+                                                    intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
+                                                    intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
+                                                    holder.view.getContext().startActivity(intent5);
+                                                    break;
+                                                }
+                                                case 1: {
+                                                    Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
+                                                    intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
+                                                    holder.view.getContext().startActivity(intent);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    });
+                                    builder.show();
+                                }
                             } else {
-                                String[] akcie = {"Edytuj", "Wyświetl sczegóły terapi"};
+                                String[] akcie = {"Wyświetl sczegóły terapi"};
+
                                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
                                 builder.setTitle(finalNazwa);
                                 builder.setItems(akcie, new DialogInterface.OnClickListener() {
@@ -146,13 +176,6 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
 
                                         switch (which) {
                                             case 0: {
-                                                Intent intent5 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
-                                                intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
-                                                intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
-                                                holder.view.getContext().startActivity(intent5);
-                                                break;
-                                            }
-                                            case 1: {
                                                 Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
                                                 intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
                                                 holder.view.getContext().startActivity(intent);
@@ -163,29 +186,9 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                                 });
                                 builder.show();
                             }
-                        }else{
-                            String[] akcie = {"Wyświetl sczegóły terapi"};
-
-                            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
-                            builder.setTitle(finalNazwa);
-                            builder.setItems(akcie, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    switch (which) {
-                                        case 0: {
-                                            Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
-                                            intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getIdTerapi());
-                                            holder.view.getContext().startActivity(intent);
-                                            break;
-                                        }
-                                    }
-                                }
-                            });
-                            builder.show();
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 

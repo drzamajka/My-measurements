@@ -116,26 +116,6 @@ public class TerapiaDopisz extends AppCompatActivity {
         View elementView = getczestotliwoscView((int) wybranaCzestotliwosc, true);
         listaGodzin.add(elementView);
         viewListyCzestotliwosci.addView(elementView);
-
-
-//        czestotliwosc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(getApplicationContext(), "wybrano id:"+i+l, Toast.LENGTH_LONG).show();
-//                viewListyCzestotliwosci.removeAllViews();
-//                listaGodzin.clear();
-//                View elementView = getczestotliwoscView((int) czestotliwosc.getSelectedItemId(), true);
-//                listaGodzin.add(elementView);
-//                viewListyCzestotliwosci.addView(elementView);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Toast.makeText(getApplicationContext(), "nic nnie wybrano", Toast.LENGTH_LONG).show();
-//            }
-//        });
-
-        //powiadomienia
         createNotificationChannel();
 
     }
@@ -151,7 +131,6 @@ public class TerapiaDopisz extends AppCompatActivity {
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(chanel);
-
         }
 
     }
@@ -223,7 +202,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
                 c.set(Calendar.MINUTE, 0);
                 if(editText.getText().length() > 0){
-                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                     try {
                         Date data = sdf.parse(editText.getText().toString());
                         c.setTime(data);
@@ -260,27 +239,6 @@ public class TerapiaDopisz extends AppCompatActivity {
                 timePicker.show(getSupportFragmentManager(), "fragment_tag");
 
 
-
-//                TimePickerDialog timePickerDialog = new TimePickerDialog(
-//                        TerapiaDopisz.this,
-//                        new TimePickerDialog.OnTimeSetListener(){
-//                            @Override
-//                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                                if((int) czestotliwosc.getSelectedItemId() != 1 && editText.getText().length() <= 0) {
-//                                    View elementView = getczestotliwoscView((int) czestotliwosc.getSelectedItemId(), false);
-//                                    listaGodzin.get(listaGodzin.size()-1).findViewById(R.id.usunGodzine).setEnabled(true);
-//                                    listaGodzin.add(elementView);
-//                                    viewListyCzestotliwosci.addView(elementView);
-//                                }
-//                                if(minute>9)
-//                                    editText.setText(hourOfDay + ":" + minute);
-//                                else
-//                                    editText.setText(hourOfDay + ":0" + minute);
-//
-//                            }
-//                        },
-//                        hour, minute, DateFormat.is24HourFormat(TerapiaDopisz.super.getApplicationContext()));
-//                timePickerDialog.show();
             }
         });
     }
@@ -482,7 +440,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         switch (wybranaCzestotliwosc) {
             case 1: { // co x godzin
                 Calendar c =Calendar.getInstance();
-                SimpleDateFormat stf = new SimpleDateFormat("hh:mm");
+                SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
                 Date dateOd = stf.parse(((EditText)viewListyCzestotliwosci.findViewById(R.id.editTextTime1)).getText().toString());
                 Date dateDo = stf.parse(((EditText)viewListyCzestotliwosci.findViewById(R.id.editTextTime2)).getText().toString());
                 TimePicker timePicker = (TimePicker) viewListyCzestotliwosci.findViewById(R.id.czestotliwoscWyk);
@@ -502,7 +460,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                 for (View godzina : this.listaGodzin) {
                     EditText editText = godzina.findViewById(R.id.editTextTime);
                     if(editText.getText().length()>0) {
-                        SimpleDateFormat stf = new SimpleDateFormat("hh:mm");
+                        SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
                         Date date = stf.parse(editText.getText().toString());
                         listaGodzin.add(new Time(date.getTime()));
                     }
@@ -561,13 +519,6 @@ public class TerapiaDopisz extends AppCompatActivity {
                 });
             }
 
-            ComponentName receiver = new ComponentName(this, SampleBootReceiver.class);
-            PackageManager pm = this.getPackageManager();
-
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
-
             finish();
         }
     }
@@ -580,7 +531,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         intent.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)etapTerapa.getDataZaplanowania().getTime(), intent,PendingIntent.FLAG_MUTABLE);
 
-        alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime()-60*1000, pendingIntent);
+        alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
 
         Log.v("Tag-powiadomienie", "lista dat:"+intent.toString());
     }

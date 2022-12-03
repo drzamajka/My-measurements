@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.kalisz.ak.rafal.peczek.mojepomiary">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.RECEIVE_PACKAGE_RESTARTED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_PACKAGE_RESTARTED" />
 
     <application
         android:allowBackup="true"
@@ -15,88 +15,71 @@
         android:roundIcon="@mipmap/ic_launcher_wlasna"
         android:supportsRtl="true"
         android:theme="@style/Theme.MojePomiary">
+
         <activity
             android:name=".terapie.EtapTerapiActivity"
             android:exported="false"
             android:label="Etap terapi"
-            android:theme="@style/MyAppTheme"/>
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".wpisy.WpisyEdytuj"
             android:exported="false"
             android:label="Edycia Wpisu"
-            android:parentActivityName=".wpisy.WpisyActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".wpisy.WpisyDopisz"
             android:exported="false"
             android:label="Dodawanie Wpisu"
-            android:parentActivityName=".wpisy.WpisyActivity"
-            android:theme="@style/MyAppTheme" />
-        <activity
-            android:name=".wpisy.WpisyActivity"
-            android:exported="false"
-            android:label="Wpisy"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme" />
         <activity
             android:name=".terapie.TerapiaEdytuj"
             android:exported="false"
             android:label="Edycia Terapi"
-            android:parentActivityName=".terapie.TerapiaActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".terapie.TerapiaDopisz"
             android:exported="false"
             android:label="Dodawanie Terapi"
-            android:parentActivityName=".terapie.TerapiaActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".terapie.TerapiaActivity"
-            android:exported="false"
-            android:label="Terapie"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".pomiary.PomiaryEdytuj"
             android:exported="false"
             android:label="Edycia pomiaru"
-            android:parentActivityName=".pomiary.PomiaryActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".pomiary.PomiaryDopisz"
             android:exported="false"
             android:label="Dodawanie pomiaru"
-            android:parentActivityName=".pomiary.PomiaryActivity"
-            android:theme="@style/MyAppTheme" />
-        <activity
-            android:name=".pomiary.PomiaryActivity"
-            android:exported="false"
-            android:label="Pomiary"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme" />
         <activity
             android:name=".jednostki.JednostkiEdytuj"
             android:exported="false"
             android:label="Edycja jednostki"
-            android:parentActivityName=".jednostki.JednostkiActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".jednostki.JednostkiDopisz"
             android:exported="false"
             android:label="Dodawanie jednostki"
-            android:parentActivityName=".jednostki.JednostkiActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme" />
         <activity
             android:name=".auth.RegisterActivity"
             android:exported="false"
             android:label="Rejestracja"
-            android:screenOrientation="portrait"
             android:parentActivityName=".auth.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/MyAppTheme" />
         <activity
             android:name=".auth.LoginActivity"
@@ -117,21 +100,19 @@
             android:theme="@style/Theme.MojePomiary">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <receiver android:name=".recivers.OdbiornikPowiadomien" />
-
-        <receiver android:name=".recivers.SampleBootReceiver"
-            android:enabled="false"
+        <receiver
+            android:name=".recivers.SampleBootReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

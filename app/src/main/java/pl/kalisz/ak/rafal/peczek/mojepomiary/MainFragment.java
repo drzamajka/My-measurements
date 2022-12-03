@@ -199,7 +199,7 @@ public class MainFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
@@ -209,10 +209,12 @@ public class MainFragment extends Fragment {
 
                 Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
+                Date dataWybrana = new Date(c.getTimeInMillis());
+
 
 
                 MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
-                        .setSelection(c.getTimeInMillis())
+                        .setSelection(dataWybrana.getTime())
                         .build();
 
                 materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
@@ -220,7 +222,7 @@ public class MainFragment extends Fragment {
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis((Long) selection);
-                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.YEAR));
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
                         odswiezListe();
                     }
                 });
