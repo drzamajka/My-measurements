@@ -1,4 +1,4 @@
-package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy;
+package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -50,7 +50,7 @@ public class WpisPomiarFragment extends Fragment {
         AdapterView.OnClickListener buttonClickListener = new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), WpisyDopisz.class);
+                Intent intent = new Intent(getContext(), WpisPomiarDopisz.class);
                 startActivity(intent);
             }
         };

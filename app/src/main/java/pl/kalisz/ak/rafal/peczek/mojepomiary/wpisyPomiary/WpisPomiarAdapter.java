@@ -1,4 +1,4 @@
-package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy;
+package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary;
 
 
 import android.content.Intent;
@@ -26,8 +26,6 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 
 public class WpisPomiarAdapter extends FirestoreRecyclerAdapter<
         WpisPomiar, WpisPomiarAdapter.wpisPomiarViewholder> {
@@ -82,8 +80,8 @@ protected void onBindViewHolder(@NonNull WpisPomiarAdapter.wpisPomiarViewholder 
     holder.view.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(holder.view.getContext(), WpisyEdytuj.class);
-            intent.putExtra(WpisyEdytuj.EXTRA_Wpisu_ID, (String) model.getId());
+            Intent intent = new Intent(holder.view.getContext(), WpisPomiarEdytuj.class);
+            intent.putExtra(WpisPomiarEdytuj.EXTRA_Wpisu_ID, (String) model.getId());
             holder.view.getContext().startActivity(intent);
         }
     });
@@ -93,7 +91,7 @@ protected void onBindViewHolder(@NonNull WpisPomiarAdapter.wpisPomiarViewholder 
 @Override
 public WpisPomiarAdapter.wpisPomiarViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.activity_wpisy_cardview, parent, false);
+        .inflate(R.layout.activity_wpis_pomiar_cardview, parent, false);
         return new WpisPomiarAdapter.wpisPomiarViewholder(view);
         }
 

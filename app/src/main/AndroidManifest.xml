@@ -17,46 +17,59 @@
         android:theme="@style/Theme.MojePomiary">
 
         <activity
+            android:name=".leki.LekDopisz"
+            android:exported="false"
+            android:label="Dodawanie leku"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".leki.LekEdytuj"
+            android:exported="false"
+            android:label="Edycia leku"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".terapie.EtapTerapiActivity"
             android:exported="false"
             android:label="Etap terapi"
             android:theme="@style/MyAppTheme" />
         <activity
-            android:name=".wpisy.WpisyEdytuj"
+            android:name=".wpisyPomiary.WpisPomiarEdytuj"
             android:exported="false"
-            android:label="Edycia Wpisu"
+            android:label="Edycia wpisu"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".wpisy.WpisyDopisz"
+            android:name=".wpisyPomiary.WpisPomiarDopisz"
             android:exported="false"
-            android:label="Dodawanie Wpisu"
+            android:label="Dodawanie wpisu"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme" />
         <activity
             android:name=".terapie.TerapiaEdytuj"
             android:exported="false"
-            android:label="Edycia Terapi"
+            android:label="Edycia terapii"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".terapie.TerapiaDopisz"
             android:exported="false"
-            android:label="Dodawanie Terapi"
+            android:label="Dodawanie terapii"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".pomiary.PomiaryEdytuj"
+            android:name=".pomiary.PomiarEdytuj"
             android:exported="false"
             android:label="Edycia pomiaru"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".pomiary.PomiaryDopisz"
+            android:name=".pomiary.PomiarDopisz"
             android:exported="false"
             android:label="Dodawanie pomiaru"
             android:parentActivityName=".MainActivity"

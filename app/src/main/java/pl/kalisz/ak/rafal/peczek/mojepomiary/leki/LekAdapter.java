@@ -1,4 +1,4 @@
-package pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary;
+package pl.kalisz.ak.rafal.peczek.mojepomiary.leki;
 
 
 import android.content.Intent;
@@ -6,32 +6,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 
-public class PomiarAdapter extends FirestoreRecyclerAdapter<
-        Pomiar, PomiarAdapter.pomiarViewholder> {
+public class LekAdapter extends FirestoreRecyclerAdapter<
+        Lek, LekAdapter.lekViewholder> {
 
-public PomiarAdapter(@NonNull FirestoreRecyclerOptions<Pomiar> options) {
+public LekAdapter(@NonNull FirestoreRecyclerOptions<Lek> options) {
         super(options);
         }
 
 @Override
-protected void onBindViewHolder(@NonNull PomiarAdapter.pomiarViewholder holder, int position, @NonNull Pomiar model) {
+protected void onBindViewHolder(@NonNull lekViewholder holder, int position, @NonNull Lek model) {
 
         holder.obiektNazwa.setText(model.getNazwa());
         holder.obiektOpis.setText(model.getNotatka());
         holder.view.setOnClickListener(new View.OnClickListener() {
         @Override
             public void onClick(View v) {
-                Intent intent = new Intent(holder.view.getContext(), PomiarEdytuj.class);
-                intent.putExtra(PomiarEdytuj.EXTRA_Pomiar_ID, (String) model.getId());
+                Intent intent = new Intent(holder.view.getContext(), LekEdytuj.class);
+                intent.putExtra(LekEdytuj.EXTRA_Lek_ID, (String) model.getId());
                 holder.view.getContext().startActivity(intent);
             }
         });
@@ -40,17 +38,17 @@ protected void onBindViewHolder(@NonNull PomiarAdapter.pomiarViewholder holder, 
 
 @NonNull
 @Override
-public PomiarAdapter.pomiarViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+public lekViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.activity_pomiary_cardview, parent, false);
-        return new PomiarAdapter.pomiarViewholder(view);
+        .inflate(R.layout.activity_leki_cardview, parent, false);
+        return new lekViewholder(view);
         }
 
-class pomiarViewholder
+class lekViewholder
         extends RecyclerView.ViewHolder {
     TextView obiektNazwa, obiektOpis;
     View view;
-    public pomiarViewholder(@NonNull View itemView)
+    public lekViewholder(@NonNull View itemView)
     {
         super(itemView);
         view = itemView;

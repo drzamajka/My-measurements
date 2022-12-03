@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".wpisy.WpisyDopisz">
+    tools:context=".pomiary.PomiarEdytuj">
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -31,7 +31,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp">
 
         <TextView
@@ -82,6 +82,25 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dataWykonaniaLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Data wykonania pomiaru"
+        app:endIconMode="clear_text"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dataWykonania"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:id="@+id/button_save_edit"
         style="@style/Widget.Material3.Button.Icon"
@@ -89,10 +108,20 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="24dp"
-        android:onClick="zapiszNowaPozycia"
-        android:text="Zapisz nową pozycję"
-        app:icon="@drawable/ic_add_24" />
+        android:onClick="aktualizuj"
+        android:text="Aktualizuj wpis"
+        app:icon="@drawable/ic_update_24" />
 
+    <Button
+        android:id="@+id/button_disable_edit"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="24dp"
+        android:onClick="usun"
+        android:text="Usuń wpis "
+        app:icon="@drawable/ic_clear_24"/>
 
 
 </LinearLayout>

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -22,11 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.RVAdapter;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarAdapter;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiaryEdytuj;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 
 public class TerapiaAdapter extends FirestoreRecyclerAdapter<

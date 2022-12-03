@@ -1,4 +1,4 @@
-package pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary;
+package pl.kalisz.ak.rafal.peczek.mojepomiary.leki;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -29,16 +29,17 @@ import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 
-public class PomiaryEdytuj extends AppCompatActivity {
+public class LekEdytuj extends AppCompatActivity {
 
-    public static final String EXTRA_Pomiar_ID = "pomiarId";
-    private String pomiarId;
+    public static final String EXTRA_Lek_ID = "lekId";
+    private String lekId;
 
-    Pomiar pomiar;
+    Lek lek;
     private TextInputLayout nazwa, notatka;
     private AutoCompleteTextView jednostki;
     private TextInputLayout jednostkiL;
@@ -46,28 +47,28 @@ public class PomiaryEdytuj extends AppCompatActivity {
     private int idWybranejJednostki;
     public String textWybranejJednostki;
 
-    private PomiarRepository pomiarRepository;
+    private LekRepository lekRepository;
     private JednostkiRepository jednostkiRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pomiary_edytuj);
+        setContentView(R.layout.activity_lek_edytuj);
 
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        lekRepository = new LekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         idWybranejJednostki = 0;
         textWybranejJednostki = "";
-        pomiarId = (String) getIntent().getExtras().get(EXTRA_Pomiar_ID);
+        lekId = (String) getIntent().getExtras().get(EXTRA_Lek_ID);
 
         nazwa = (TextInputLayout) findViewById(R.id.editTextNazwaLayout);
         notatka = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
         jednostki = (AutoCompleteTextView) findViewById(R.id.spinner);
         jednostkiL = (TextInputLayout) findViewById(R.id.spinnerLayout);
 
-        pomiar = pomiarRepository.findById(pomiarId);
-        if(pomiar == null){
+        lek = lekRepository.findById(lekId);
+        if(lek == null){
             finish();
         }
 
@@ -82,11 +83,11 @@ public class PomiaryEdytuj extends AppCompatActivity {
                         jednostka.setId(queryDocumentSnapshot.getId());
                         listaJednostek.add(jednostka);
                         data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
-                        if(pomiar.getIdJednostki() == jednostka.getId()) {
+                        if(lek.getIdJednostki() == jednostka.getId()) {
                             idWybranejJednostki = data.size();
                         }
                     }
-                    ArrayAdapter adapter = new ArrayAdapter ( PomiaryEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    ArrayAdapter adapter = new ArrayAdapter ( LekEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
 
                     textWybranejJednostki = data.get(idWybranejJednostki);
@@ -101,8 +102,8 @@ public class PomiaryEdytuj extends AppCompatActivity {
 
 
 
-        nazwa.getEditText().setText(pomiar.getNazwa());
-        notatka.getEditText().setText(pomiar.getNotatka());
+        nazwa.getEditText().setText(lek.getNazwa());
+        notatka.getEditText().setText(lek.getNotatka());
 
 
 
@@ -137,12 +138,12 @@ public class PomiaryEdytuj extends AppCompatActivity {
                 jednostkiL.setEnabled(true);
                 return true;
             case R.id.drop:{
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(PomiaryEdytuj.this);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(LekEdytuj.this);
                 builder.setMessage("Czy na pewno usunąć");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
-                    if (pomiar != null) {
-                        pomiarRepository.delete(pomiar);
+                    if (lek != null) {
+                        lekRepository.delete(lek);
                     }
                     finish();
                 });
@@ -167,8 +168,8 @@ public class PomiaryEdytuj extends AppCompatActivity {
         nazwa.setEnabled(false);
         notatka.setEnabled(false);
         jednostkiL.setEnabled(false);
-        nazwa.getEditText().setText(pomiar.getNazwa());
-        notatka.getEditText().setText(pomiar.getNotatka());
+        nazwa.getEditText().setText(lek.getNazwa());
+        notatka.getEditText().setText(lek.getNotatka());
         jednostki.setText(textWybranejJednostki, false);
     }
 
@@ -183,12 +184,12 @@ public class PomiaryEdytuj extends AppCompatActivity {
                 notatka += '.';
             String jednostkaId = listaJednostek.get(idWybranejJednostki).getId();
 
-            pomiar.setNazwa(nazwa);
-            pomiar.setNotatka(notatka);
-            pomiar.setIdJednostki(jednostkaId);
-            pomiar.setDataAktualizacji(new Date());
+            lek.setNazwa(nazwa);
+            lek.setNotatka(notatka);
+            lek.setIdJednostki(jednostkaId);
+            lek.setDataAktualizacji(new Date());
 
-            pomiarRepository.update(pomiar);
+            lekRepository.update(lek);
             finish();
         }else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();

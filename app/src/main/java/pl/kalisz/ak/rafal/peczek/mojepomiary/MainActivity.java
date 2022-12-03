@@ -6,7 +6,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,10 +39,12 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.leki.LekiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.SampleBootReceiver;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaFragment;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisy.WpisPomiarFragment;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyLeki.WpisLekFragment;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary.WpisPomiarFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -219,6 +220,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 MainFragment mFragment = MainFragment.newInstance();
                 ft.replace(frame.getId(), mFragment).commit();
                 break;
+            case R.id.naw_terapie:
+                TerapiaFragment tFragment = TerapiaFragment.newInstance();
+                ft.replace(frame.getId(), tFragment).commit();
+                break;
             case R.id.naw_jednostki:
                 JednostkiFragment jFragment = JednostkiFragment.newInstance();
                 ft.replace(frame.getId(), jFragment).commit();
@@ -227,14 +232,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 PomiarFragment pFragment = PomiarFragment.newInstance();
                 ft.replace(frame.getId(), pFragment).commit();
                 break;
-            case R.id.naw_terapie:
-                TerapiaFragment tFragment = TerapiaFragment.newInstance();
-                ft.replace(frame.getId(), tFragment).commit();
-                break;
             case R.id.naw_wpisy_pomiary:
                 WpisPomiarFragment wpFragment = WpisPomiarFragment.newInstance();
                 ft.replace(frame.getId(), wpFragment).commit();
                 break;
+            case R.id.naw_leki:
+                LekiFragment lFragment = LekiFragment.newInstance();
+                ft.replace(frame.getId(), lFragment).commit();
+                break;
+            case R.id.naw_wpisy_leki:
+                WpisLekFragment wlFragment = WpisLekFragment.newInstance();
+                ft.replace(frame.getId(), wlFragment).commit();
+                break;
+
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

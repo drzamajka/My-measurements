@@ -1,7 +1,4 @@
-package pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+package pl.kalisz.ak.rafal.peczek.mojepomiary.leki;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,27 +24,29 @@ import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 
-public class PomiaryDopisz extends AppCompatActivity {
+public class LekDopisz extends AppCompatActivity {
 
     private EditText nazwa, notatka;
     private AutoCompleteTextView jednostki;
     private List<Jednostka> listaJednostek;
     private int idWybranejJednostki;
 
-    private PomiarRepository pomiarRepository;
+    private LekRepository lekRepository;
     private JednostkiRepository jednostkiRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pomiary_dopisz);
+        setContentView(R.layout.activity_lek_dopisz);
 
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        lekRepository = new LekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         idWybranejJednostki = 0;
         nazwa = (EditText) findViewById(R.id.editTextNazwa);
@@ -64,7 +66,7 @@ public class PomiaryDopisz extends AppCompatActivity {
                         listaJednostek.add(jednostka);
                         data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
                     }
-                    ArrayAdapter adapter = new ArrayAdapter ( PomiaryDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    ArrayAdapter adapter = new ArrayAdapter ( LekDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
                 }
                 else {
@@ -97,7 +99,7 @@ public class PomiaryDopisz extends AppCompatActivity {
             String jednostkaId = listaJednostek.get(idWybranejJednostki).getId();
 
 
-            pomiarRepository.insert(new Pomiar( nazwa, notatka, FirebaseAuth.getInstance().getCurrentUser().getUid(), jednostkaId, new Date(), new Date()));
+            lekRepository.insert(new Lek( nazwa, notatka, FirebaseAuth.getInstance().getCurrentUser().getUid(), jednostkaId, new Date(), new Date()));
             finish();
         }else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();

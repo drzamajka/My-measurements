@@ -1,10 +1,7 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,7 +229,7 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
     @Override
     public MainEtapAdapter.etapViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_wpisy_cardview, parent, false);
+                .inflate(R.layout.activity_wpis_pomiar_cardview, parent, false);
         return new MainEtapAdapter.etapViewholder(view);
     }
 
