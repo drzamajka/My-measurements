@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -16,6 +17,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
@@ -62,6 +65,14 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                 listaJednostek = queryDocumentSnapshots.toObjects(Jednostka.class);
             }
         });
+        jednostkiRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(!value.getDocumentChanges().isEmpty()){
+                    listaJednostek = value.toObjects(Jednostka.class);
+                }
+            }
+        });
 
         pomiarRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -69,6 +80,15 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                 listaPomiaruw = queryDocumentSnapshots.toObjects(Pomiar.class);
             }
         });
+        pomiarRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(!value.getDocumentChanges().isEmpty()){
+                    listaPomiaruw = value.toObjects(Pomiar.class);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -79,6 +99,7 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
             listaJednostek = jednostkiRepository.getAll();
         if(listaPomiaruw.isEmpty())
             listaPomiaruw = pomiarRepository.getAll();
+
 
 
         terapiaRepository.getById(model.getIdTerapi()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

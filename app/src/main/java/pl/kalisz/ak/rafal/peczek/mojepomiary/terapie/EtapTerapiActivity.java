@@ -137,12 +137,12 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     }
                     Calendar cData = Calendar.getInstance();
                     cData.set(Calendar.HOUR, c.get(Calendar.HOUR));
-                    cData.set(Calendar.MONTH, c.get(Calendar.MONTH));
+                    cData.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
                     cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
 
                     int index = 0;
                     for (Pomiar pomiar: listaCzynnosci) {
-                        wpisPomiarRepository.insert(new WpisPomiar(listaWynikow.get(index).toString(), pomiar.getId(), userUid, etapTerapa.getId(), c.getTime(), new Date(), new Date() ));
+                        wpisPomiarRepository.insert(new WpisPomiar(listaWynikow.get(index).toString(), pomiar.getId(), userUid, etapTerapa.getId(), cData.getTime(), new Date(), new Date() ));
                         index++;
                     }
                     etapTerapa.setDataWykonania(cData.getTime());

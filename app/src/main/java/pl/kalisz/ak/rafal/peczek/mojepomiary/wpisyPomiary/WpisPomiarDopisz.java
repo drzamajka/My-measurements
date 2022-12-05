@@ -117,7 +117,7 @@ public class WpisPomiarDopisz extends AppCompatActivity {
             c.setTime(simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString()));
             Calendar cData = Calendar.getInstance();
             cData.set(Calendar.HOUR, c.get(Calendar.HOUR));
-            cData.set(Calendar.MONTH, c.get(Calendar.MONTH));
+            cData.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
             cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
 
             wpisPomiarRepository.insert(new WpisPomiar(wynik, pomiarId, FirebaseAuth.getInstance().getCurrentUser().getUid(), cData.getTime(), new Date(), new Date() ));
