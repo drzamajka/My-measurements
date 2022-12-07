@@ -1,20 +1,18 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class WpisLekRepository {
 
@@ -50,8 +48,13 @@ public class WpisLekRepository {
         return task;
     }
 
-    public void insert(@NonNull WpisPomiar wpisPomiar) {
-        mDatabase.add(wpisPomiar);
+    public Query getByLekId(@NonNull String idLeku) {
+        Query task = mDatabase.whereEqualTo("idLeku", idLeku).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(1);
+        return task;
+    }
+
+    public void insert(@NonNull WpisLek wpisLek) {
+        mDatabase.add(wpisLek);
     }
 
 
@@ -78,4 +81,20 @@ public class WpisLekRepository {
     }
 
 
+    public List<WpisLek> getAll() {
+        List<WpisLek> lista = new ArrayList<>();
+
+        Task<QuerySnapshot> task = mDatabase.get();
+        while(!task.isComplete()) {
+
+        }
+        if (task.isSuccessful()) {
+            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                WpisLek wpisLek = queryDocumentSnapshot.toObject(WpisLek.class);
+                lista.add(wpisLek);
+            }
+        }
+
+        return lista;
+    }
 }

@@ -16,6 +16,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MojePomiary">
 
+
+<!--        <activity-->
+<!--            android:name=".wpisyPomiary.WpisPomiarEdytuj"-->
+<!--            android:exported="false"-->
+<!--            android:label="Edycia wpisu"-->
+<!--            android:parentActivityName=".MainActivity"-->
+<!--            android:theme="@style/MyAppTheme"-->
+<!--            android:windowSoftInputMode="stateHidden" />-->
+        <activity
+            android:name=".wpisyLeki.WpisLekDopisz"
+            android:exported="false"
+            android:label="Dodawanie wpisu"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".leki.LekDopisz"
             android:exported="false"

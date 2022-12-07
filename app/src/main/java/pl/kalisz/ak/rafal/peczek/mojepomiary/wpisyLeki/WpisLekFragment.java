@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.Query;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
@@ -57,7 +58,7 @@ public class WpisLekFragment extends Fragment {
         AdapterView.OnClickListener buttonClickListener = new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), WpisPomiarDopisz.class);
+                Intent intent = new Intent(getContext(), WpisLekDopisz.class);
                 startActivity(intent);
             }
         };
@@ -82,7 +83,7 @@ public class WpisLekFragment extends Fragment {
 
         FirestoreRecyclerOptions<WpisLek> options
                 = new FirestoreRecyclerOptions.Builder<WpisLek>()
-                .setQuery(wpisLekRepository.getQuery(), WpisLek.class)
+                .setQuery(wpisLekRepository.getQuery().orderBy("dataWykonania", Query.Direction.DESCENDING), WpisLek.class)
                 .build();
 
         wpisLekAdapter = new WpisLekAdapter(options);

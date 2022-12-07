@@ -78,17 +78,20 @@ protected void onBindViewHolder(@NonNull wpisLekViewholder holder, int position,
     }
 
     holder.obiektNazwa.setText(lek.getNazwa());
-    holder.obiektOpis.setText(model.getSumaObrotu()+" "+jednostka.getWartosc());
+    if(Double.parseDouble(model.getSumaObrotu())>0)
+        holder.obiektOpis.setText("Wpływ "+model.getSumaObrotu()+" "+jednostka.getWartosc()+" leku");
+    else
+        holder.obiektOpis.setText("Pobrano "+model.getSumaObrotu()+" "+jednostka.getWartosc()+" leku");
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy");
     holder.obiektData.setText(sdf.format(model.getDataWykonania()));
-    holder.view.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(holder.view.getContext(), WpisPomiarEdytuj.class);
-            intent.putExtra(WpisPomiarEdytuj.EXTRA_Wpisu_ID, (String) model.getId());
-            holder.view.getContext().startActivity(intent);
-        }
-    });
+//    holder.view.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            Intent intent = new Intent(holder.view.getContext(), WpisPomiarEdytuj.class);
+//            intent.putExtra(WpisPomiarEdytuj.EXTRA_Wpisu_ID, (String) model.getId());
+//            holder.view.getContext().startActivity(intent);
+//        }
+//    });
 }
 
 @NonNull
