@@ -227,12 +227,17 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                         }
                         if(i!=0)
                             opis += "\n";
-                        Jednostka jednostka = null;
-                        for(Jednostka tmp : listaJednostek){
-                            if(tmp.getId().equals(pomiar.getIdJednostki()))
-                                jednostka = tmp;
+                        if(pomiar.getIdJednostki()!=null) {
+                            Jednostka jednostka = null;
+                            for (Jednostka tmp : listaJednostek) {
+                                if (tmp.getId().equals(pomiar.getIdJednostki()))
+                                    jednostka = tmp;
+                            }
+                            opis += wpis.getWynikPomiary() + " " + jednostka.getWartosc();
                         }
-                        opis += " "+wpis.getWynikPomiary()+" "+jednostka.getWartosc();
+                        else{
+                            opis += wpis.getWynikPomiary();
+                        }
                         i++;
                     }
                     holder.obiektOpis.setMinLines(i);

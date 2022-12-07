@@ -129,14 +129,9 @@
 
 
     <!--    jednostki-->
-    <string-array name="dokladnosc">
-        <item>1000</item>
-        <item>100</item>
-        <item>10</item>
-        <item>0</item>
-        <item>0.0</item>
-        <item>0.00</item>
-        <item>0.000</item>
+    <string-array name="typZmiennej">
+        <item>Całkowity</item>
+        <item>Zmienno przecinkowy</item>
     </string-array>
 
     <string-array name="przeznaczenie">

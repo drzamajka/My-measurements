@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -94,11 +95,20 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
                         pomiar.setId(queryDocumentSnapshot.getId());
                         listaPomiarow.add(pomiar);
                         data.add(pomiar.getNazwa());
-                        if(wpisPomiar.getIdPomiar() == pomiar.getId()) {
-                            idWybranegoPomiaru = data.size();
+                        if(wpisPomiar.getIdPomiar().equals(pomiar.getId())) {
+                            idWybranegoPomiaru = data.size()-1;
                         }
                     }
-
+                    TextView textView5 = findViewById(R.id.jednostka);
+                    if(listaPomiarow.get(idWybranegoPomiaru).getIdJednostki()!=null){
+                        Jednostka jednostka = jednostkiRepository.findById(listaPomiarow.get(idWybranegoPomiaru).getIdJednostki());
+                        textView5.setText(jednostka.getWartosc());
+                    }
+                    else{
+                        textView5.setText("");
+                        wynik.getEditText().setMinLines(3);
+                        wynik.getEditText().setGravity(Gravity.START);
+                    }
                     textWybranegoPomiaru = data.get(idWybranegoPomiaru);
                     pomiary.setText(textWybranegoPomiaru, false);
                     ArrayAdapter adapter = new ArrayAdapter ( WpisPomiarEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
@@ -119,8 +129,18 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 idWybranegoPomiaru = position;
-                Jednostka jednostka = jednostkiRepository.findById(listaPomiarow.get(position).getIdJednostki());
-                textView5.setText(jednostka.getWartosc());
+                Pomiar pomiar = listaPomiarow.get(position);
+                if(pomiar.getIdJednostki()!=null) {
+                    Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
+                    textView5.setText(jednostka.getWartosc());
+                    wynik.getEditText().setMinLines(1);
+                    wynik.getEditText().setGravity(Gravity.CENTER_VERTICAL);
+                }
+                else{
+                    textView5.setText("");
+                    wynik.getEditText().setMinLines(3);
+                    wynik.getEditText().setGravity(Gravity.START);
+                }
             }
         });
 

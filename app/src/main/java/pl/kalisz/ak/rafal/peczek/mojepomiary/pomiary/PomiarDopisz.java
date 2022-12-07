@@ -58,6 +58,7 @@ public class PomiarDopisz extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
+                    data.add("Opis Tekstowy");
                     for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
                         Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                         jednostka.setId(queryDocumentSnapshot.getId());
@@ -94,7 +95,9 @@ public class PomiarDopisz extends AppCompatActivity {
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
                 notatka += '.';
-            String jednostkaId = listaJednostek.get(idWybranejJednostki).getId();
+            String jednostkaId = null;
+            if(idWybranejJednostki!=0)
+                jednostkaId = listaJednostek.get(idWybranejJednostki-1).getId();
 
 
             pomiarRepository.insert(new Pomiar( nazwa, notatka, FirebaseAuth.getInstance().getCurrentUser().getUid(), jednostkaId, new Date(), new Date()));

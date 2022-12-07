@@ -58,7 +58,7 @@ public class PomiarEdytuj extends AppCompatActivity {
         pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         idWybranejJednostki = 0;
-        textWybranejJednostki = "";
+        textWybranejJednostki = "Opis Tekstowy";
         pomiarId = (String) getIntent().getExtras().get(EXTRA_Pomiar_ID);
 
         nazwa = (TextInputLayout) findViewById(R.id.editTextNazwaLayout);
@@ -77,19 +77,20 @@ public class PomiarEdytuj extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
+                    data.add("Opis Tekstowy");
                     for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
                         Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                         jednostka.setId(queryDocumentSnapshot.getId());
                         listaJednostek.add(jednostka);
                         data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
-                        if(pomiar.getIdJednostki() == jednostka.getId()) {
-                            idWybranejJednostki = data.size();
+                        if(jednostka.getId().equals(pomiar.getIdJednostki())) {
+                            idWybranejJednostki = data.size()+1;
                         }
                     }
                     ArrayAdapter adapter = new ArrayAdapter ( PomiarEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
-
-                    textWybranejJednostki = data.get(idWybranejJednostki);
+                    if(idWybranejJednostki!=0)
+                        textWybranejJednostki = data.get(idWybranejJednostki-1);
                     jednostki.setText(textWybranejJednostki, false);
                     jednostkiL.setEnabled(false);
                 }
@@ -181,7 +182,10 @@ public class PomiarEdytuj extends AppCompatActivity {
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
                 notatka += '.';
-            String jednostkaId = listaJednostek.get(idWybranejJednostki).getId();
+
+            String jednostkaId = null;
+            if(idWybranejJednostki!=0)
+                jednostkaId = listaJednostek.get(idWybranejJednostki-1).getId();
 
             pomiar.setNazwa(nazwa);
             pomiar.setNotatka(notatka);

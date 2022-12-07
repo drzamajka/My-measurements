@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -100,8 +101,16 @@ public class EtapTerapiActivity extends AppCompatActivity {
             textView.setText(pomiar.getNazwa());
             TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
             textView1.setText(pomiar.getNotatka());
-            TextView textView2 = (TextView) elementView.findViewById(R.id.jednostka);
-            textView2.setText(jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc());
+
+            if(pomiar.getIdJednostki()!=null) {
+                TextView textView2 = (TextView) elementView.findViewById(R.id.jednostka);
+                textView2.setText(jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc());
+            }
+            else {
+                EditText editText = (EditText) elementView.findViewById(R.id.editTextWynik);
+                editText.setMinLines(3);
+                editText.setGravity(Gravity.START);
+            }
 
             viewListyElementow.addView(elementView);
         }
@@ -116,17 +125,21 @@ public class EtapTerapiActivity extends AppCompatActivity {
             przycisk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ArrayList<Double> listaWynikow = new ArrayList<>();
-                    for (View element : listaElementowL) {
+                    ArrayList<String> listaWynikow = new ArrayList<>();
+                    for(int i=0; i<listaElementowL.size(); i++) {
+                        View element = listaElementowL.get(i);
+                        Pomiar pomiar = listaCzynnosci.get(i);
                         String wynikOdczyt = ((EditText) element.findViewById(R.id.editTextWynik)).getText().toString();
-                        wynikOdczyt = wynikOdczyt.replaceAll("\\,", ".");
-                        if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
-                            Double wynik = Double.parseDouble(wynikOdczyt);
-                            listaWynikow.add(wynik);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
-                            return;
+                        if(pomiar.getIdJednostki()!=null){
+                            wynikOdczyt = wynikOdczyt.replaceAll("\\,", ".");
+                            if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
+                                wynikOdczyt = ((Double)(Double.parseDouble(wynikOdczyt))).toString();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
+                        listaWynikow.add(wynikOdczyt);
                     }
 
                     Calendar c = Calendar.getInstance();
@@ -170,17 +183,21 @@ public class EtapTerapiActivity extends AppCompatActivity {
             przycisk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ArrayList<Double> listaWynikow = new ArrayList<>();
-                    for (View element : listaElementowL) {
+                    ArrayList<String> listaWynikow = new ArrayList<>();
+                    for(int i=0; i<listaElementowL.size(); i++) {
+                        View element = listaElementowL.get(i);
+                        Pomiar pomiar = listaCzynnosci.get(i);
                         String wynikOdczyt = ((EditText) element.findViewById(R.id.editTextWynik)).getText().toString();
-                        wynikOdczyt = wynikOdczyt.replaceAll("\\,", ".");
-                        if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
-                            Double wynik = Double.parseDouble(wynikOdczyt);
-                            listaWynikow.add(wynik);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
-                            return;
+                        if(pomiar.getIdJednostki()!=null){
+                            wynikOdczyt = wynikOdczyt.replaceAll("\\,", ".");
+                            if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
+                                wynikOdczyt = ((Double)(Double.parseDouble(wynikOdczyt))).toString();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
+                        listaWynikow.add(wynikOdczyt);
                     }
 
                     Calendar c = Calendar.getInstance();

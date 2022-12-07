@@ -2,7 +2,6 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,9 +20,9 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 public class JednostkiDopisz extends AppCompatActivity {
 
     private EditText nazwa, wartosc;
-    private AutoCompleteTextView dokladnosc, przeznaczenie;
+    private AutoCompleteTextView typZmiennej;
     private JednostkiRepository jednostkiRepository;
-    private int dokladnoscSelectedId, przeznaczenieSelectedId;
+    private int typZmiennejSelectedId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,26 +33,15 @@ public class JednostkiDopisz extends AppCompatActivity {
 
         nazwa = (EditText) findViewById(R.id.editTextNazwa);
         wartosc = (EditText) findViewById(R.id.editTextJednostka);
-        dokladnosc = (AutoCompleteTextView) findViewById(R.id.spinner);
-        przeznaczenie = (AutoCompleteTextView) findViewById(R.id.spinner2);
-        dokladnoscSelectedId = 0;
-        przeznaczenieSelectedId = 0;
+        typZmiennej = (AutoCompleteTextView) findViewById(R.id.spinner);
+        typZmiennejSelectedId = 0;
 
-        dokladnosc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        typZmiennej.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dokladnoscSelectedId = position;
+                typZmiennejSelectedId = position;
             }
         });
-
-        przeznaczenie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                przeznaczenieSelectedId = position;
-            }
-        });
-
-
 
     }
 
@@ -65,7 +53,7 @@ public class JednostkiDopisz extends AppCompatActivity {
         {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
             String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            Jednostka jednostka = new Jednostka(nazwa, wartosc, dokladnoscSelectedId, przeznaczenieSelectedId, false, userid, new Date(), new Date() );
+            Jednostka jednostka = new Jednostka(nazwa, wartosc, typZmiennejSelectedId, false, userid, new Date(), new Date() );
 
             jednostkiRepository.insert(jednostka);
             finish();

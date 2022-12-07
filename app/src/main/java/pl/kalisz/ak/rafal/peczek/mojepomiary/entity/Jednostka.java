@@ -17,8 +17,7 @@ public class Jednostka {
     private String id;
     private String nazwa;
     private String wartosc;
-    private int dokladnosc;
-    private int przeznaczenie;
+    private int typZmiennej;
     private boolean czyDomyslna;
     private String idUzytkownika;
     private Date dataUtwozenia;
@@ -27,12 +26,11 @@ public class Jednostka {
     public Jednostka() {
     }
 
-    public Jednostka(String nazwa, String wartosc, int dokladnosc, int przeznaczenie, boolean czyDomyslna,  String idUzytkownika, Date dataUtwozenia, Date dataAktualizacji) {
+    public Jednostka(String nazwa, String wartosc, int typZmiennej, boolean czyDomyslna, String idUzytkownika, Date dataUtwozenia, Date dataAktualizacji) {
         this.id = null;
         this.nazwa = nazwa;
         this.wartosc = wartosc;
-        this.dokladnosc = dokladnosc;
-        this.przeznaczenie = przeznaczenie;
+        this.typZmiennej = typZmiennej;
         this.czyDomyslna = czyDomyslna;
         this.idUzytkownika = idUzytkownika;
         this.dataUtwozenia = dataUtwozenia;
@@ -47,9 +45,9 @@ public class Jednostka {
 
     public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
 
-    public int getDokladnosc() { return dokladnosc; }
+    public int getTypZmiennej() { return typZmiennej; }
 
-    public void setDokladnosc(int dokladnosc) { this.dokladnosc = dokladnosc; }
+    public void setTypZmiennej(int typZmiennej) { this.typZmiennej = typZmiennej; }
 
     public String getNazwa() {
         return nazwa;
@@ -65,14 +63,6 @@ public class Jednostka {
 
     public void setWartosc(String wartosc) {
         this.wartosc = wartosc;
-    }
-
-    public int getPrzeznaczenie() {
-        return przeznaczenie;
-    }
-
-    public void setPrzeznaczenie(int przeznaczenie) {
-        this.przeznaczenie = przeznaczenie;
     }
 
     public boolean getCzyDomyslna() {
@@ -105,8 +95,7 @@ public class Jednostka {
                 "id='" + id + '\'' +
                 ", nazwa='" + nazwa + '\'' +
                 ", wartosc='" + wartosc + '\'' +
-                ", dokladnosc=" + dokladnosc +
-                ", przeznaczenie=" + przeznaczenie +
+                ", typZmiennej=" + typZmiennej +
                 ", czyDomyslna=" + czyDomyslna +
                 ", idUzytkownika='" + idUzytkownika + '\'' +
                 ", dataUtwozenia=" + dataUtwozenia +

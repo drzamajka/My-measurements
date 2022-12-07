@@ -67,14 +67,21 @@ protected void onBindViewHolder(@NonNull WpisPomiarAdapter.wpisPomiarViewholder 
         if(tmp.getId().equals(model.getIdPomiar()))
             pomiar = tmp;
     }
-    Jednostka jednostka = null;
-    for(Jednostka tmp : listaJednostek){
-        if(tmp.getId().equals(pomiar.getIdJednostki()))
-            jednostka = tmp;
+    holder.obiektNazwa.setText(pomiar.getNazwa());
+    if(pomiar.getIdJednostki()!=null) {
+        Jednostka jednostka = null;
+        for (Jednostka tmp : listaJednostek) {
+            if (tmp.getId().equals(pomiar.getIdJednostki()))
+                jednostka = tmp;
+        }
+        holder.obiektOpis.setText(model.getWynikPomiary()+" "+jednostka.getWartosc());
+    }
+    else{
+        holder.obiektOpis.setText(model.getWynikPomiary());
     }
 
-    holder.obiektNazwa.setText(pomiar.getNazwa());
-    holder.obiektOpis.setText(model.getWynikPomiary()+" "+jednostka.getWartosc());
+
+
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy");
     holder.obiektData.setText(sdf.format(model.getDataWykonania()));
     holder.view.setOnClickListener(new View.OnClickListener() {

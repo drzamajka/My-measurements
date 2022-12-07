@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.Query;
+
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
@@ -75,7 +77,7 @@ public class WpisPomiarFragment extends Fragment {
 
         FirestoreRecyclerOptions<WpisPomiar> options
                 = new FirestoreRecyclerOptions.Builder<WpisPomiar>()
-                .setQuery(wpisPomiarRepository.getQuery(), WpisPomiar.class)
+                .setQuery(wpisPomiarRepository.getQuery().orderBy("dataWykonania", Query.Direction.DESCENDING), WpisPomiar.class)
                 .build();
 
         wpisPomiarAdapter = new WpisPomiarAdapter(options);

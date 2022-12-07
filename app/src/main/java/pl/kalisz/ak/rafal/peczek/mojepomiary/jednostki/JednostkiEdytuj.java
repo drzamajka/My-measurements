@@ -28,12 +28,12 @@ public class JednostkiEdytuj extends AppCompatActivity {
     private String jednostkaId;
 
     private TextInputLayout nazwa, wartosc;
-    private AutoCompleteTextView dokladnosc, przeznaczenie;
-    private TextInputLayout dokladnoscL, przeznaczenieL;
+    private AutoCompleteTextView typZmiennej;
+    private TextInputLayout typZmiennejL;
     private Button aktualizuj, anuluj;
     private JednostkiRepository jednostkiRepository;
     private Jednostka jednostka;
-    private int dokladnoscSelectedId, przeznaczenieSelectedId;
+    private int typZmiennejSelectedId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,42 +47,31 @@ public class JednostkiEdytuj extends AppCompatActivity {
         wartosc = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
         aktualizuj = (Button) findViewById(R.id.button_save_edit);
         anuluj = (Button) findViewById(R.id.button_disable_edit);
-        dokladnosc = (AutoCompleteTextView) findViewById(R.id.spinner);
-        przeznaczenie = (AutoCompleteTextView) findViewById(R.id.spinner2);
-        dokladnoscL = (TextInputLayout) findViewById(R.id.spinnerLayout);
-        przeznaczenieL = (TextInputLayout) findViewById(R.id.spinner2Layout);
+        typZmiennej = (AutoCompleteTextView) findViewById(R.id.spinner);
+        typZmiennejL = (TextInputLayout) findViewById(R.id.spinnerLayout);
 
 
         jednostka = jednostkiRepository.findById(jednostkaId);
         nazwa.getEditText().setText(jednostka.getNazwa());
         wartosc.getEditText().setText(jednostka.getWartosc());
-        dokladnoscSelectedId = jednostka.getDokladnosc();
-        przeznaczenieSelectedId = jednostka.getPrzeznaczenie();
-        String[] listaDokladnosci = getResources().getStringArray(R.array.dokladnosc);
-        dokladnosc.setText(dokladnosc.getAdapter().getItem(dokladnoscSelectedId).toString(), false);
-        przeznaczenie.setText(przeznaczenie.getAdapter().getItem(przeznaczenieSelectedId).toString(), false);
+        typZmiennejSelectedId = jednostka.getTypZmiennej();
+        String[] listaDokladnosci = getResources().getStringArray(R.array.typZmiennej);
+        typZmiennej.setText(typZmiennej.getAdapter().getItem(typZmiennejSelectedId).toString(), false);
 
 
-        dokladnosc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        typZmiennej.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dokladnoscSelectedId = position;
+                typZmiennejSelectedId = position;
             }
         });
 
-        przeznaczenie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                przeznaczenieSelectedId = position;
-            }
-        });
 
         aktualizuj.setEnabled(false);
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
         wartosc.setEnabled(false);
-        dokladnoscL.setEnabled(false);
-        przeznaczenieL.setEnabled(false);
+        typZmiennejL.setEnabled(false);
 
     }
 
@@ -105,8 +94,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
                     anuluj.setEnabled(true);
                     nazwa.setEnabled(true);
                     wartosc.setEnabled(true);
-                    dokladnoscL.setEnabled(true);
-                    przeznaczenieL.setEnabled(true);
+                    typZmiennejL.setEnabled(true);
                 }
                 else {
                     Toast.makeText(this, "Nie mozna edytować domyślnej jednostki", Toast.LENGTH_LONG).show();
@@ -148,8 +136,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
         wartosc.setEnabled(false);
-        dokladnoscL.setEnabled(false);
-        przeznaczenieL.setEnabled(false);
+        typZmiennejL.setEnabled(false);
     }
 
     public void aktualizujJednostke(View view) {
@@ -162,8 +149,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
 
             jednostka.setNazwa(nazwa);
             jednostka.setWartosc(wartosc);
-            jednostka.setDokladnosc(dokladnoscSelectedId);
-            jednostka.setPrzeznaczenie(przeznaczenieSelectedId);
+            jednostka.setTypZmiennej(typZmiennejSelectedId);
             jednostka.setDataAktualizacji(new Date());
             jednostkiRepository.update(jednostka);
             finish();

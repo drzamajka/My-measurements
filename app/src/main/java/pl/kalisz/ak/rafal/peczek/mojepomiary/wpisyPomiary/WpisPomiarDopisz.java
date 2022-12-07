@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -94,8 +95,18 @@ public class WpisPomiarDopisz extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 idWybranegoPomiaru = position;
-                Jednostka jednostka = jednostkiRepository.findById(listaPomiarow.get(position).getIdJednostki());
-                textView5.setText(jednostka.getWartosc());
+                Pomiar pomiar = listaPomiarow.get(position);
+                if(pomiar.getIdJednostki()!=null) {
+                    Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
+                    textView5.setText(jednostka.getWartosc());
+                    wynik.getEditText().setMinLines(1);
+                    wynik.getEditText().setGravity(Gravity.CENTER_VERTICAL);
+                }
+                else{
+                    textView5.setText("");
+                    wynik.getEditText().setMinLines(3);
+                    wynik.getEditText().setGravity(Gravity.START);
+                }
             }
         });
 
