@@ -105,7 +105,6 @@ public class MainFragment extends Fragment {
         c.add(Calendar.DATE, 1);
         Date dateJutro = c.getTime();
         rvEtapy = (RecyclerView) view.findViewById(R.id.recycleView);
-        rvEtapy.setHasFixedSize(true);
         rvEtapy.setLayoutManager(
                 new LinearLayoutManager(getContext()));
 

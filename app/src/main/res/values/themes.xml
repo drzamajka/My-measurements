@@ -78,6 +78,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="FaidDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+
 
     <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>

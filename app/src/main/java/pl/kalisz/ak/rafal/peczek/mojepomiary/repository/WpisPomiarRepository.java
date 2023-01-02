@@ -16,6 +16,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class WpisPomiarRepository {
@@ -44,6 +45,21 @@ public class WpisPomiarRepository {
             lista = task.getResult().toObjects(WpisPomiar.class);
         }
         return lista;
+    }
+
+    public WpisPomiar findByEtapIdPomiarId(@NonNull String idEtapuTerapi, @NonNull String idPomiaru) {
+        Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).whereEqualTo("idPomiar", idPomiaru).get(Source.DEFAULT);
+
+        while(!task.isComplete()) {
+
+        }
+        if (task.isSuccessful()) {
+            for(WpisPomiar wpisPomiar : task.getResult().toObjects(WpisPomiar.class)){
+                if(wpisPomiar.getIdPomiar().equals(idPomiaru))
+                    return wpisPomiar;
+            }
+        }
+        return null;
     }
 
     public Task<QuerySnapshot> getByEtapId(@NonNull String idEtapuTerapi) {

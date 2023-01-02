@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -22,6 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -31,12 +35,16 @@ import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisLekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
@@ -48,9 +56,12 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
     static PomiarRepository pomiarRepository;
     static TerapiaRepository terapiaRepository;
     static WpisPomiarRepository wpisPomiarRepository;
+    static WpisLekRepository wpisLekRepository;
     static JednostkiRepository jednostkiRepository;
+    private LekRepository lekRepository;
     static List<Jednostka> listaJednostek;
-    static List<Pomiar> listaPomiaruw;
+    static List<Pomiar> listaPomiarow;
+    static List<Lek> listaLekow;
 
     public MainEtapAdapter(@NonNull FirestoreRecyclerOptions<EtapTerapa> options) {
         super(options);
@@ -58,6 +69,7 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         pomiarRepository = new PomiarRepository(userUid);
         terapiaRepository = new TerapiaRepository(userUid);
         wpisPomiarRepository = new WpisPomiarRepository(userUid);
+        wpisLekRepository = new WpisLekRepository(userUid);
         jednostkiRepository = new JednostkiRepository(userUid);
         jednostkiRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -77,15 +89,23 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         pomiarRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                listaPomiaruw = queryDocumentSnapshots.toObjects(Pomiar.class);
+                listaPomiarow = queryDocumentSnapshots.toObjects(Pomiar.class);
             }
         });
         pomiarRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(!value.getDocumentChanges().isEmpty()){
-                    listaPomiaruw = value.toObjects(Pomiar.class);
+                    listaPomiarow = value.toObjects(Pomiar.class);
                 }
+            }
+        });
+
+        lekRepository = new LekRepository(FirebaseAuth.getInstance().getUid());
+        lekRepository.getQuery().get(Source.CACHE).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                listaLekow = queryDocumentSnapshots.toObjects(Lek.class);
             }
         });
 
@@ -95,34 +115,86 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
     protected void onBindViewHolder(@NonNull MainEtapAdapter.etapViewholder holder, int position, @NonNull EtapTerapa model) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         holder.obiektData.setText(sdf.format(model.getDataZaplanowania()));
+        holder.obiektNazwa.setText("");
+        holder.obiektOpis.setText("");
         if(listaJednostek.isEmpty())
             listaJednostek = jednostkiRepository.getAll();
-        if(listaPomiaruw.isEmpty())
-            listaPomiaruw = pomiarRepository.getAll();
-
-
+        if(listaPomiarow.isEmpty())
+            listaPomiarow = pomiarRepository.getAll();
+        if(listaLekow.isEmpty())
+            listaLekow = lekRepository.getAll();
 
         terapiaRepository.getById(model.getIdTerapi()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Terapia terapia = documentSnapshot.toObject(Terapia.class);
                 if (terapia != null) {
-                    ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
-                    String nazwa = "";
-                    for (String id : listaElementow) {
-                        Pomiar pomiar = null;
-                        for (Pomiar tmp : listaPomiaruw) {
-                            if (tmp.getId().equals(id))
-                                pomiar = tmp;
-                        }
-                        if (id != listaElementow.get(0))
-                            nazwa += ",\n" + pomiar.getNazwa();
-                        else
-                            nazwa = pomiar.getNazwa();
-                    }
-                    holder.obiektNazwa.setText(nazwa);
+                    String tytul = "";
+                    try{
+                        ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
+                        for(int i=0; i<listaElementow.size();i++){
+                            JSONObject czynnosc = new JSONObject(listaElementow.get(i));
+                            String szukaneId = (String) czynnosc.get("id");
+                            if (i != 0 && i < listaElementow.size()) {
+                                tytul += ", ";
+                                if(model.getDataWykonania() != null)
+                                    holder.obiektOpis.setText(holder.obiektOpis.getText()+"\n");
+                            }
 
-                    String finalNazwa = nazwa;
+                            if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
+                                Pomiar pomiar = null;
+                                for (Pomiar tmp : listaPomiarow) {
+                                    if (tmp.getId().equals(szukaneId))
+                                        pomiar = tmp;
+                                }
+                                if(pomiar!= null) {
+                                    tytul += pomiar.getNazwa();
+                                    if (model.getDataWykonania() != null) {
+                                        WpisPomiar wpisPomiar = wpisPomiarRepository.findByEtapIdPomiarId(model.getId(), pomiar.getId());
+                                        if(wpisPomiar!=null) {
+                                            if (pomiar.getIdJednostki() != null) {
+                                                Jednostka jednostka = null;
+                                                for (Jednostka tmp : listaJednostek) {
+                                                    if (tmp.getId().equals(pomiar.getIdJednostki()))
+                                                        jednostka = tmp;
+                                                }
+                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + wpisPomiar.getWynikPomiary() + " " + jednostka.getWartosc());
+                                            } else {
+                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + wpisPomiar.getWynikPomiary());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if(czynnosc.get("typ").equals(Lek.class.getName())) {
+                                Lek lek = null;
+                                for (Lek tmp : listaLekow) {
+                                    if (tmp.getId().equals(szukaneId))
+                                        lek = tmp;
+                                }
+                                if(lek!=null) {
+                                    tytul += lek.getNazwa();
+                                    if (model.getDataWykonania() != null) {
+                                        WpisLek wpisLek = wpisLekRepository.findByEtapIdLekId(model.getId(), lek.getId());
+                                        if (wpisLek != null) {
+                                            holder.obiektOpis.setText(holder.obiektOpis.getText() + "Pobrano " + lek.getNazwa());
+                                        } else {
+                                            holder.obiektOpis.setText(holder.obiektOpis.getText() + "Pominiento " + lek.getNazwa());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        holder.obiektNazwa.setText(tytul);
+                    } catch (
+                            JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(model.getDataWykonania() == null) {
+                        holder.obiektOpis.setText( "Jescze nie wykonano etapu");
+                    }
+
+                    String finalNazwa = tytul;
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -212,42 +284,43 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
 
 
 
-        if(model.getDataWykonania() != null) {
-            wpisPomiarRepository.getByEtapId(model.getId()).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    List<WpisPomiar> listaWpisow = queryDocumentSnapshots.toObjects(WpisPomiar.class);
-                    String opis = "";
-                    int i = 0;
-                    for (WpisPomiar wpis : listaWpisow) {
-                        Pomiar pomiar = null;
-                        for(Pomiar tmp : listaPomiaruw){
-                            if(tmp.getId().equals(wpis.getIdPomiar()))
-                                pomiar = tmp;
-                        }
-                        if(i!=0)
-                            opis += "\n";
-                        if(pomiar.getIdJednostki()!=null) {
-                            Jednostka jednostka = null;
-                            for (Jednostka tmp : listaJednostek) {
-                                if (tmp.getId().equals(pomiar.getIdJednostki()))
-                                    jednostka = tmp;
-                            }
-                            opis += wpis.getWynikPomiary() + " " + jednostka.getWartosc();
-                        }
-                        else{
-                            opis += wpis.getWynikPomiary();
-                        }
-                        i++;
-                    }
-                    holder.obiektOpis.setMinLines(i);
-                    holder.obiektOpis.setText(opis);
-                }
-            });
-        }
-        else{
-            holder.obiektOpis.setText( "Jescze nie wykonano etapu");
-        }
+//        if(model.getDataWykonania() != null) {
+//            wpisPomiarRepository.getByEtapId(model.getId()).addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                @Override
+//                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                    List<WpisPomiar> listaWpisow = queryDocumentSnapshots.toObjects(WpisPomiar.class);
+//                    String opis = "";
+//                    int i = 0;
+//                    for (WpisPomiar wpis : listaWpisow) {
+//                        Pomiar pomiar = null;
+//                        for(Pomiar tmp : listaPomiarow){
+//                            if(tmp.getId().equals(wpis.getIdPomiar()))
+//                                pomiar = tmp;
+//                        }
+//                        if(i!=0)
+//                            opis += "\n";
+//                        if(pomiar.getIdJednostki()!=null) {
+//                            Jednostka jednostka = null;
+//                            for (Jednostka tmp : listaJednostek) {
+//                                if (tmp.getId().equals(pomiar.getIdJednostki()))
+//                                    jednostka = tmp;
+//                            }
+//                            opis += wpis.getWynikPomiary() + " " + jednostka.getWartosc();
+//                        }
+//                        else{
+//                            opis += wpis.getWynikPomiary();
+//                        }
+//                        i++;
+//                    }
+//                    holder.obiektOpis.setMinLines(i);
+//                    holder.obiektOpis.setText(opis);
+//                }
+//            });
+//        }
+//        else{
+//            holder.obiektOpis.setText( "Jescze nie wykonano etapu");
+//        }
+
 
     }
 

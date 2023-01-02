@@ -38,7 +38,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.lab12.Ustawienia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.leki.LekiFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarFragment;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.SampleBootReceiver;
@@ -108,43 +107,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
-
-            case R.id.setings:
-                Toast.makeText(this, "Ustawienia", Toast.LENGTH_LONG).show();
-                Intent intent0 = new Intent( this, Ustawienia.class);
-                startActivity(intent0);
-                return true;
-            case R.id.about: {
-                snackbar = Snackbar.make(findViewById(android.R.id.content), "Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji", Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction(R.string.submit, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        snackbar.dismiss();
-                    }
-                });
-                snackbar.show();
-            }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -201,7 +163,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
             Log.w("TAG", "user: "+currentUser.getUid());
         }
+    }
 
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId() ) {
+
+            case R.id.setings:
+                Toast.makeText(this, "Ustawienia", Toast.LENGTH_LONG).show();
+//                Intent intent0 = new Intent( this, Ustawienia.class);
+//                startActivity(intent0);
+                return true;
+            case R.id.about: {
+                snackbar = Snackbar.make(findViewById(android.R.id.content), "Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji", Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction(R.string.submit, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+            return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -264,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    //    Kontrola obrotu
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

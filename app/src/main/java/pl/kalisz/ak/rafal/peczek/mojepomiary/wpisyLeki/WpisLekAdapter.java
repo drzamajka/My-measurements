@@ -81,7 +81,7 @@ protected void onBindViewHolder(@NonNull wpisLekViewholder holder, int position,
     if(Double.parseDouble(model.getSumaObrotu())>0)
         holder.obiektOpis.setText("Wpływ "+model.getSumaObrotu()+" "+jednostka.getWartosc()+" leku");
     else
-        holder.obiektOpis.setText("Pobrano "+model.getSumaObrotu()+" "+jednostka.getWartosc()+" leku");
+        holder.obiektOpis.setText("Pobrano "+((Double)(Double.parseDouble(model.getSumaObrotu())*-1)).toString()+" "+jednostka.getWartosc()+" leku");
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy");
     holder.obiektData.setText(sdf.format(model.getDataWykonania()));
 //    holder.view.setOnClickListener(new View.OnClickListener() {

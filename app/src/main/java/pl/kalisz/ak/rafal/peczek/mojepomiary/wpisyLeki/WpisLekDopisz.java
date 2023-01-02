@@ -2,6 +2,7 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyLeki;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -103,17 +104,18 @@ public class WpisLekDopisz extends AppCompatActivity {
 
     }
 
-//    public WpisLek(String sumaObrotu, String pozostalyZapas, String idLeku, String idUzytkownika, String idEtapTerapi, Date dataWykonania, Date dataUtwozenia, Date dataAktualizacji) {
-//        id = null;
-//        this.sumaObrotu = sumaObrotu;
-//        this.pozostalyZapas = pozostalyZapas;
-//        this.idLeku = idLeku;
-//        this.idUzytkownika = idUzytkownika;
-//        this.idEtapTerapi = idEtapTerapi;
-//        this.dataWykonania = dataWykonania;
-//        this.dataUtwozenia = dataUtwozenia;
-//        this.dataAktualizacji = dataAktualizacji;
-//    }
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId() ) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     public void zapiszNowaPozycia(View view) throws ParseException {
         String wynik = this.wartoscOperacji.getEditText().getText().toString();

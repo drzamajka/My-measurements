@@ -69,14 +69,6 @@ public class WpisLekFragment extends Fragment {
 
 
         rvWpisLek = (RecyclerView) view.findViewById(R.id.recycleView);
-        rvWpisLek.setHasFixedSize(true);
-        Configuration config = getResources().getConfiguration();
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            rvWpisLek.setLayoutManager(
-                    new GridLayoutManager(getContext(), 2));
-        } else
-            rvWpisLek.setLayoutManager(
-                    new LinearLayoutManager(getContext()));
 
         rvWpisLek.setLayoutManager(
                 new LinearLayoutManager(getContext()));

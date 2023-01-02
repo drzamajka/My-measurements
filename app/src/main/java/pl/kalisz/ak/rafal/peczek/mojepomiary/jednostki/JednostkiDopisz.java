@@ -3,6 +3,7 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -43,6 +44,19 @@ public class JednostkiDopisz extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId() ) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void zapiszNowaPozycia(View view){

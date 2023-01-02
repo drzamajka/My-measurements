@@ -25,7 +25,7 @@ public class TerapiaRepository {
     }
 
     public Query getQuery(){
-        return mDatabase.whereEqualTo("idUzytkownika", userUid);
+        return mDatabase.whereEqualTo("idUzytkownika", userUid).orderBy("dataUtwozenia", Query.Direction.DESCENDING);
     }
 
     public Task<DocumentReference> insert(@NonNull Terapia terapia) {

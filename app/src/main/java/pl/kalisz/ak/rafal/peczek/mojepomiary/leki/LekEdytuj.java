@@ -1,6 +1,7 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.leki;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,12 +15,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -30,9 +36,12 @@ import java.util.List;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisLekRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyLeki.WpisLekAdapter;
 
 public class LekEdytuj extends AppCompatActivity {
 
@@ -43,20 +52,25 @@ public class LekEdytuj extends AppCompatActivity {
     private TextInputLayout nazwa, notatka;
     private AutoCompleteTextView jednostki;
     private TextInputLayout jednostkiL;
+    private RecyclerView recyclerView;
     private List<Jednostka> listaJednostek;
     private int idWybranejJednostki;
     public String textWybranejJednostki;
 
     private LekRepository lekRepository;
     private JednostkiRepository jednostkiRepository;
+    private WpisLekRepository wpisLekRepository;
+    private WpisLekAdapter wpisLekAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lek_edytuj);
 
+
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         lekRepository = new LekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        wpisLekRepository = new WpisLekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         idWybranejJednostki = 0;
         textWybranejJednostki = "";
@@ -66,6 +80,7 @@ public class LekEdytuj extends AppCompatActivity {
         notatka = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
         jednostki = (AutoCompleteTextView) findViewById(R.id.spinner);
         jednostkiL = (TextInputLayout) findViewById(R.id.spinnerLayout);
+        recyclerView = (RecyclerView) findViewById(R.id.recycleView);
 
         lek = lekRepository.findById(lekId);
         if(lek == null){
@@ -106,6 +121,19 @@ public class LekEdytuj extends AppCompatActivity {
         notatka.getEditText().setText(lek.getNotatka());
 
 
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getApplicationContext()));
+
+        FirestoreRecyclerOptions<WpisLek> options
+                = new FirestoreRecyclerOptions.Builder<WpisLek>()
+                .setQuery(wpisLekRepository.getQuery().whereEqualTo("idLeku", lek.getId()).orderBy("dataWykonania", Query.Direction.DESCENDING), WpisLek.class)
+                .build();
+
+        wpisLekAdapter = new WpisLekAdapter(options);
+
+        wpisLekAdapter.startListening();
+        recyclerView.setAdapter(wpisLekAdapter);
+
 
         jednostki.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,8 +141,22 @@ public class LekEdytuj extends AppCompatActivity {
                 idWybranejJednostki = position;
             }
         });
+    }
 
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        wpisLekAdapter.startListening();
+        recyclerView.setAdapter(wpisLekAdapter);
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        wpisLekAdapter.stopListening();
     }
 
     @Override
@@ -154,11 +196,19 @@ public class LekEdytuj extends AppCompatActivity {
                 builder.show();
                 return true;
             }
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     public void stopEdit(View view) {
         Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
@@ -194,4 +244,5 @@ public class LekEdytuj extends AppCompatActivity {
         }else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
     }
+
 }

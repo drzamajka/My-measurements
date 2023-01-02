@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,15 +18,22 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.Query;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.EtapTerapiaRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
 
@@ -41,6 +49,8 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
     private TerapiaRepository terapiaRepository;
     private PomiarRepository pomiarRepository;
+    private LekRepository lekRepositoryl;
+    private JednostkiRepository jednostkiRepository;
     private String userUid;
 
     private RecyclerView rvEtapy;
@@ -61,6 +71,8 @@ public class TerapiaEdytuj extends AppCompatActivity {
         userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         terapiaRepository = new TerapiaRepository(userUid);
         pomiarRepository = new PomiarRepository(userUid);
+        lekRepositoryl = new LekRepository(userUid);
+        jednostkiRepository = new JednostkiRepository(userUid);
         etapTerapiaRepository = new EtapTerapiaRepository(userUid);
 
 
@@ -68,13 +80,35 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-        ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
-        for (String id: listaElementow) {
-            Pomiar pomiar = pomiarRepository.findById(id);
-            if(id != listaElementow.get(0))
-                elementyTerapi.getEditText().setText(elementyTerapi.getEditText().getText()+"\n"+pomiar.getNazwa());
-            else
-                elementyTerapi.getEditText().setText(pomiar.getNazwa());
+        try{
+            String tytul = "";
+            ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
+            for(int i=0; i<listaElementow.size();i++){
+                if(i!=0){
+                    tytul += "\n";
+                }
+                JSONObject czynnosc = new JSONObject(listaElementow.get(i));
+                String szukaneId = (String) czynnosc.get("id");
+                if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
+                    Pomiar pomiar = pomiarRepository.findById(szukaneId);
+                    tytul += pomiar.getNazwa();
+                }
+                else if(czynnosc.get("typ").equals(Lek.class.getName())) {
+                    Lek lek = lekRepositoryl.findById(szukaneId);
+                    tytul += lek.getNazwa()+": ";
+
+                    Jednostka jednostka = jednostkiRepository.findById(lek.getIdJednostki());
+                    if(jednostka.getTypZmiennej() == 0)
+                        tytul += (int)czynnosc.get("dawka");
+                    else
+                        tytul += czynnosc.get("dawka");
+                    tytul += " "+jednostka.getWartosc();
+                }
+            }
+            elementyTerapi.getEditText().setText(tytul);
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
         }
 
         dataRozpoczecia.getEditText().setText(sdf.format(terapia.getDataRozpoczecia()));
@@ -122,9 +156,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
     public boolean onOptionsItemSelected (MenuItem item)
     {
         switch (item.getItemId() ) {
-
-            case R.id.drop:
-
+            case R.id.drop:{
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TerapiaEdytuj.this);
                 builder.setMessage("Czy na pewno usunąć");
                 builder.setTitle("Alert !");
@@ -141,9 +173,15 @@ public class TerapiaEdytuj extends AppCompatActivity {
                 });
                 builder.show();
                 return true;
+            }
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
+
     }
 
 }

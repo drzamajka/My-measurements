@@ -1,5 +1,8 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -7,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +47,26 @@ public class WpisLekRepository {
         return lista;
     }
 
+    public WpisLek findByEtapIdLekId(@NonNull String idEtapuTerapi, @NonNull String idLeku) {
+
+
+        Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get(Source.DEFAULT);
+
+
+        while(!task.isComplete()) {
+
+        }
+        if (task.isSuccessful()) {
+            for(WpisLek wpisLek : task.getResult().toObjects(WpisLek.class)){
+                if(wpisLek.getIdLeku().equals(idLeku))
+                    return wpisLek;
+            }
+        }
+        Log.w("TAG-repo", "idEtapuTerapi: "+idEtapuTerapi+"  idLeku: "+idLeku);
+        Log.w("TAG-repo", "lista findByEtapIdLekId: "+task.isSuccessful());
+        return null;
+    }
+
     public Task<QuerySnapshot> getByEtapId(@NonNull String idEtapuTerapi) {
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get();
         return task;
@@ -55,6 +79,18 @@ public class WpisLekRepository {
 
     public void insert(@NonNull WpisLek wpisLek) {
         mDatabase.add(wpisLek);
+        mDatabase.whereEqualTo("idLeku", wpisLek.getIdLeku()).whereGreaterThan("dataWykonania", wpisLek.getDataWykonania()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
+                    for(WpisLek tmpWpisLek: lista){
+                        tmpWpisLek.setPozostalyZapas(((Double) (Double.parseDouble(tmpWpisLek.getPozostalyZapas())+Double.parseDouble(wpisLek.getSumaObrotu()))).toString());
+                        update(tmpWpisLek);
+                    }
+                }
+            }
+        });
     }
 
 
@@ -78,6 +114,18 @@ public class WpisLekRepository {
 
     public void delete(@NonNull WpisLek wpisLek) {
         mDatabase.document(wpisLek.getId()).delete();
+        mDatabase.whereEqualTo("idLeku", wpisLek.getIdLeku()).whereGreaterThan("dataWykonania", wpisLek.getDataWykonania()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
+                    for(WpisLek tmpWpisLek: lista){
+                        tmpWpisLek.setPozostalyZapas(((Double) (Double.parseDouble(tmpWpisLek.getPozostalyZapas())-Double.parseDouble(wpisLek.getSumaObrotu()))).toString());
+                        update(tmpWpisLek);
+                    }
+                }
+            }
+        });
     }
 
 

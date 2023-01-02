@@ -12,7 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -104,18 +106,25 @@ protected void onBindViewHolder(@NonNull lekViewholder holder, int position, @No
             }
         }
     }
-    Log.w("TAG", "najnowszyWpis: "+najnowszyWpis);
 
-    if(najnowszyWpis != null) {
-        for(Jednostka jednostka : listaJednostek) {
-            if(jednostka.getId().equals(model.getIdJednostki())){
-                holder.obiektOpis.setText("W zapasie pozostało:"+najnowszyWpis.getPozostalyZapas()+" "+jednostka.getWartosc());
+    wpisLekRepository.getByLekId(model.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        @Override
+        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            if(task.isSuccessful()) {
+                List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
+                if (!lista.isEmpty()) {
+                    for (Jednostka jednostka : listaJednostek) {
+                        if (jednostka.getId().equals(model.getIdJednostki())) {
+                            holder.obiektOpis.setText("W zapasie pozostało:" + lista.get(0).getPozostalyZapas() + " " + jednostka.getWartosc());
+                        }
+                    }
+                } else {
+                    holder.obiektOpis.setText("Lek nie posiada jescze zapasu");
+                }
             }
         }
-    }
-    else {
-        holder.obiektOpis.setText("Lek nie posiada jescze zapasu");
-    }
+    });
+
 
 }
 

@@ -61,7 +61,9 @@ public class LekRepository {
 
         }
         if (task.isSuccessful()) {
-            lek = task.getResult().toObjects(Lek.class).get(0);
+            List<Lek> list = task.getResult().toObjects(Lek.class);
+            if(!list.isEmpty())
+                lek = list.get(0);
         }
         return lek;
     }

@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                FirebaseUser user = mAuth.getCurrentUser();
                                 new SampleBootReceiver().renewAlarmManager(getApplicationContext());
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();

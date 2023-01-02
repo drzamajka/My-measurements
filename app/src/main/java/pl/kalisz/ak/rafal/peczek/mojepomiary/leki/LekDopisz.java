@@ -1,11 +1,14 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.leki;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -84,6 +88,19 @@ public class LekDopisz extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId() ) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void zapiszNowaPozycia(View view){

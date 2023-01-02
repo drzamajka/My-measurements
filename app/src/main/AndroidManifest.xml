@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.RECEIVE_PACKAGE_RESTARTED" />
 
     <application
         android:allowBackup="true"
@@ -42,12 +41,12 @@
             android:label="Edycia leku"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".terapie.EtapTerapiActivity"
             android:exported="false"
             android:label="Etap terapi"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"/>
         <activity
             android:name=".wpisyPomiary.WpisPomiarEdytuj"
             android:exported="false"
@@ -114,12 +113,12 @@
             android:label="Logowanie"
             android:screenOrientation="portrait"
             android:theme="@style/MyAppTheme" />
-        <activity
-            android:name=".lab12.Ustawienia"
-            android:exported="false"
-            android:label="@string/title_activity_ustawienia"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
+<!--        <activity-->
+<!--            android:name=".lab12.Ustawienia"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_activity_ustawienia"-->
+<!--            android:parentActivityName=".MainActivity"-->
+<!--            android:theme="@style/MyAppTheme" />-->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"

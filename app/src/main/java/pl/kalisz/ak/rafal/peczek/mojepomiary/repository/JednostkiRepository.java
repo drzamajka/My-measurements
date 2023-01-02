@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -62,6 +63,10 @@ public class JednostkiRepository {
 
     public void insert(@NonNull Jednostka jednostka) {
         mDatabase.add(jednostka);
+    }
+
+    public DocumentReference queryById(@NonNull String jednostkaId) {
+        return mDatabase.document(jednostkaId);
     }
 
     public Jednostka findById(@NonNull String jednostkaId) {

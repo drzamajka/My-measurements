@@ -15,17 +15,18 @@ public class SampleBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.w("TAG-Reciver", "recive: "+intent.getAction());
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            goAsync();
+            PendingResult pendingResult = goAsync();
             renewAlarmManager(context);
+            pendingResult.finish();
         }
     }
 
-
     public void renewAlarmManager(Context context){
+        Log.w("TAG-Reciver", "ROZPOCZYNAM");
         EtapTerapiaRepository etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         List<EtapTerapa> list = etapTerapiaRepository.getAllAfterData(new Date());
-        Log.w("TAG-renewAlarmManager", "lista size: "+list.size());
         if(!list.isEmpty()){
             for ( EtapTerapa etapTerapa : list){
                     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -34,19 +35,18 @@ public class SampleBootReceiver extends BroadcastReceiver {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)etapTerapa.getDataZaplanowania().getTime(), i,PendingIntent.FLAG_MUTABLE);
                     alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
                 }
+            Log.w("TAG-Reciver", "sukces");
         }
+        Log.w("TAG-Reciver", "koncze");
     }
 
     public void cancleAlarmManager(Context context){
         EtapTerapiaRepository etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         List<EtapTerapa> list = etapTerapiaRepository.getAllAfterData(new Date());
-        Log.w("TAG-renewAlarmManager", "lista size: "+list.size());
         if(!list.isEmpty()){
             for ( EtapTerapa etapTerapa : list){
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                Intent i = new Intent(context, OdbiornikPowiadomien.class);
-                i.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)etapTerapa.getDataZaplanowania().getTime(), i,PendingIntent.FLAG_MUTABLE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)etapTerapa.getDataZaplanowania().getTime(),  new Intent(),PendingIntent.FLAG_MUTABLE);
                 alarmManager.cancel (pendingIntent);
             }
         }

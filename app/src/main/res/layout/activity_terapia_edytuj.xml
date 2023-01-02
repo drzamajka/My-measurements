@@ -118,12 +118,7 @@
                 android:layout_gravity="center" />
 
         </LinearLayout>
-
-
     </androidx.core.widget.NestedScrollView>
 
-
-
-    <!--        app:layout_constraintTop_toBottomOf="@+id/editTextNotatka" -->
 
 </LinearLayout>

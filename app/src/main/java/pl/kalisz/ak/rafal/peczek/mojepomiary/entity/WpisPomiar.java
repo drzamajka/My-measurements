@@ -13,6 +13,8 @@ public class WpisPomiar {
     private String id;
     private String wynikPomiary;
     private String idUzytkownika;
+
+    private Pomiar pomiar;
     private String idPomiar;
     private String idEtapTerapi;
     private Date dataWykonania;

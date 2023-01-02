@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -115,6 +116,19 @@ public class WpisPomiarDopisz extends AppCompatActivity {
         godzinaWykonania.getEditText().setText(simpleDateFormat.format(date));
         dodajTimePicker(godzinaWykonania.getEditText());
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId() ) {
+            case android.R.id.home: {
+                finish();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 

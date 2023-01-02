@@ -102,11 +102,12 @@ public class WpisLek {
 
     @Override
     public String toString() {
-        return "WpisPomiar{" +
+        return "WpisLek{" +
                 "id='" + id + '\'' +
-                ", wynikPomiary='" + sumaObrotu + '\'' +
+                ", sumaObrotu='" + sumaObrotu + '\'' +
+                ", pozostalyZapas='" + pozostalyZapas + '\'' +
                 ", idUzytkownika='" + idUzytkownika + '\'' +
-                ", idPomiar='" + idLeku + '\'' +
+                ", idLeku='" + idLeku + '\'' +
                 ", idEtapTerapi='" + idEtapTerapi + '\'' +
                 ", dataWykonania=" + dataWykonania +
                 ", dataUtwozenia=" + dataUtwozenia +

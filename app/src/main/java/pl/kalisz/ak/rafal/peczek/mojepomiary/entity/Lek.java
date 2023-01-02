@@ -87,7 +87,7 @@ public class Lek {
 
     @Override
     public String toString() {
-        return "Pomiar{" +
+        return "Lek{" +
                 "id='" + id + '\'' +
                 ", nazwa='" + nazwa + '\'' +
                 ", notatka='" + notatka + '\'' +

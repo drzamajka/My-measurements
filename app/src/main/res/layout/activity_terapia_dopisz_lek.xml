@@ -4,36 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".wpisyLeki.WpisLekDopisz">
+    android:orientation="vertical">
 
+    <com.google.android.material.card.MaterialCardView
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/spinnerLekiLayout"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="Leki">
+        app:cardCornerRadius="4dp"
+        android:layout_marginBottom="16dp">
 
-        <AutoCompleteTextView
-            android:id="@+id/spinnerLeki"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            app:simpleItems="@array/typZmiennej"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            />
+            <TextView
+                android:id="@+id/notatka"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="notatka" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/zapas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="zapas" />
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/cardViewLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="20dp"
-        android:orientation="vertical"></LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,9 +44,9 @@
             android:id="@+id/jednostka"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="40dp"
             android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,7 +54,7 @@
             android:id="@+id/editTextZasobLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="dodawany zasób"
+            android:hint="Dawka leku"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -70,18 +69,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/button_save_edit"
-        style="@style/Widget.Material3.Button.Icon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="24dp"
-        android:onClick="zapiszNowaPozycia"
-        android:text="dopisz nowy zasób"
-        app:icon="@drawable/ic_add_24" />
-
 
 
 
