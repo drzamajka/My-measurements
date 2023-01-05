@@ -74,7 +74,11 @@ protected void onBindViewHolder(@NonNull WpisPomiarAdapter.wpisPomiarViewholder 
             if (tmp.getId().equals(pomiar.getIdJednostki()))
                 jednostka = tmp;
         }
-        holder.obiektOpis.setText(model.getWynikPomiary()+" "+jednostka.getWartosc());
+        if (jednostka.getTypZmiennej() == 0) {
+            holder.obiektOpis.setText(holder.obiektOpis.getText() + (((int)Double.parseDouble(model.getWynikPomiary()))+"") + " " + jednostka.getWartosc());
+        }else {
+            holder.obiektOpis.setText(holder.obiektOpis.getText() + model.getWynikPomiary() + " " + jednostka.getWartosc());
+        }
     }
     else{
         holder.obiektOpis.setText(model.getWynikPomiary());

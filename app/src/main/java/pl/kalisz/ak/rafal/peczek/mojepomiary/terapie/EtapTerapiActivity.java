@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -156,17 +157,29 @@ public class EtapTerapiActivity extends AppCompatActivity {
                             elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_pomiar, null, false);
                             TextView textView = (TextView) elementView.findViewById(R.id.textView3);
                             TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
+                            TextView jednostkaTextView = (TextView) elementView.findViewById(R.id.jednostka);
+                            EditText wynikEditText = (EditText) elementView.findViewById(R.id.editTextWynik);
 
                             textView.setText(pomiar.getNazwa());
                             textView1.setText(pomiar.getNotatka());
 
-                            if (pomiar.getIdJednostki() != null) {
-                                TextView textView2 = (TextView) elementView.findViewById(R.id.jednostka);
-                                textView2.setText(jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc());
-                            } else {
-                                EditText editText = (EditText) elementView.findViewById(R.id.editTextWynik);
-                                editText.setMinLines(3);
-                                editText.setGravity(Gravity.START);
+                            if(pomiar.getIdJednostki()!=null) {
+                                Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
+                                jednostkaTextView.setText(jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc());
+                                if(jednostka.getTypZmiennej() == 0) {
+                                    wynikEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                }
+                                else {
+                                    wynikEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                                }
+                                wynikEditText.setMinLines(1);
+                                wynikEditText.setGravity(Gravity.CENTER_VERTICAL);
+                            }
+                            else{
+                                jednostkaTextView.setText("");
+                                wynikEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+                                wynikEditText.setMinLines(3);
+                                wynikEditText.setGravity(Gravity.START);
                             }
 
                         }
@@ -276,7 +289,12 @@ public class EtapTerapiActivity extends AppCompatActivity {
                             listaWpisow.add(wpisPomiar);
                             if(wpisPomiar!=null) {
                                 EditText editText = (EditText) elementView.findViewById(R.id.editTextWynik);
-                                editText.setText(wpisPomiar.getWynikPomiary());
+                                if(editText.getInputType() == InputType.TYPE_CLASS_NUMBER) {
+                                    editText.setText(((int)Double.parseDouble(wpisPomiar.getWynikPomiary()))+"");
+                                }
+                                else {
+                                    editText.setText(wpisPomiar.getWynikPomiary());
+                                }
                             }
                         }
                         if(czynnosc.getClass().equals(Lek.class)) {

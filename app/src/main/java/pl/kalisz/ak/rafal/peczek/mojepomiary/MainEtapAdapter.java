@@ -158,7 +158,11 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                                                     if (tmp.getId().equals(pomiar.getIdJednostki()))
                                                         jednostka = tmp;
                                                 }
-                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + wpisPomiar.getWynikPomiary() + " " + jednostka.getWartosc());
+                                                if (jednostka.getTypZmiennej() == 0) {
+                                                    holder.obiektOpis.setText(holder.obiektOpis.getText() + (((int)Double.parseDouble(wpisPomiar.getWynikPomiary()))+"") + " " + jednostka.getWartosc());
+                                                }else {
+                                                    holder.obiektOpis.setText(holder.obiektOpis.getText() + wpisPomiar.getWynikPomiary() + " " + jednostka.getWartosc());
+                                                }
                                             } else {
                                                 holder.obiektOpis.setText(holder.obiektOpis.getText() + wpisPomiar.getWynikPomiary());
                                             }

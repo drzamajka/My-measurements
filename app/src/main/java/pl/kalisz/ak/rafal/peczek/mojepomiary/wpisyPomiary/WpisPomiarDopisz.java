@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -97,14 +98,22 @@ public class WpisPomiarDopisz extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 idWybranegoPomiaru = position;
                 Pomiar pomiar = listaPomiarow.get(position);
+                wynik.getEditText().setText("");
                 if(pomiar.getIdJednostki()!=null) {
                     Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
                     textView5.setText(jednostka.getWartosc());
+                    if(jednostka.getTypZmiennej() == 0) {
+                        wynik.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+                    }
+                    else {
+                        wynik.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    }
                     wynik.getEditText().setMinLines(1);
                     wynik.getEditText().setGravity(Gravity.CENTER_VERTICAL);
                 }
                 else{
                     textView5.setText("");
+                    wynik.getEditText().setInputType(InputType.TYPE_CLASS_TEXT);
                     wynik.getEditText().setMinLines(3);
                     wynik.getEditText().setGravity(Gravity.START);
                 }
