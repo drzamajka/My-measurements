@@ -80,7 +80,7 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         jednostkiRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(!value.getDocumentChanges().isEmpty()){
+                if(value!= null && !value.getDocumentChanges().isEmpty()){
                     listaJednostek = value.toObjects(Jednostka.class);
                 }
             }
@@ -95,7 +95,7 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         pomiarRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(!value.getDocumentChanges().isEmpty()){
+                if(value!= null && !value.getDocumentChanges().isEmpty()){
                     listaPomiarow = value.toObjects(Pomiar.class);
                 }
             }

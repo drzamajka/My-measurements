@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -82,11 +84,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_element, null, false);
 
         if(mAuth.getCurrentUser() != null) {
+
+
             frame = findViewById(R.id.fooFragment);
-            MainFragment mFragment = new MainFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(frame.getId(), mFragment).commit();
             navigationView.getMenu().getItem(0).setChecked(true);
+            zmienFragment(R.id.naw_etapy);
         }
 
 
@@ -162,12 +164,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
             Log.w("TAG", "user: "+currentUser.getUid());
+            createNotificationChannel();
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
+    public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId() ) {
 
             case R.id.setings:
@@ -193,9 +195,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
+        zmienFragment(item.getItemId());
 
-        item.setChecked(true);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        navigationView.setCheckedItem(item);
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void zmienFragment(int id){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction().setCustomAnimations(
                 R.anim.fade_in,  // enter
                 R.anim.fade_out,  // exit
@@ -234,11 +243,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        navigationView.setCheckedItem(item);;
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -247,7 +251,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(drawer.isDrawerOpen(GravityCompat.START)){
             drawer.closeDrawer(GravityCompat.START);
         }else {
-            super.onBackPressed();
+            if(navigationView.getCheckedItem().getItemId() != R.id.naw_etapy) {
+                navigationView.getMenu().getItem(0).setChecked(true);
+                zmienFragment(R.id.naw_etapy);
+            }
+            else
+                super.onBackPressed();
         }
     }
 
@@ -261,6 +270,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this, R.string.rotation_land, Toast.LENGTH_SHORT).show();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             Toast.makeText(this, R.string.rotation_port, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void createNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence nazwa = "mojePomiaryChanell";
+            String opis = "Źródło powiadomień";
+            int znaczenie = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel chanel = new NotificationChannel("mojepomiary", nazwa, znaczenie);
+            chanel.setDescription(opis);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(chanel);
         }
     }
 

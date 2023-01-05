@@ -35,7 +35,7 @@ public class SampleBootReceiver extends BroadcastReceiver {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)etapTerapa.getDataZaplanowania().getTime(), i,PendingIntent.FLAG_MUTABLE);
                     alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
                 }
-            Log.w("TAG-Reciver", "sukces");
+            Log.w("TAG-Reciver", "załadowano: "+list.size()+" powiadomień");
         }
         Log.w("TAG-Reciver", "koncze");
     }

@@ -134,28 +134,11 @@ public class TerapiaDopisz extends AppCompatActivity {
         View elementView = getczestotliwoscView((int) wybranaCzestotliwosc, true);
         listaGodzin.add(elementView);
         viewListyCzestotliwosci.addView(elementView);
-        createNotificationChannel();
-
-    }
-
-    private void createNotificationChannel() {
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence nazwa = "mojePomiaryChanell";
-            String opis = "Źródło powiadomień";
-            int znaczenie = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel chanel = new NotificationChannel("mojepomiary", nazwa, znaczenie);
-            chanel.setDescription(opis);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(chanel);
-        }
 
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
+    public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId() ) {
             case android.R.id.home: {
                 finish();
