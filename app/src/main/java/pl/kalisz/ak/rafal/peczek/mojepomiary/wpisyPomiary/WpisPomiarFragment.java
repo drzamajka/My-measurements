@@ -83,9 +83,6 @@ public class WpisPomiarFragment extends Fragment {
         wpisPomiarAdapter = new WpisPomiarAdapter(options);
 
 
-        rvWpisPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
-        rvWpisPomiary.setHasFixedSize(true);
-
         return view;
     }
 

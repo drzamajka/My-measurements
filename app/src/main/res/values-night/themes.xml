@@ -31,12 +31,8 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
-
+        <item name="logo">@drawable/ic_launcher_wlasna_foreground</item>
     </style>
-
-
-
-
 
     <style name="MyAppTheme" parent="Theme.Material3.Dark">
         <item name="colorPrimary">@color/colorPrimary</item>

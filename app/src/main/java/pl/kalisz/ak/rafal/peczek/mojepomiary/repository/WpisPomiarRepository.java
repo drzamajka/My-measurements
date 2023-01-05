@@ -1,5 +1,6 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
@@ -64,6 +65,11 @@ public class WpisPomiarRepository {
 
     public Task<QuerySnapshot> getByEtapId(@NonNull String idEtapuTerapi) {
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get();
+        return task;
+    }
+
+    public Task<QuerySnapshot> getByPomiarId(@NonNull String idPomiar, int limit) {
+        Task<QuerySnapshot> task = mDatabase.whereEqualTo("idPomiar", idPomiar).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(limit).get();
         return task;
     }
 
