@@ -79,7 +79,7 @@ protected void onBindViewHolder(@NonNull wpisLekViewholder holder, int position,
 
     holder.obiektNazwa.setText(lek.getNazwa());
     if(Double.parseDouble(model.getSumaObrotu())>0)
-        holder.obiektOpis.setText("Wpływ "+model.getSumaObrotu()+" "+jednostka.getWartosc()+" leku");
+        holder.obiektOpis.setText("Uzupełniono o "+model.getSumaObrotu()+" "+jednostka.getWartosc()+" leku");
     else
         holder.obiektOpis.setText("Pobrano "+((Double)(Double.parseDouble(model.getSumaObrotu())*-1)).toString()+" "+jednostka.getWartosc()+" leku");
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy");

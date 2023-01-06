@@ -121,7 +121,7 @@ public class WpisLekDopisz extends AppCompatActivity {
         String wynik = this.wartoscOperacji.getEditText().getText().toString();
         if( wynik.length()>0) {
             String lekId = listaLekow.get(idWybranegoLeku).getId();
-            wpisLekRepository.getByLekId(lekId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            wpisLekRepository.getByLekId(lekId, 1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()){

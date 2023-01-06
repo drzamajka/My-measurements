@@ -65,8 +65,6 @@ public class PomiarEdytuj extends AppCompatActivity {
     private int idWybranejJednostki;
     public String textWybranejJednostki;
 
-    private FullScreanDialog fullScreanDialog;
-
     private PomiarRepository pomiarRepository;
     private JednostkiRepository jednostkiRepository;
     private WpisPomiarRepository wpisPomiarRepository;
@@ -339,17 +337,7 @@ public class PomiarEdytuj extends AppCompatActivity {
                 }
             });
 
-
-
-
         }
-
-
-
-
-
-
-
     }
 
     public void wyswietlWszystkie(View view){
@@ -360,9 +348,8 @@ public class PomiarEdytuj extends AppCompatActivity {
 
         WpisPomiarAdapter wpisPomiarAdapter = new WpisPomiarAdapter(options);
 
-        fullScreanDialog = new FullScreanDialog();
+        FullScreanDialog fullScreanDialog = new FullScreanDialog();
         fullScreanDialog.display(getSupportFragmentManager(), wpisPomiarAdapter, "Wszytkie pomiary");
-
     }
 
     public void stopEdit(View view) {

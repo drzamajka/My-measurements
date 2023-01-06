@@ -462,7 +462,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                                 Lek lek = listaLekow.get(position);
 
                                 notatka.setText("Notatka: "+lek.getNotatka());
-                                wpisLekRepository.getByLekId(lek.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                wpisLekRepository.getByLekId(lek.getId(), 1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                         List<WpisLek> lista = queryDocumentSnapshots.toObjects(WpisLek.class);

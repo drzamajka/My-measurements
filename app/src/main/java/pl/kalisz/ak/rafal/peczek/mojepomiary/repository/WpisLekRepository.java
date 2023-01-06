@@ -72,8 +72,8 @@ public class WpisLekRepository {
         return task;
     }
 
-    public Query getByLekId(@NonNull String idLeku) {
-        Query task = mDatabase.whereEqualTo("idLeku", idLeku).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(1);
+    public Query getByLekId(@NonNull String idLeku, int limit) {
+        Query task = mDatabase.whereEqualTo("idLeku", idLeku).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(limit);
         return task;
     }
 

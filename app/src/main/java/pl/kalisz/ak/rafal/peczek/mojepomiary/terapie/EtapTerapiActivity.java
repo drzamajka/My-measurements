@@ -244,7 +244,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                 else if(czynnosc.getClass().equals(Lek.class)) {
                                     Lek lek = (Lek) czynnosc;
                                     int finalIndex = index;
-                                    wpisLekRepository.getByLekId(lek.getId()).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    wpisLekRepository.getByLekId(lek.getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if(task.isSuccessful()){
@@ -355,7 +355,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                         }
                                         else {
                                             final int finalIndex = index;
-                                            wpisLekRepository.getByLekId(((Lek)listaCzynnosci.get(index)).getId()).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            wpisLekRepository.getByLekId(((Lek)listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if(task.isSuccessful()){

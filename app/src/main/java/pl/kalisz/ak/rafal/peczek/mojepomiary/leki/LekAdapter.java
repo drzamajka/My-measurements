@@ -47,7 +47,7 @@ public LekAdapter(@NonNull FirestoreRecyclerOptions<Lek> options) {
     lekRepositoryQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
         @Override
         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-            if(!value.getDocumentChanges().isEmpty()){
+            if(value!=null && !value.getDocumentChanges().isEmpty()){
                 listaWpisowLekow = value.toObjects(WpisLek.class);
             }
         }
@@ -63,7 +63,7 @@ public LekAdapter(@NonNull FirestoreRecyclerOptions<Lek> options) {
     jednostkiRepositoryQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
         @Override
         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-            if(!value.getDocumentChanges().isEmpty()){
+            if(value!=null && !value.getDocumentChanges().isEmpty()){
                 listaJednostek = value.toObjects(Jednostka.class);
             }
         }
@@ -107,7 +107,7 @@ protected void onBindViewHolder(@NonNull lekViewholder holder, int position, @No
         }
     }
 
-    wpisLekRepository.getByLekId(model.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    wpisLekRepository.getByLekId(model.getId(), 1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
         @Override
         public void onComplete(@NonNull Task<QuerySnapshot> task) {
             if(task.isSuccessful()) {
@@ -115,7 +115,11 @@ protected void onBindViewHolder(@NonNull lekViewholder holder, int position, @No
                 if (!lista.isEmpty()) {
                     for (Jednostka jednostka : listaJednostek) {
                         if (jednostka.getId().equals(model.getIdJednostki())) {
-                            holder.obiektOpis.setText("W zapasie pozostało:" + lista.get(0).getPozostalyZapas() + " " + jednostka.getWartosc());
+                            if(jednostka.getTypZmiennej() == 0){
+                                holder.obiektOpis.setText("W zapasie pozostało: " +( (int)Double.parseDouble(lista.get(0).getPozostalyZapas())+ "")+ " " + jednostka.getWartosc());
+                            }else {
+                                holder.obiektOpis.setText("W zapasie pozostało: " + lista.get(0).getPozostalyZapas() + " " + jednostka.getWartosc());
+                            }
                         }
                     }
                 } else {
