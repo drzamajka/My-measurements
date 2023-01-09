@@ -37,6 +37,16 @@
             android:layout_centerInParent="true"
             android:gravity="left" />
 
+        <LinearLayout
+            android:id="@+id/dotIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/nazwa"
+            android:layout_marginEnd="0dp"
+            android:background="@drawable/dot_indicator"
+            android:orientation="vertical" />
+
+
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

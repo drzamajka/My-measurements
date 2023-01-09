@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,6 +38,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+
 import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
@@ -64,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+                .build();
+        FirebaseFirestore.getInstance().setFirestoreSettings(settings);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
@@ -131,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             konto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(!mAuth.getCurrentUser().isEmailVerified()) {
+                        mAuth.getCurrentUser().sendEmailVerification();
+                        Toast.makeText(getApplicationContext(), "wysyłam email werfikacyjny", Toast.LENGTH_LONG).show();
+                    }
                     mDatabase.collection("users").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {

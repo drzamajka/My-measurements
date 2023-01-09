@@ -8,6 +8,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
+
 import io.reactivex.rxjava3.annotations.NonNull;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
@@ -37,6 +39,7 @@ public class TerapiaRepository {
         Task<DocumentSnapshot> task = mDatabase.document(idTerapi).get();
         return task;
     }
+
 
     public Terapia findById(@NonNull String idTerapi) {
         Terapia terapia = null;

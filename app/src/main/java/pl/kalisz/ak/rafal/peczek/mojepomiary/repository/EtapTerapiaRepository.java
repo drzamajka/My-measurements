@@ -36,6 +36,10 @@ public class EtapTerapiaRepository {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
+    public Query getQueryByIdTerapi(String idTerapi){
+        return mDatabase.whereEqualTo("idUzytkownika", userUid).whereEqualTo("idTerapi", idTerapi);
+    }
+
     public List<EtapTerapa> getAllAfterData(Date date) {
         List<EtapTerapa> lista = new ArrayList<>();
         Task<QuerySnapshot> task = getQuery().whereGreaterThan("dataZaplanowania", date).get();

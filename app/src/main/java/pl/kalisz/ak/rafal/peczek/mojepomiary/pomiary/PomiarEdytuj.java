@@ -197,7 +197,7 @@ public class PomiarEdytuj extends AppCompatActivity {
 
         if (pomiar != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
-            wpisPomiarRepository.getByPomiarId(pomiar.getId(), 10).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            wpisPomiarRepository.getQueryByPomiarId(pomiar.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     Log.w("TAG-grap", "task: " + task.isSuccessful());
@@ -285,7 +285,7 @@ public class PomiarEdytuj extends AppCompatActivity {
 //wpisywanie danych
         if(pomiar   != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
-            wpisPomiarRepository.getByPomiarId(pomiar.getId(), 10).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            wpisPomiarRepository.getQueryByPomiarId(pomiar.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     Log.w("TAG-grap", "task: "+task.isSuccessful());

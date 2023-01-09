@@ -1,6 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
@@ -8,7 +7,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
@@ -16,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class WpisPomiarRepository {
@@ -63,15 +59,21 @@ public class WpisPomiarRepository {
         return null;
     }
 
-    public Task<QuerySnapshot> getByEtapId(@NonNull String idEtapuTerapi) {
-        Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get();
-        return task;
+    public Query getQueryByEtapId(@NonNull String idEtapuTerapi) {
+        Query query = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi);
+        return query;
     }
 
-    public Task<QuerySnapshot> getByPomiarId(@NonNull String idPomiar, int limit) {
-        Task<QuerySnapshot> task = mDatabase.whereEqualTo("idPomiar", idPomiar).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(limit).get();
-        return task;
+    public Query getQueryByPomiarId(@NonNull String idPomiar, int limit) {
+        Query query = mDatabase.whereEqualTo("idPomiar", idPomiar).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(limit);
+        return query;
     }
+
+    public Query getQueryByPomiarId(@NonNull String idPomiar) {
+        Query query = mDatabase.whereEqualTo("idPomiar", idPomiar).orderBy("dataWykonania", Query.Direction.DESCENDING);
+        return query;
+    }
+
 
     public void insert(@NonNull WpisPomiar wpisPomiar) {
         mDatabase.add(wpisPomiar);

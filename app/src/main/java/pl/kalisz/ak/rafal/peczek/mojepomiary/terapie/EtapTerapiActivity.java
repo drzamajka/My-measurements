@@ -326,14 +326,15 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             Calendar cData = Calendar.getInstance();
+                            cData.setTime(etapTerapa.getDataWykonania());
                             cData.set(Calendar.HOUR, c.get(Calendar.HOUR));
-                            cData.set(Calendar.MONTH, c.get(Calendar.MONTH));
+                            cData.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
                             cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
 
-                            etapTerapa.setNotatka(notatka.getEditText().toString());
-                            etapTerapa.setDataWykonania(cData.getTime());
-                            etapTerapa.setDataAktualizacji(new Date());
-                            etapTerapiaRepository.update(etapTerapa);
+//                            etapTerapa.setNotatka(notatka.getEditText().toString());
+//                            etapTerapa.setDataWykonania(cData.getTime());
+//                            etapTerapa.setDataAktualizacji(new Date());
+//                            etapTerapiaRepository.update(etapTerapa);
 
                             int index = 0;
                             for( Object wpis : listaWpisow){
@@ -387,7 +388,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                 }
                                 index++;
                             }
-                            etapTerapa.setDataWykonania(c.getTime());
+                            etapTerapa.setDataWykonania(cData.getTime());
                             etapTerapa.setDataAktualizacji(new Date());
                             etapTerapa.setNotatka(notatka.getEditText().getText().toString());
                             etapTerapiaRepository.update(etapTerapa);

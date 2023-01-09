@@ -77,6 +77,11 @@ public class WpisLekRepository {
         return task;
     }
 
+    public Query getByLekId(@NonNull String idLeku) {
+        Query task = mDatabase.whereEqualTo("idLeku", idLeku).orderBy("dataWykonania", Query.Direction.DESCENDING);
+        return task;
+    }
+
     public void insert(@NonNull WpisLek wpisLek) {
         mDatabase.add(wpisLek);
         mDatabase.whereEqualTo("idLeku", wpisLek.getIdLeku()).whereGreaterThan("dataWykonania", wpisLek.getDataWykonania()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

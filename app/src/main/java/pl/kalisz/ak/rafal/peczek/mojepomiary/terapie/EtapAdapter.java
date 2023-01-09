@@ -3,13 +3,17 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -28,6 +32,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
@@ -121,10 +126,18 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                 Terapia terapia = documentSnapshot.toObject(Terapia.class);
                 if (terapia != null) {
                     if(model.getDataWykonania() == null) {
-                        holder.obiektOpis.setText( "Jescze nie wykonano etapu");
+                        if(model.getDataZaplanowania().before(new Date())) {
+                            holder.obiektOpis.setText("Pominiento etap");
+                            holder.dotIndicator.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                        }
+                        else{
+                            holder.obiektOpis.setText("Jescze nie wykonano etapu");
+                            holder.dotIndicator.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
+                        }
                     }else {
                         holder.obiektOpis.setText("wykonany: " + sdf.format(model.getDataWykonania()) + "\n");
                         try {
+                            holder.dotIndicator.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
                             ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
                             for (int i = 0; i < listaElementow.size(); i++) {
                                 JSONObject czynnosc = new JSONObject(listaElementow.get(i));
@@ -183,8 +196,8 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                                 JSONException e) {
                             e.printStackTrace();
                         }
+                        holder.obiektOpis.setText(holder.obiektOpis.getText() + "\nNotatka: " + model.getNotatka());
                     }
-
                 }
             }
         });
@@ -255,6 +268,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
     class etapViewholder
             extends RecyclerView.ViewHolder {
         TextView obiektNazwa, obiektOpis;
+        LinearLayout dotIndicator;
         View view;
         public etapViewholder(@NonNull View itemView)
         {
@@ -262,6 +276,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
             view = itemView;
             obiektNazwa = (TextView) itemView.findViewById(R.id.nazwa);
             obiektOpis = (TextView) itemView.findViewById(R.id.opis);
+            dotIndicator = (LinearLayout) itemView.findViewById(R.id.dotIndicator);
         }
     }
 }
