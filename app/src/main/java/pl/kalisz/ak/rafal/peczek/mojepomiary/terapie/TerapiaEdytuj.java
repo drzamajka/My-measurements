@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
 import android.content.res.Configuration;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,18 +17,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -123,26 +117,30 @@ public class TerapiaEdytuj extends AppCompatActivity {
                 String szukaneId = (String) czynnosc.get("id");
                 if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
                     Pomiar pomiar = pomiarRepository.findById(szukaneId);
-                    listaElementowTerapi.add(pomiar);
-                    tytul += pomiar.getNazwa();
+                    if(pomiar!=null) {
+                        listaElementowTerapi.add(pomiar);
+                        tytul += pomiar.getNazwa();
+                    }
                 }
                 else if(czynnosc.get("typ").equals(Lek.class.getName())) {
                     Lek lek = lekRepositoryl.findById(szukaneId);
-                    listaElementowTerapi.add(lek);
-                    tytul += lek.getNazwa()+": ";
+                    if(lek!=null) {
+                        listaElementowTerapi.add(lek);
+                        tytul += lek.getNazwa() + ": ";
 
-                    Jednostka jednostka = null;
-                    for(Jednostka jednostkaTMP : listaJednostek){
-                        if(jednostkaTMP.getId().equals(lek.getIdJednostki()))
-                            jednostka = jednostkaTMP;
-                    }
+                        Jednostka jednostka = null;
+                        for (Jednostka jednostkaTMP : listaJednostek) {
+                            if (jednostkaTMP.getId().equals(lek.getIdJednostki()))
+                                jednostka = jednostkaTMP;
+                        }
 
-                    if(jednostka != null) {
-                        if (jednostka.getTypZmiennej() == 0)
-                            tytul += (int) czynnosc.get("dawka");
-                        else
-                            tytul += czynnosc.get("dawka");
-                        tytul += " " + jednostka.getWartosc();
+                        if (jednostka != null) {
+                            if (jednostka.getTypZmiennej() == 0)
+                                tytul += (int) czynnosc.get("dawka");
+                            else
+                                tytul += czynnosc.get("dawka");
+                            tytul += " " + jednostka.getWartosc();
+                        }
                     }
                 }
             }
@@ -264,7 +262,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
             tytulView.setText(lek.getNazwa());
 
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
-            wpisLekRepository.getByLekId(lek.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            wpisLekRepository.getQueryByLekId(lek.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     Log.w("TAG-grap", "task: "+task.isSuccessful());

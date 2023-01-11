@@ -1,5 +1,6 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -15,15 +16,18 @@ import java.util.List;
 import io.reactivex.rxjava3.annotations.NonNull;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class PomiarRepository {
 
     private CollectionReference mDatabase;
+    private WpisPomiarRepository wpisPomiarRepository;
     String userUid;
 
     public PomiarRepository(@NonNull String uid) {
         mDatabase = FirebaseFirestore.getInstance().collection("Pomiary");
         userUid = uid;
+        wpisPomiarRepository = new WpisPomiarRepository(userUid);
     }
 
     public Query getQuery(){
@@ -45,15 +49,6 @@ public class PomiarRepository {
         }
         return pomiar;
     }
-
-    public void update(@NonNull Pomiar pomiar) {
-        mDatabase.document(pomiar.getId()).set(pomiar);
-    }
-
-    public void delete(@NonNull Pomiar pomiar) {
-        mDatabase.document(pomiar.getId()).delete();
-    }
-
 
     public Pomiar findByName(String name) {
         Pomiar pomiar = null;
@@ -82,5 +77,25 @@ public class PomiarRepository {
         }
 
         return lista;
+    }
+
+    public void update(@NonNull Pomiar pomiar) {
+        mDatabase.document(pomiar.getId()).set(pomiar);
+    }
+
+    public void delete(@NonNull Pomiar pomiar) {
+        wpisPomiarRepository.getQueryByPomiarId(pomiar.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<WpisPomiar> listaWpisow = task.getResult().toObjects(WpisPomiar.class);
+                    for (WpisPomiar wpisPomiar : listaWpisow){
+                        wpisPomiarRepository.delete(wpisPomiar);
+                    }
+                }
+            }
+        });
+
+        mDatabase.document(pomiar.getId()).delete();
     }
 }

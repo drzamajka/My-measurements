@@ -4,6 +4,7 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -19,15 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 
 public class JednostkiRepository {
 
     private CollectionReference mDatabase;
     String userUid;
+    private LekRepository lekRepository;
+    private PomiarRepository pomiarRepository;
+
 
     public JednostkiRepository(@NonNull String uid) {
         mDatabase = FirebaseFirestore.getInstance().collection("Jednostki");
         userUid = uid;
+        lekRepository = new LekRepository(userUid);
+        pomiarRepository = new PomiarRepository(userUid);
     }
 
     public Query getQuery(){
@@ -88,6 +97,29 @@ public class JednostkiRepository {
     }
 
     public void delete(@NonNull Jednostka jednostka) {
+        lekRepository.getQuery().whereEqualTo("idJednostki", jednostka.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<Lek> listaLekow = task.getResult().toObjects(Lek.class);
+                    for (Lek lek : listaLekow){
+                        lekRepository.delete(lek);
+                    }
+                }
+            }
+        });
+        pomiarRepository.getQuery().whereEqualTo("idJednostki", jednostka.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<Pomiar> listaPomiarow = task.getResult().toObjects(Pomiar.class);
+                    for (Pomiar pomiar : listaPomiarow){
+                        pomiarRepository.delete(pomiar);
+                    }
+                }
+            }
+        });
+
         mDatabase.document(jednostka.getId()).delete();
     }
 

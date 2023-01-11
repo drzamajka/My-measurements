@@ -75,9 +75,11 @@ public class TerapiaAdapter extends FirestoreRecyclerAdapter<
                         if (tmp.getId().equals(szukaneId))
                             pomiar = tmp;
                     }
-                    if (i > 0 && i < idsCzynnosci.size())
-                        tytul += ", ";
-                    tytul += pomiar.getNazwa();
+                    if(pomiar != null) {
+                        if (i > 0 && i < idsCzynnosci.size())
+                            tytul += ", ";
+                        tytul += pomiar.getNazwa();
+                    }
                 }
                 else if(czynnosc.get("typ").equals(Lek.class.getName())) {
                     Lek lek = null;
@@ -85,9 +87,11 @@ public class TerapiaAdapter extends FirestoreRecyclerAdapter<
                         if (tmp.getId().equals(szukaneId))
                             lek = tmp;
                     }
-                    if (i > 0 && i < idsCzynnosci.size())
-                        tytul += ", ";
-                    tytul += lek.getNazwa();
+                    if(lek != null) {
+                        if (i > 0 && i < idsCzynnosci.size())
+                            tytul += ", ";
+                        tytul += lek.getNazwa();
+                    }
                 }
             }
             holder.obiektNazwa.setText(tytul);

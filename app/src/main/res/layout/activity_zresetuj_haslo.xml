@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".auth.LoginActivity">
+    tools:context=".auth.ZresetujHasloActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,8 +21,6 @@
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,6 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    app:endIconMode="clear_text"
                     android:hint="Adres e-mail">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -54,29 +53,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/hasloLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:endIconMode="password_toggle"
-                    android:layout_marginBottom="8dp"
-                    android:hint="Hasło">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/haslo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Button
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:onClick="reset"
-                    android:text="Nie pamietam hasła" />
 
                 <Button
                     style="@style/Widget.Material3.Button.IconButton.Filled"
@@ -84,24 +60,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="8dp"
-                    android:onClick="login"
-                    android:text="Zaloguj"
-                    app:icon="@drawable/ic_baseline_login_24" />
-
-                <Button
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="8dp"
-                    android:onClick="reg"
-                    android:text="Zarejestruj"
-                    app:icon="@drawable/ic_baseline_person_add_24" />
+                    android:onClick="reset"
+                    android:text="Zresetuj"
+                    app:icon="@drawable/ic_round_check_24" />
 
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-
 </LinearLayout>

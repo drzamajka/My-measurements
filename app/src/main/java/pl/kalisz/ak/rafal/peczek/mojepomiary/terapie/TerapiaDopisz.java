@@ -5,13 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.text.InputType;
@@ -462,7 +459,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                                 Lek lek = listaLekow.get(position);
 
                                 notatka.setText("Notatka: "+lek.getNotatka());
-                                wpisLekRepository.getByLekId(lek.getId(), 1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                wpisLekRepository.getQueryByLekId(lek.getId(), 1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                         List<WpisLek> lista = queryDocumentSnapshots.toObjects(WpisLek.class);

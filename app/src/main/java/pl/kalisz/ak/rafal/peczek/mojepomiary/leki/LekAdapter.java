@@ -2,7 +2,6 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.leki;
 
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +106,7 @@ protected void onBindViewHolder(@NonNull lekViewholder holder, int position, @No
         }
     }
 
-    wpisLekRepository.getByLekId(model.getId(), 1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    wpisLekRepository.getQueryByLekId(model.getId(), 1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
         @Override
         public void onComplete(@NonNull Task<QuerySnapshot> task) {
             if(task.isSuccessful()) {

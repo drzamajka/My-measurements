@@ -18,12 +18,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.MainActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
@@ -58,6 +63,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
     }
 
+    public void reset(View view){
+        startActivity(new Intent(getApplicationContext(),ZresetujHasloActivity.class));
+    }
+
     public void login(View view){
         InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
         if(getCurrentFocus() != null){
@@ -76,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         String eMail = this.eMail.getEditText().getText().toString().trim();
         String haslo = this.haslo.getEditText().getText().toString().trim();
 
+
         if(validateData(eMail, haslo)) {
             mAuth.signInWithEmailAndPassword(eMail, haslo)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -86,15 +96,43 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 finish();
                             } else {
-                                MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
-                                        .setTitle("Logowanie")
-                                        .setMessage(task.getException().getLocalizedMessage())
-                                        .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                            dialog.cancel();
-                                        });
-                                progresbilder.show();
-                                progers.cancel();
+                                try {
+                                    throw task.getException();
+                                } catch(FirebaseNetworkException e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
+                                            .setTitle("Logowanie")
+                                            .setMessage("Brak dostępu do internetu")
+                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                } catch(FirebaseAuthInvalidUserException e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
+                                            .setTitle("Logowanie")
+                                            .setMessage("Nieprawidłowe dane logowania")
+                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                } catch(FirebaseAuthInvalidCredentialsException e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
+                                            .setTitle("Logowanie")
+                                            .setMessage("Nieprawidłowe dane logowania")
+                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                } catch(Exception e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(LoginActivity.this)
+                                            .setTitle("Logowanie")
+                                            .setMessage(task.getException().getLocalizedMessage())
+                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                }
                             }
+                            progers.cancel();
                         }
                     });
         }else{
@@ -106,11 +144,10 @@ public class LoginActivity extends AppCompatActivity {
     boolean validateData(String eMail, String haslo){
         boolean status = true;
         if(!Patterns.EMAIL_ADDRESS.matcher(eMail).matches()){
-            this.eMail.setError("Niepoprawny Email");
+            this.eMail.setError("Niepoprawny adres email");
             status = false;
         }else
             this.eMail.setErrorEnabled(false);
-
 
         if(haslo.length()<6){
             this.haslo.setError("Minimum 6 znaków");

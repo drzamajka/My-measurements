@@ -72,12 +72,12 @@ public class WpisLekRepository {
         return task;
     }
 
-    public Query getByLekId(@NonNull String idLeku, int limit) {
+    public Query getQueryByLekId(@NonNull String idLeku, int limit) {
         Query task = mDatabase.whereEqualTo("idLeku", idLeku).orderBy("dataWykonania", Query.Direction.DESCENDING).limit(limit);
         return task;
     }
 
-    public Query getByLekId(@NonNull String idLeku) {
+    public Query getQueryByLekId(@NonNull String idLeku) {
         Query task = mDatabase.whereEqualTo("idLeku", idLeku).orderBy("dataWykonania", Query.Direction.DESCENDING);
         return task;
     }
@@ -119,18 +119,6 @@ public class WpisLekRepository {
 
     public void delete(@NonNull WpisLek wpisLek) {
         mDatabase.document(wpisLek.getId()).delete();
-        mDatabase.whereEqualTo("idLeku", wpisLek.getIdLeku()).whereGreaterThan("dataWykonania", wpisLek.getDataWykonania()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
-                    for(WpisLek tmpWpisLek: lista){
-                        tmpWpisLek.setPozostalyZapas(((Double) (Double.parseDouble(tmpWpisLek.getPozostalyZapas())-Double.parseDouble(wpisLek.getSumaObrotu()))).toString());
-                        update(tmpWpisLek);
-                    }
-                }
-            }
-        });
     }
 
 

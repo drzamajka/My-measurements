@@ -18,9 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mikephil.charting.charts.BarChart;
@@ -50,13 +47,10 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisLekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyLeki.WpisLekAdapter;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary.WpisPomiarAdapter;
 
 public class LekEdytuj extends AppCompatActivity {
 
@@ -160,7 +154,7 @@ public class LekEdytuj extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_object_change, menu);
+        getMenuInflater().inflate(R.menu.menu_object_change_and_delete, menu);
         return true;
     }
 
@@ -263,7 +257,7 @@ public class LekEdytuj extends AppCompatActivity {
 //wpisywanie danych
         if(lek   != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
-            wpisLekRepository.getByLekId(lek.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            wpisLekRepository.getQueryByLekId(lek.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     Log.w("TAG-grap", "task: "+task.isSuccessful());

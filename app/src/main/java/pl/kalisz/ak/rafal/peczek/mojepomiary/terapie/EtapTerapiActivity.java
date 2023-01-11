@@ -4,14 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -39,10 +36,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
@@ -152,54 +147,56 @@ public class EtapTerapiActivity extends AppCompatActivity {
                         String szukaneId = (String) czynnosc.get("id");
                         if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
                             Pomiar pomiar = pomiarRepository.findById(szukaneId);
-                            listaCzynnosci.add(pomiar);
+                            if(pomiar!=null) {
+                                listaCzynnosci.add(pomiar);
 
-                            elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_pomiar, null, false);
-                            TextView textView = (TextView) elementView.findViewById(R.id.textView3);
-                            TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
-                            TextView jednostkaTextView = (TextView) elementView.findViewById(R.id.jednostka);
-                            EditText wynikEditText = (EditText) elementView.findViewById(R.id.editTextWynik);
+                                elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_pomiar, null, false);
+                                TextView textView = (TextView) elementView.findViewById(R.id.textView3);
+                                TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
+                                TextView jednostkaTextView = (TextView) elementView.findViewById(R.id.jednostka);
+                                EditText wynikEditText = (EditText) elementView.findViewById(R.id.editTextWynik);
 
-                            textView.setText(pomiar.getNazwa());
-                            textView1.setText(pomiar.getNotatka());
+                                textView.setText(pomiar.getNazwa());
+                                textView1.setText(pomiar.getNotatka());
 
-                            if(pomiar.getIdJednostki()!=null) {
-                                Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
-                                jednostkaTextView.setText(jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc());
-                                if(jednostka.getTypZmiennej() == 0) {
-                                    wynikEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                if (pomiar.getIdJednostki() != null) {
+                                    Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
+                                    jednostkaTextView.setText(jednostkiRepository.findById(pomiar.getIdJednostki()).getWartosc());
+                                    if (jednostka.getTypZmiennej() == 0) {
+                                        wynikEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                    } else {
+                                        wynikEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                                    }
+                                    wynikEditText.setMinLines(1);
+                                    wynikEditText.setGravity(Gravity.CENTER_VERTICAL);
+                                } else {
+                                    jednostkaTextView.setText("");
+                                    wynikEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+                                    wynikEditText.setMinLines(3);
+                                    wynikEditText.setGravity(Gravity.START);
                                 }
-                                else {
-                                    wynikEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                                }
-                                wynikEditText.setMinLines(1);
-                                wynikEditText.setGravity(Gravity.CENTER_VERTICAL);
-                            }
-                            else{
-                                jednostkaTextView.setText("");
-                                wynikEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-                                wynikEditText.setMinLines(3);
-                                wynikEditText.setGravity(Gravity.START);
                             }
 
                         }
                         else if(czynnosc.get("typ").equals(Lek.class.getName())) {
                             Lek lek = lekRepository.findById(szukaneId);
-                            listaCzynnosci.add(lek);
+                            if(lek!=null) {
+                                listaCzynnosci.add(lek);
 
-                            elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_lek, null, false);
-                            TextView textView = (TextView) elementView.findViewById(R.id.textView3);
-                            TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
+                                elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_lek, null, false);
+                                TextView textView = (TextView) elementView.findViewById(R.id.textView3);
+                                TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
 
-                            String nazwa = lek.getNazwa()+": ";
-                            Jednostka jednostka = jednostkiRepository.findById(lek.getIdJednostki());
-                            if(jednostka.getTypZmiennej() == 0)
-                                nazwa += (int)czynnosc.getInt("dawka");
-                            else
-                                nazwa += czynnosc.getDouble("dawka");
-                            nazwa += " "+jednostka.getWartosc();
-                            textView.setText(nazwa);
-                            textView1.setText(lek.getNotatka());
+                                String nazwa = lek.getNazwa() + ": ";
+                                Jednostka jednostka = jednostkiRepository.findById(lek.getIdJednostki());
+                                if (jednostka.getTypZmiennej() == 0)
+                                    nazwa += (int) czynnosc.getInt("dawka");
+                                else
+                                    nazwa += czynnosc.getDouble("dawka");
+                                nazwa += " " + jednostka.getWartosc();
+                                textView.setText(nazwa);
+                                textView1.setText(lek.getNotatka());
+                            }
                         }
 
                     }catch (
@@ -238,13 +235,13 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                 if(czynnosc.getClass().equals(Pomiar.class)) {
                                     Pomiar pomiar = (Pomiar) czynnosc;
 
-                                    wpisPomiarRepository.insert(new WpisPomiar(listaWynikow.get(index).toString(), pomiar.getId(), userUid, etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
+                                    wpisPomiarRepository.insert(new WpisPomiar(listaWynikow.get(index).toString(), pomiar.getId(), FirebaseAuth.getInstance().getCurrentUser().getUid(), etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
 
                                 }
                                 else if(czynnosc.getClass().equals(Lek.class)) {
                                     Lek lek = (Lek) czynnosc;
                                     int finalIndex = index;
-                                    wpisLekRepository.getByLekId(lek.getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    wpisLekRepository.getQueryByLekId(lek.getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if(task.isSuccessful()){
@@ -356,7 +353,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                         }
                                         else {
                                             final int finalIndex = index;
-                                            wpisLekRepository.getByLekId(((Lek)listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            wpisLekRepository.getQueryByLekId(((Lek)listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if(task.isSuccessful()){

@@ -77,7 +77,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_object_change, menu);
+        getMenuInflater().inflate(R.menu.menu_object_change_and_delete, menu);
         return true;
     }
 

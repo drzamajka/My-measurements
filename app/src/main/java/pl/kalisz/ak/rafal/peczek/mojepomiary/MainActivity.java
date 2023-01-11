@@ -40,6 +40,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.KontoActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.auth.LoginActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiFragment;
@@ -118,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
+        if( mAuth.getCurrentUser() != null) {
+            mAuth.getCurrentUser().reload();
+        }
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null){
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -138,19 +143,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             konto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!mAuth.getCurrentUser().isEmailVerified()) {
-                        mAuth.getCurrentUser().sendEmailVerification();
-                        Toast.makeText(getApplicationContext(), "wysyłam email werfikacyjny", Toast.LENGTH_LONG).show();
-                    }
-                    mDatabase.collection("users").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()) {
-                                Uzytkownik user = task.getResult().toObject(Uzytkownik.class);
-                                Toast.makeText(getApplicationContext(), user.getEMail(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+//                    if(!mAuth.getCurrentUser().isEmailVerified()) {
+//                        mAuth.getCurrentUser().sendEmailVerification();
+//                        Toast.makeText(getApplicationContext(), "wysyłam email werfikacyjny", Toast.LENGTH_LONG).show();
+//                    }
+                    Intent intent0 = new Intent(getApplicationContext(), KontoActivity.class);
+                    startActivity(intent0);
+
 
                 }
             });
@@ -182,12 +181,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId() ) {
-
-            case R.id.setings:
-                Toast.makeText(this, "Ustawienia", Toast.LENGTH_LONG).show();
-//                Intent intent0 = new Intent( this, Ustawienia.class);
-//                startActivity(intent0);
-                return true;
             case R.id.about: {
                 snackbar = Snackbar.make(findViewById(android.R.id.content), "Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji", Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction(R.string.submit, new View.OnClickListener() {

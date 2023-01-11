@@ -14,15 +14,25 @@
         android:roundIcon="@mipmap/ic_launcher_wlasna"
         android:supportsRtl="true"
         android:theme="@style/Theme.MojePomiary">
-
-
-<!--        <activity-->
-<!--            android:name=".wpisyPomiary.WpisPomiarEdytuj"-->
-<!--            android:exported="false"-->
-<!--            android:label="Edycia wpisu"-->
-<!--            android:parentActivityName=".MainActivity"-->
-<!--            android:theme="@style/MyAppTheme"-->
-<!--            android:windowSoftInputMode="stateHidden" />-->
+        <activity
+            android:name=".auth.ZresetujHasloActivity"
+            android:exported="false"
+            android:label="Zresetuj hasło"
+            android:parentActivityName=".auth.LoginActivity"
+            android:theme="@style/MyAppTheme"/>
+        <activity
+            android:name=".auth.KontoActivity"
+            android:exported="false"
+            android:label="Moje konto"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme"/>
+        <!-- <activity -->
+        <!-- android:name=".wpisyPomiary.WpisPomiarEdytuj" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="Edycia wpisu" -->
+        <!-- android:parentActivityName=".MainActivity" -->
+        <!-- android:theme="@style/MyAppTheme" -->
+        <!-- android:windowSoftInputMode="stateHidden" /> -->
         <activity
             android:name=".wpisyLeki.WpisLekDopisz"
             android:exported="false"
@@ -41,12 +51,12 @@
             android:label="Edycia leku"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".terapie.EtapTerapiActivity"
             android:exported="false"
             android:label="Etap terapi"
-            android:theme="@style/MyAppTheme"/>
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".wpisyPomiary.WpisPomiarEdytuj"
             android:exported="false"
@@ -112,13 +122,12 @@
             android:exported="false"
             android:label="Logowanie"
             android:screenOrientation="portrait"
-            android:theme="@style/MyAppTheme" />
-<!--        <activity-->
-<!--            android:name=".lab12.Ustawienia"-->
-<!--            android:exported="false"-->
-<!--            android:label="@string/title_activity_ustawienia"-->
-<!--            android:parentActivityName=".MainActivity"-->
-<!--            android:theme="@style/MyAppTheme" />-->
+            android:theme="@style/MyAppTheme" /> <!-- <activity -->
+        <!-- android:name=".lab12.Ustawienia" -->
+        <!-- android:exported="false" -->
+        <!-- android:label="@string/title_activity_ustawienia" -->
+        <!-- android:parentActivityName=".MainActivity" -->
+        <!-- android:theme="@style/MyAppTheme" /> -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
@@ -126,6 +135,7 @@
             android:theme="@style/Theme.MojePomiary">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
