@@ -6,12 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,17 +19,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
@@ -52,16 +46,16 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaEdytuj;
 public class MainEtapAdapter extends FirestoreRecyclerAdapter<
         EtapTerapa, MainEtapAdapter.etapViewholder> {
 
-    static String userUid;
-    static PomiarRepository pomiarRepository;
-    static TerapiaRepository terapiaRepository;
-    static WpisPomiarRepository wpisPomiarRepository;
-    static WpisLekRepository wpisLekRepository;
-    static JednostkiRepository jednostkiRepository;
-    private LekRepository lekRepository;
-    static List<Jednostka> listaJednostek;
-    static List<Pomiar> listaPomiarow;
-    static List<Lek> listaLekow;
+    private static String userUid;
+    private static PomiarRepository pomiarRepository;
+    private static TerapiaRepository terapiaRepository;
+    private static WpisPomiarRepository wpisPomiarRepository;
+    private static WpisLekRepository wpisLekRepository;
+    private static JednostkiRepository jednostkiRepository;
+    private static LekRepository lekRepository;
+    private static List<Jednostka> listaJednostek;
+    private static List<Pomiar> listaPomiarow;
+    private static List<Lek> listaLekow;
 
     public MainEtapAdapter(@NonNull FirestoreRecyclerOptions<EtapTerapa> options) {
         super(options);
@@ -195,7 +189,7 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                         e.printStackTrace();
                     }
                     if(model.getDataWykonania() == null) {
-                        holder.obiektOpis.setText( "Jescze nie wykonano etapu");
+                        holder.obiektOpis.setText( R.string.etap_nie_wykonany);
                     }
 
                     String finalNazwa = tytul;

@@ -1,102 +1,6 @@
 <resources>
     <string name="app_name">Moje Pomiary</string>
-    <string name="send">Wyślij wiadomość</string>
-    <string name="share">Udostępnij</string>
-    <string name="version">Wersja SDK</string>
     <string name="about">O programie</string>
-    <string name="invitation">Zapraszamy na stronę Uczelni</string>
-    <string name="owner">Autorem programu jest Rafał</string>
-    <string name="submit">ok</string>
-
-
-    <!--    lab 3-->
-    <string name="send_mesage">Wyślij wiadomość - Nowa aktywność</string>
-    <string name="send_email">Wyślij wiadomość e-mail</string>
-    <string name="text_mesage">Wpisz wiadomość</string>
-    <string name="activity_send">Wysyłam wiadomość</string>
-    <string name="activity_show">Wyświetlam wiadomość</string>
-    <string name="mesage">Wiadomość</string>
-
-    <!--    lab 5-->
-    <string name="naw_13">Lab3. Komunikator</string>
-    <string name="naw_16">Lab6. Czas życia, sensory</string>
-    <string name="naw_17">Lab7. Widoki, układy</string>
-    <string name="naw_18">Lab8. RecyclerViev</string>
-    <string name="naw_19">Lab9. Fragmenty</string>
-    <string name="naw_110">Lab10. Baza danych</string>
-    <string name="naw_111">Lab11. Usługi</string>
-    <string name="naw_112">Lab12. Różności</string>
-    <string name="naw_projekt">Projekt indywidualny</string>
-    <string name="naw_projekt_temat">Twoje Pomiary</string>
-    <string name="naw_projekt_ikona">Ikona</string>
-    <string name="naw_open">Otwórz szuflade</string>
-    <string name="naw_close">Zamknij szuflade</string>
-    <string name="app_imie">Rafał Pęczek</string>
-    <string name="app_album">Album: 29903</string>
-
-    <!--    lab 6-->
-    <string name="rotation_land">Poziomo</string>
-    <string name="rotation_port">Pionowo</string>
-    <string name="activity_secsors">Wykaz czujników</string>
-    <string name="naw12">Lab2. Kierunki na Wydziałach</string>
-    <string name="temat_projektu">Temat projektu</string>
-
-
-    <!--    lab 7-->
-    <string name="activity_konfiguracia">Konfiguracia</string>
-    <string name="form_lable_imie">Imie</string>
-    <string name="form_lable_wydzial">Wydział</string>
-    <string name="form_lable_kierunek">Kierunek</string>
-    <string name="form_lable_data_urodzenia">Data urodzenia</string>
-    <string name="form_lable_plec">Płeć</string>
-    <string name="form_lable_e_mail">E-mail</string>
-    <string name="form_lable_informacie_dodatkowe">Informacie dodatkowe</string>
-    <string name="form_checkbox_wydarzenia_uczelni">Wydarzenia uczelni</string>
-    <string name="form_checkbox_informacje_z_akademika">Informacje z akademika</string>
-    <string name="form_radiobutton_kobieta">Kobieta</string>
-    <string name="form_radiobutton_mezczyzna">Mężczyzna</string>
-    <string name="form_submit_akceptuj_dane">Akceptuj dane</string>
-    <string name="form_lable_stan_emailu">Stan e-mailu</string>
-    <string name="form_togglebutton_nieaktywny">nieaktywny</string>
-    <string name="form_togglebutton_aktywny">aktywny</string>
-
-    <!--    lab 8-->
-    <string name="activity_obiektyUczelni">Obiekty Uczelni</string>
-
-    <!--    lab 9-->
-    <string name="activity_fragmentyLista">Fragmenty lista</string>
-    <string name="title_activity_obiekty_lista">Obiekty Lista</string>
-
-    <!--    lab 10-->
-    <string name="title_activity_baza_danych">Baza danych</string>
-    <string name="title_activity_baza_danych_aktualizacia">Baza danych aktualizacia</string>
-    <string name="title_activity_baza_danych_dpoisz">Baza danych dopisz</string>
-
-
-    <string name="hello_blank_fragment">ee co to</string>
-    <string name="title_activity_uslugi">Usługi</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
-    <string name="title_activity_ustawienia">Ustawienia</string>
-    <string name="setings">Ustawienia</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Wiadomości</string>
-    <string name="sync_header">Synchronizacia</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="title_activity_ustawiienia">Ustawiienia</string>
-
 
     <string-array name="colors">
 
@@ -158,5 +62,6 @@
         <item>10</item>
     </string-array>
     <string name="title_activity_etap_perapi_wykonaj">EtapPerapiWykonaj</string>
+    <string name="etap_nie_wykonany">Jescze nie wykonano etapu</string>
 
 </resources>

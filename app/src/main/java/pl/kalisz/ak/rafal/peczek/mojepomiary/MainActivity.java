@@ -1,7 +1,6 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,7 +29,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseFirestore mDatabase;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,21 +73,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.naw_open, R.string.naw_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        konto = (Button) findViewById(R.id.konto);
-        wyloguj = (Button) findViewById(R.id.wyloguj);
+        konto = findViewById(R.id.konto);
+        wyloguj = findViewById(R.id.wyloguj);
 
 
-        navigationView = (NavigationView) findViewById(R.id.nav_viev);
+        navigationView = findViewById(R.id.nav_viev);
         navigationView.setNavigationItemSelectedListener(this);
-        View elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_element, null, false);
 
         if(mAuth.getCurrentUser() != null) {
 
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else
         {
-            mDatabase.collection("users").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            mDatabase.collection("users").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()) {
