@@ -33,8 +33,8 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 public class TerapiaAdapter extends FirestoreRecyclerAdapter<
         Terapia, TerapiaAdapter.terapiaViewholder> {
 
-    private PomiarRepository pomiarRepository;
-    private LekRepository lekRepository;
+    private final PomiarRepository pomiarRepository;
+    private final LekRepository lekRepository;
     private static List<Pomiar> listaPomiarow;
     private static List<Lek> listaLekow;
 
@@ -59,35 +59,34 @@ public class TerapiaAdapter extends FirestoreRecyclerAdapter<
 
     @Override
     protected void onBindViewHolder(@NonNull TerapiaAdapter.terapiaViewholder holder, int position, @NonNull Terapia model) {
-        if(listaPomiarow.isEmpty())
+        if (listaPomiarow.isEmpty())
             listaPomiarow = pomiarRepository.getAll();
-        if(listaLekow.isEmpty())
+        if (listaLekow.isEmpty())
             listaLekow = lekRepository.getAll();
-        try{
+        try {
             String tytul = "";
             ArrayList<String> idsCzynnosci = model.getIdsCzynnosci();
-            for(int i=0; i<idsCzynnosci.size();i++){
+            for (int i = 0; i < idsCzynnosci.size(); i++) {
                 JSONObject czynnosc = new JSONObject(idsCzynnosci.get(i));
                 String szukaneId = (String) czynnosc.get("id");
-                if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
+                if (czynnosc.get("typ").equals(Pomiar.class.getName())) {
                     Pomiar pomiar = null;
                     for (Pomiar tmp : listaPomiarow) {
                         if (tmp.getId().equals(szukaneId))
                             pomiar = tmp;
                     }
-                    if(pomiar != null) {
+                    if (pomiar != null) {
                         if (i > 0 && i < idsCzynnosci.size())
                             tytul += ", ";
                         tytul += pomiar.getNazwa();
                     }
-                }
-                else if(czynnosc.get("typ").equals(Lek.class.getName())) {
+                } else if (czynnosc.get("typ").equals(Lek.class.getName())) {
                     Lek lek = null;
                     for (Lek tmp : listaLekow) {
                         if (tmp.getId().equals(szukaneId))
                             lek = tmp;
                     }
-                    if(lek != null) {
+                    if (lek != null) {
                         if (i > 0 && i < idsCzynnosci.size())
                             tytul += ", ";
                         tytul += lek.getNazwa();
@@ -101,12 +100,12 @@ public class TerapiaAdapter extends FirestoreRecyclerAdapter<
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        holder.obiektOpis.setText("trwa od: "+sdf.format(model.getDataRozpoczecia())+" do: "+sdf.format(model.getDataZakonczenia()));
+        holder.obiektOpis.setText("trwa od: " + sdf.format(model.getDataRozpoczecia()) + " do: " + sdf.format(model.getDataZakonczenia()));
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(holder.view.getContext(), TerapiaEdytuj.class);
-                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, (String) model.getId());
+                intent.putExtra(TerapiaEdytuj.EXTRA_Terapia_ID, model.getId());
                 holder.view.getContext().startActivity(intent);
             }
         });
@@ -125,12 +124,12 @@ public class TerapiaAdapter extends FirestoreRecyclerAdapter<
             extends RecyclerView.ViewHolder {
         TextView obiektNazwa, obiektOpis;
         View view;
-        public terapiaViewholder(@NonNull View itemView)
-        {
+
+        public terapiaViewholder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            obiektNazwa = (TextView) itemView.findViewById(R.id.nazwa);
-            obiektOpis = (TextView) itemView.findViewById(R.id.opis);
+            obiektNazwa = itemView.findViewById(R.id.nazwa);
+            obiektOpis = itemView.findViewById(R.id.opis);
         }
     }
 }

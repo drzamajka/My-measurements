@@ -1,12 +1,10 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
-import android.util.Log;
-
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
@@ -18,7 +16,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class WpisPomiarRepository {
 
-    private CollectionReference mDatabase;
+    private final CollectionReference mDatabase;
     String userUid;
 
     public WpisPomiarRepository(@NonNull String uid) {
@@ -26,7 +24,7 @@ public class WpisPomiarRepository {
         userUid = uid;
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
@@ -35,7 +33,7 @@ public class WpisPomiarRepository {
 
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get();
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -47,12 +45,12 @@ public class WpisPomiarRepository {
     public WpisPomiar findByEtapIdPomiarId(@NonNull String idEtapuTerapi, @NonNull String idPomiaru) {
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).whereEqualTo("idPomiar", idPomiaru).get(Source.DEFAULT);
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            for(WpisPomiar wpisPomiar : task.getResult().toObjects(WpisPomiar.class)){
-                if(wpisPomiar.getIdPomiar().equals(idPomiaru))
+            for (WpisPomiar wpisPomiar : task.getResult().toObjects(WpisPomiar.class)) {
+                if (wpisPomiar.getIdPomiar().equals(idPomiaru))
                     return wpisPomiar;
             }
         }
@@ -80,12 +78,11 @@ public class WpisPomiarRepository {
     }
 
 
-
     public WpisPomiar findById(@NonNull String wpisId) {
         WpisPomiar wpisPomiar = null;
         Task<DocumentSnapshot> task = mDatabase.document(wpisId).get();
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {

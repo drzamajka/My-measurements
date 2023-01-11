@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Nazwa"
+        android:hint="@string/nazwa"
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Wartość"
+        android:hint="@string/warto"
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Typ zmiennej">
+        android:hint="@string/typ_zmiennej">
 
         <AutoCompleteTextView
             android:id="@+id/spinner"
@@ -54,8 +54,7 @@
             android:layout_height="wrap_content"
             android:inputType="none"
             app:simpleItems="@array/typZmiennej"
-
-            />
+            tools:ignore="LabelFor" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +68,7 @@
         android:layout_marginHorizontal="24dp"
         android:onClick="aktualizujJednostke"
         android:enabled="false"
-        android:text="Aktualizuj jednostkę"
+        android:text="@string/aktualizuj_jednostk"
         app:icon="@drawable/ic_update_24" />
 
     <Button
@@ -81,7 +80,7 @@
         android:layout_marginHorizontal="24dp"
         android:enabled="false"
         android:onClick="stopEdit"
-        android:text="Anuluj edycie"
-        app:icon="@drawable/ic_clear_24"/>
+        android:text="@string/anuluj_edycie"
+        app:icon="@drawable/ic_clear_24" />
 
 </LinearLayout>

@@ -46,23 +46,41 @@ public class WpisLek {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public String getId() {return id;}
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) {this.id = id;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getSumaObrotu() { return sumaObrotu; }
+    public String getSumaObrotu() {
+        return sumaObrotu;
+    }
 
-    public void setSumaObrotu(String sumaObrotu) { this.sumaObrotu = sumaObrotu; }
+    public void setSumaObrotu(String sumaObrotu) {
+        this.sumaObrotu = sumaObrotu;
+    }
 
-    public String getPozostalyZapas() { return pozostalyZapas; }
+    public String getPozostalyZapas() {
+        return pozostalyZapas;
+    }
 
-    public void setPozostalyZapas(String pozostalyZapas) { this.pozostalyZapas = pozostalyZapas; }
+    public void setPozostalyZapas(String pozostalyZapas) {
+        this.pozostalyZapas = pozostalyZapas;
+    }
 
-    public String getIdUzytkownika() { return idUzytkownika; }
+    public String getIdUzytkownika() {
+        return idUzytkownika;
+    }
 
-    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+    public void setIdUzytkownika(String idUzytkownika) {
+        this.idUzytkownika = idUzytkownika;
+    }
 
-    public String getIdLeku() {return idLeku;}
+    public String getIdLeku() {
+        return idLeku;
+    }
 
     public void setIdLeku(String idLeku) {
         this.idLeku = idLeku;

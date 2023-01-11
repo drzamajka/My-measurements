@@ -2,7 +2,7 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.IgnoreExtraProperties;
-import java.text.SimpleDateFormat;
+
 import java.util.Date;
 
 
@@ -31,9 +31,13 @@ public class Uzytkownik {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public String getId() {return id;}
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) {this.id = id;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getImie() {
         return imie;

@@ -6,7 +6,6 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 import java.util.Date;
 
 
-
 @IgnoreExtraProperties
 public class EtapTerapa {
 
@@ -34,19 +33,29 @@ public class EtapTerapa {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Date getDataZaplanowania() {
         return dataZaplanowania;
     }
 
-    public void setDataZaplanowania(Date dataZaplanowania) { this.dataZaplanowania = dataZaplanowania; }
+    public void setDataZaplanowania(Date dataZaplanowania) {
+        this.dataZaplanowania = dataZaplanowania;
+    }
 
-    public Date getDataWykonania() { return dataWykonania; }
+    public Date getDataWykonania() {
+        return dataWykonania;
+    }
 
-    public void setDataWykonania(Date dataWykonania) { this.dataWykonania = dataWykonania; }
+    public void setDataWykonania(Date dataWykonania) {
+        this.dataWykonania = dataWykonania;
+    }
 
     public String getNotatka() {
         return notatka;
@@ -64,9 +73,13 @@ public class EtapTerapa {
         this.idTerapi = idTerapi;
     }
 
-    public String getIdUzytkownika() { return idUzytkownika; }
+    public String getIdUzytkownika() {
+        return idUzytkownika;
+    }
 
-    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+    public void setIdUzytkownika(String idUzytkownika) {
+        this.idUzytkownika = idUzytkownika;
+    }
 
     public Date getDataUtwozenia() {
         return dataUtwozenia;
@@ -80,7 +93,9 @@ public class EtapTerapa {
         return dataAktualizacji;
     }
 
-    public void setDataAktualizacji(Date dataAktualizacji) { this.dataAktualizacji = dataAktualizacji; }
+    public void setDataAktualizacji(Date dataAktualizacji) {
+        this.dataAktualizacji = dataAktualizacji;
+    }
 
     @Override
     public String toString() {

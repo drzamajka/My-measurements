@@ -38,7 +38,6 @@ public class FullScreanDialog extends DialogFragment {
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.MyAppTheme);
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -48,17 +47,16 @@ public class FullScreanDialog extends DialogFragment {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
         }
-        if(firestoreRecyclerAdapter!=null) {
+        if (firestoreRecyclerAdapter != null) {
             firestoreRecyclerAdapter.startListening();
             recyclerView.setAdapter(firestoreRecyclerAdapter);
         }
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
-        if(firestoreRecyclerAdapter!=null) {
+        if (firestoreRecyclerAdapter != null) {
             firestoreRecyclerAdapter.stopListening();
         }
     }

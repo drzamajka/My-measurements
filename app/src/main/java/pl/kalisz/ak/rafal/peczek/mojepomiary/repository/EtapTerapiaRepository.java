@@ -20,10 +20,10 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class EtapTerapiaRepository {
 
-    private CollectionReference mDatabase;
+    private final CollectionReference mDatabase;
     String userUid;
-    private WpisPomiarRepository wpisPomiarRepository;
-    private WpisLekRepository wpisLekRepository;
+    private final WpisPomiarRepository wpisPomiarRepository;
+    private final WpisLekRepository wpisLekRepository;
 
     public EtapTerapiaRepository(@NonNull String uid) {
         mDatabase = FirebaseFirestore.getInstance().collection("EtapyTerapi");
@@ -32,18 +32,18 @@ public class EtapTerapiaRepository {
         wpisLekRepository = new WpisLekRepository(userUid);
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
-    public Query getQueryByIdTerapi(String idTerapi){
+    public Query getQueryByIdTerapi(String idTerapi) {
         return mDatabase.whereEqualTo("idUzytkownika", userUid).whereEqualTo("idTerapi", idTerapi);
     }
 
     public List<EtapTerapa> getAllAfterData(Date date) {
         List<EtapTerapa> lista = new ArrayList<>();
         Task<QuerySnapshot> task = getQuery().whereGreaterThan("dataZaplanowania", date).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -60,7 +60,7 @@ public class EtapTerapiaRepository {
     public EtapTerapa findById(@NonNull String idEtapuTerapi) {
         EtapTerapa etapTerapa = null;
         Task<DocumentSnapshot> task = mDatabase.document(idEtapuTerapi).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -77,7 +77,7 @@ public class EtapTerapiaRepository {
         wpisPomiarRepository.getQuery().whereEqualTo("idEtapTerapi", etapTerapa.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for( WpisPomiar wpisPomiar : queryDocumentSnapshots.toObjects(WpisPomiar.class)){
+                for (WpisPomiar wpisPomiar : queryDocumentSnapshots.toObjects(WpisPomiar.class)) {
                     wpisPomiar.setIdEtapTerapi(null);
                     wpisPomiarRepository.update(wpisPomiar);
                 }
@@ -86,7 +86,7 @@ public class EtapTerapiaRepository {
         wpisLekRepository.getQuery().whereEqualTo("idEtapTerapi", etapTerapa.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for( WpisLek wpisLek : queryDocumentSnapshots.toObjects(WpisLek.class)){
+                for (WpisLek wpisLek : queryDocumentSnapshots.toObjects(WpisLek.class)) {
                     wpisLek.setIdEtapTerapi(null);
                     wpisLekRepository.update(wpisLek);
                 }

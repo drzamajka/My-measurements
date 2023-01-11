@@ -4,10 +4,10 @@
 
     <item
         android:id="@+id/edit"
-        android:title="Edytuj dane konta"
-        app:showAsAction="never"/>
+        android:title="@string/edytuj_dane_konta"
+        app:showAsAction="never" />
     <item
         android:id="@+id/drop"
-        android:title="Usuń konto"
-        app:showAsAction="never"/>
+        android:title="@string/usu_konto"
+        app:showAsAction="never" />
 </menu>

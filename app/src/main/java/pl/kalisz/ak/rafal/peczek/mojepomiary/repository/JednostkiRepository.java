@@ -1,12 +1,10 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
 
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -15,21 +13,19 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 
 public class JednostkiRepository {
 
-    private CollectionReference mDatabase;
+    private final CollectionReference mDatabase;
     String userUid;
-    private LekRepository lekRepository;
-    private PomiarRepository pomiarRepository;
+    private final LekRepository lekRepository;
+    private final PomiarRepository pomiarRepository;
 
 
     public JednostkiRepository(@NonNull String uid) {
@@ -39,7 +35,7 @@ public class JednostkiRepository {
         pomiarRepository = new PomiarRepository(userUid);
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
@@ -47,11 +43,11 @@ public class JednostkiRepository {
         List<Jednostka> lista = new ArrayList<>();
 
         Task<QuerySnapshot> task = mDatabase.get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+            for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                 Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                 lista.add(jednostka);
             }
@@ -62,11 +58,11 @@ public class JednostkiRepository {
 
     public int countAll() {
         Task<QuerySnapshot> task = mDatabase.get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful())
-            return (int) task.getResult().toObjects(Jednostka.class).size();
+            return task.getResult().toObjects(Jednostka.class).size();
         return 0;
     }
 
@@ -82,7 +78,7 @@ public class JednostkiRepository {
         Jednostka jednostka = null;
         Task<DocumentSnapshot> task = mDatabase.document(jednostkaId).get();
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -100,9 +96,9 @@ public class JednostkiRepository {
         lekRepository.getQuery().whereEqualTo("idJednostki", jednostka.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<Lek> listaLekow = task.getResult().toObjects(Lek.class);
-                    for (Lek lek : listaLekow){
+                    for (Lek lek : listaLekow) {
                         lekRepository.delete(lek);
                     }
                 }
@@ -111,9 +107,9 @@ public class JednostkiRepository {
         pomiarRepository.getQuery().whereEqualTo("idJednostki", jednostka.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<Pomiar> listaPomiarow = task.getResult().toObjects(Pomiar.class);
-                    for (Pomiar pomiar : listaPomiarow){
+                    for (Pomiar pomiar : listaPomiarow) {
                         pomiarRepository.delete(pomiar);
                     }
                 }

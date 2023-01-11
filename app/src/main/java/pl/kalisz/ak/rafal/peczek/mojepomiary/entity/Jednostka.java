@@ -1,13 +1,10 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.entity;
 
 
-
-
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.Date;
-
 
 
 @IgnoreExtraProperties
@@ -37,17 +34,29 @@ public class Jednostka {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getIdUzytkownika() {  return idUzytkownika; }
+    public String getIdUzytkownika() {
+        return idUzytkownika;
+    }
 
-    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+    public void setIdUzytkownika(String idUzytkownika) {
+        this.idUzytkownika = idUzytkownika;
+    }
 
-    public int getTypZmiennej() { return typZmiennej; }
+    public int getTypZmiennej() {
+        return typZmiennej;
+    }
 
-    public void setTypZmiennej(int typZmiennej) { this.typZmiennej = typZmiennej; }
+    public void setTypZmiennej(int typZmiennej) {
+        this.typZmiennej = typZmiennej;
+    }
 
     public String getNazwa() {
         return nazwa;

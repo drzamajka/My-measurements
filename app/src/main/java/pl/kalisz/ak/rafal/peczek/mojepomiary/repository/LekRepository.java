@@ -17,9 +17,9 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 
 public class LekRepository {
 
-    private CollectionReference mDatabase;
+    private final CollectionReference mDatabase;
     String userUid;
-    private WpisLekRepository wpisLekRepository;
+    private final WpisLekRepository wpisLekRepository;
 
     public LekRepository(@NonNull String uid) {
         mDatabase = FirebaseFirestore.getInstance().collection("Leki");
@@ -27,7 +27,7 @@ public class LekRepository {
         wpisLekRepository = new WpisLekRepository(userUid);
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
@@ -38,7 +38,7 @@ public class LekRepository {
     public Lek findById(@NonNull String lekId) {
         Lek lek = null;
         Task<DocumentSnapshot> task = mDatabase.document(lekId).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -50,12 +50,12 @@ public class LekRepository {
     public Lek findByName(String name) {
         Lek lek = null;
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("nazwa", name).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
             List<Lek> list = task.getResult().toObjects(Lek.class);
-            if(!list.isEmpty())
+            if (!list.isEmpty())
                 lek = list.get(0);
         }
         return lek;
@@ -65,7 +65,7 @@ public class LekRepository {
         List<Lek> lista = new ArrayList<>();
 
         Task<QuerySnapshot> task = mDatabase.get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -83,9 +83,9 @@ public class LekRepository {
         wpisLekRepository.getQueryByLekId(lek.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<WpisLek> listaWpisow = task.getResult().toObjects(WpisLek.class);
-                    for (WpisLek wpisPomiar : listaWpisow){
+                    for (WpisLek wpisPomiar : listaWpisow) {
                         wpisLekRepository.delete(wpisPomiar);
                     }
                 }

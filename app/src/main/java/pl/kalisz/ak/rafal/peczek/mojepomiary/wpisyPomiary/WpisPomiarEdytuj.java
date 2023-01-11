@@ -1,8 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +12,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -74,14 +74,14 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
         idWybranegoPomiaru = 0;
         textWybranegoPomiaru = "";
 
-        wynik = (TextInputLayout) findViewById(R.id.editTextWynikLayout);
-        godzinaWykonania = (TextInputLayout) findViewById(R.id.godzinaWykonaniaLayout);
-        dataWykonania = (TextInputLayout) findViewById(R.id.dataWykonaniaLayout);
-        pomiary = (AutoCompleteTextView) findViewById(R.id.spinnerPomiary);
-        pomiaryL = (TextInputLayout) findViewById(R.id.spinnerPomiaryLayout);
+        wynik = findViewById(R.id.editTextWynikLayout);
+        godzinaWykonania = findViewById(R.id.godzinaWykonaniaLayout);
+        dataWykonania = findViewById(R.id.dataWykonaniaLayout);
+        pomiary = findViewById(R.id.spinnerPomiary);
+        pomiaryL = findViewById(R.id.spinnerPomiaryLayout);
 
         wpisPomiar = wpisPomiarRepository.findById(wpisId);
-        if(wpisPomiar == null){
+        if (wpisPomiar == null) {
             finish();
         }
 
@@ -91,39 +91,36 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                         Pomiar pomiar = queryDocumentSnapshot.toObject(Pomiar.class);
                         pomiar.setId(queryDocumentSnapshot.getId());
                         listaPomiarow.add(pomiar);
                         data.add(pomiar.getNazwa());
-                        if(wpisPomiar.getIdPomiar().equals(pomiar.getId())) {
-                            idWybranegoPomiaru = data.size()-1;
+                        if (wpisPomiar.getIdPomiar().equals(pomiar.getId())) {
+                            idWybranegoPomiaru = data.size() - 1;
                         }
                     }
                     TextView textView5 = findViewById(R.id.jednostka);
-                    if(listaPomiarow.get(idWybranegoPomiaru).getIdJednostki()!=null){
+                    if (listaPomiarow.get(idWybranegoPomiaru).getIdJednostki() != null) {
                         Jednostka jednostka = jednostkiRepository.findById(listaPomiarow.get(idWybranegoPomiaru).getIdJednostki());
                         textView5.setText(jednostka.getWartosc());
-                    }
-                    else{
+                    } else {
                         textView5.setText("");
                         wynik.getEditText().setMinLines(3);
                         wynik.getEditText().setGravity(Gravity.START);
                     }
                     textWybranegoPomiaru = data.get(idWybranegoPomiaru);
                     pomiary.setText(textWybranegoPomiaru, false);
-                    ArrayAdapter adapter = new ArrayAdapter ( WpisPomiarEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    ArrayAdapter adapter = new ArrayAdapter(WpisPomiarEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     pomiary.setAdapter(adapter);
-                }
-                else {
-                    Log.i("Tag-1", "błąd odczytu jednostek"+task.getResult() );
+                } else {
+                    Log.i("Tag-1", "błąd odczytu jednostek" + task.getResult());
                 }
             }
         });
 
 
-
-        wynik.getEditText().setText(wpisPomiar.getWynikPomiary().toString());
+        wynik.getEditText().setText(wpisPomiar.getWynikPomiary());
 
         TextView textView5 = findViewById(R.id.jednostka);
         pomiary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -131,13 +128,12 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 idWybranegoPomiaru = position;
                 Pomiar pomiar = listaPomiarow.get(position);
-                if(pomiar.getIdJednostki()!=null) {
+                if (pomiar.getIdJednostki() != null) {
                     Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
                     textView5.setText(jednostka.getWartosc());
                     wynik.getEditText().setMinLines(1);
                     wynik.getEditText().setGravity(Gravity.CENTER_VERTICAL);
-                }
-                else{
+                } else {
                     textView5.setText("");
                     wynik.getEditText().setMinLines(3);
                     wynik.getEditText().setGravity(Gravity.START);
@@ -145,22 +141,20 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
             }
         });
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu));
         godzinaWykonania.getEditText().setText(simpleDateFormat.format(wpisPomiar.getDataWykonania()));
-        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
         dataWykonania.getEditText().setText(simpleDateFormat.format(wpisPomiar.getDataWykonania()));
 
         dodajTimePicker(godzinaWykonania.getEditText());
         dodajDatePicker(dataWykonania.getEditText());
 
 
-
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
                 finish();
                 return true;
@@ -175,14 +169,14 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(WpisPomiarEdytuj.this);
         builder.setMessage("Czy na pewno usunąć");
         builder.setCancelable(false);
-        builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
             if (wpisPomiar != null) {
                 wpisPomiarRepository.delete(wpisPomiar);
             }
             finish();
         });
 
-        builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+        builder.setNegativeButton(getString(R.string.nie), (dialog, which) -> {
             dialog.cancel();
         });
         builder.show();
@@ -190,12 +184,12 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
 
     public void aktualizuj(View view) throws ParseException {
         String wynik = this.wynik.getEditText().getText().toString();
-        if( wynik.length()>0) {
+        if (wynik.length() > 0) {
             String pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
 
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-            Date data = simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString()+" "+dataWykonania.getEditText().getText().toString());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu)+getString(R.string.format_daty));
+            Date data = simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString() + getString(R.string.spacia) + dataWykonania.getEditText().getText().toString());
 
             wpisPomiar.setWynikPomiary(wynik);
             wpisPomiar.setIdPomiar(pomiarId);
@@ -204,17 +198,16 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
 
             wpisPomiarRepository.update(wpisPomiar);
             finish();
-        }
-        else
+        } else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
 
     }
 
-    private void dodajDatePicker(TextView textView){
+    private void dodajDatePicker(TextView textView) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
@@ -227,7 +220,6 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
                 Date dataWybrana = new Date(c.getTimeInMillis());
 
 
-
                 MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
                         .setSelection(dataWybrana.getTime())
                         .build();
@@ -237,7 +229,7 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis((Long) selection);
-                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.lacznik_daty) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.lacznik_daty) + calendar.get(Calendar.YEAR));
                     }
                 });
                 materialDatePicker.show(getSupportFragmentManager(), "tag");
@@ -246,14 +238,14 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
         });
     }
 
-    private void dodajTimePicker(EditText editText){
+    private void dodajTimePicker(EditText editText) {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar c = Calendar.getInstance();
                 c.set(Calendar.MINUTE, 0);
-                if(editText.getText().length() > 0){
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                if (editText.getText().length() > 0) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu));
                     try {
                         Date data = sdf.parse(editText.getText().toString());
                         c.setTime(data);
@@ -274,7 +266,7 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(timePicker.getMinute() > 9)
+                        if (timePicker.getMinute() > 9)
                             editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
                         else
                             editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());

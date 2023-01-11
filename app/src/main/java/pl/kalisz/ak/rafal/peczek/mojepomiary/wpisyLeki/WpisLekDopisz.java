@@ -61,9 +61,9 @@ public class WpisLekDopisz extends AppCompatActivity {
         wpisLekRepository = new WpisLekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         idWybranegoLeku = 0;
 
-        wartoscOperacji = (TextInputLayout) findViewById(R.id.editTextZasobLayout);
-        lek = (AutoCompleteTextView) findViewById(R.id.spinnerLeki);
-        lekL = (TextInputLayout) findViewById(R.id.spinnerLekiLayout);
+        wartoscOperacji = findViewById(R.id.editTextZasobLayout);
+        lek = findViewById(R.id.spinnerLeki);
+        lekL = findViewById(R.id.spinnerLekiLayout);
 
 
         listaLekow = new ArrayList<>();
@@ -72,18 +72,17 @@ public class WpisLekDopisz extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                         Lek lek = queryDocumentSnapshot.toObject(Lek.class);
                         lek.setId(queryDocumentSnapshot.getId());
                         listaLekow.add(lek);
                         data.add(lek.getNazwa());
                     }
 
-                    ArrayAdapter adapter = new ArrayAdapter ( WpisLekDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    ArrayAdapter adapter = new ArrayAdapter(WpisLekDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
                     lek.setAdapter(adapter);
-                }
-                else {
-                    Log.i("Tag-1", "błąd odczytu leków"+task.getResult() );
+                } else {
+                    Log.i("Tag-1", "błąd odczytu leków" + task.getResult());
                 }
             }
         });
@@ -100,14 +99,13 @@ public class WpisLekDopisz extends AppCompatActivity {
         });
 
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu));
 
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
                 finish();
                 return true;
@@ -119,38 +117,36 @@ public class WpisLekDopisz extends AppCompatActivity {
 
     public void zapiszNowaPozycia(View view) throws ParseException {
         String wynik = this.wartoscOperacji.getEditText().getText().toString();
-        if( wynik.length()>0) {
+        if (wynik.length() > 0) {
             String lekId = listaLekow.get(idWybranegoLeku).getId();
             wpisLekRepository.getQueryByLekId(lekId, 1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
                         Double zapasLeku = Double.parseDouble(wynik);
-                        if(!lista.isEmpty()){
+                        if (!lista.isEmpty()) {
                             WpisLek wpisLek = lista.get(0);
-                            zapasLeku = Double.parseDouble(wpisLek.getPozostalyZapas())+zapasLeku;
+                            zapasLeku = Double.parseDouble(wpisLek.getPozostalyZapas()) + zapasLeku;
                         }
-                        wpisLekRepository.insert(new WpisLek(wynik, zapasLeku.toString(), lekId, FirebaseAuth.getInstance().getCurrentUser().getUid(), new Date(), new Date(), new Date() ));
-                    }
-                    else
-                        Log.v("Tag-", "dupa:"+task.getException());
+                        wpisLekRepository.insert(new WpisLek(wynik, zapasLeku.toString(), lekId, FirebaseAuth.getInstance().getCurrentUser().getUid(), new Date(), new Date(), new Date()));
+                    } else
+                        Log.v("Tag-", "dupa:" + task.getException());
                 }
             });
             finish();
-        }
-        else
+        } else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
     }
 
-    private void dodajTimePicker(EditText editText){
+    private void dodajTimePicker(EditText editText) {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar c = Calendar.getInstance();
                 c.set(Calendar.MINUTE, 0);
-                if(editText.getText().length() > 0){
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                if (editText.getText().length() > 0) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu));
                     try {
                         Date data = sdf.parse(editText.getText().toString());
                         c.setTime(data);
@@ -171,7 +167,7 @@ public class WpisLekDopisz extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(timePicker.getMinute() > 9)
+                        if (timePicker.getMinute() > 9)
                             editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
                         else
                             editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());

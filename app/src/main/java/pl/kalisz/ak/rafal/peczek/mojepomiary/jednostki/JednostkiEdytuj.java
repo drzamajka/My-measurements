@@ -1,7 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
@@ -43,12 +43,12 @@ public class JednostkiEdytuj extends AppCompatActivity {
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         jednostkaId = (String) getIntent().getExtras().get(EXTRA_JEDNOSTKA_ID);
 
-        nazwa = (TextInputLayout) findViewById(R.id.editTextNazwaLayout);
-        wartosc = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
-        aktualizuj = (Button) findViewById(R.id.button_save_edit);
-        anuluj = (Button) findViewById(R.id.button_disable_edit);
-        typZmiennej = (AutoCompleteTextView) findViewById(R.id.spinner);
-        typZmiennejL = (TextInputLayout) findViewById(R.id.spinnerLayout);
+        nazwa = findViewById(R.id.editTextNazwaLayout);
+        wartosc = findViewById(R.id.editTextJednostkaLayout);
+        aktualizuj = findViewById(R.id.button_save_edit);
+        anuluj = findViewById(R.id.button_disable_edit);
+        typZmiennej = findViewById(R.id.spinner);
+        typZmiennejL = findViewById(R.id.spinnerLayout);
 
 
         jednostka = jednostkiRepository.findById(jednostkaId);
@@ -82,21 +82,19 @@ public class JednostkiEdytuj extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
             case R.id.edit:
-                if(!jednostka.getCzyDomyslna()) {
-                    Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
-                    Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+                if (!jednostka.getCzyDomyslna()) {
+                    Button aktualizuj = findViewById(R.id.button_save_edit);
+                    Button anuluj = findViewById(R.id.button_disable_edit);
                     aktualizuj.setEnabled(true);
                     anuluj.setEnabled(true);
                     nazwa.setEnabled(true);
                     wartosc.setEnabled(true);
                     typZmiennejL.setEnabled(true);
-                }
-                else {
+                } else {
                     Toast.makeText(this, "Nie mozna edytować domyślnej jednostki", Toast.LENGTH_LONG).show();
                 }
                 return true;
@@ -107,14 +105,14 @@ public class JednostkiEdytuj extends AppCompatActivity {
                     builder.setMessage("Czy na pewno usunąć");
 //                builder.setTitle("Alert !");
                     builder.setCancelable(false);
-                    builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                         if (jednostka != null) {
                             jednostkiRepository.delete(jednostka);
                         }
                         finish();
                     });
 
-                    builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    builder.setNegativeButton(getString(R.string.nie), (dialog, which) -> {
                         dialog.cancel();
                     });
                     builder.show();
@@ -134,8 +132,8 @@ public class JednostkiEdytuj extends AppCompatActivity {
 
 
     public void stopEdit(View view) {
-        Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
-        Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+        Button aktualizuj = findViewById(R.id.button_save_edit);
+        Button anuluj = findViewById(R.id.button_disable_edit);
         aktualizuj.setEnabled(false);
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
@@ -147,7 +145,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
         String nazwa = this.nazwa.getEditText().getText().toString();
         String wartosc = this.wartosc.getEditText().getText().toString();
 
-        if(nazwa.length() >= 2 && wartosc.length() >= 1) {
+        if (nazwa.length() >= 2 && wartosc.length() >= 1) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
 
 
@@ -157,7 +155,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
             jednostka.setDataAktualizacji(new Date());
             jednostkiRepository.update(jednostka);
             finish();
-        }else
+        } else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
     }
 }

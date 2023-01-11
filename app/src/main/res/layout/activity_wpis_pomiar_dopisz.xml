@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Pomiary">
+        android:hint="@string/pomiary">
 
         <AutoCompleteTextView
             android:id="@+id/spinnerPomiary"
@@ -23,8 +23,7 @@
             android:layout_height="wrap_content"
             android:inputType="none"
             app:simpleItems="@array/typZmiennej"
-
-            />
+            tools:ignore="LabelFor" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -48,7 +47,7 @@
             android:id="@+id/editTextWynikLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Wynik pomiaru"
+            android:hint="@string/wynik_pomiaru"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +67,7 @@
         android:id="@+id/godzinaWykonaniaLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Godzina wykonania pomiaru"
+        android:hint="@string/godzina_wykonania_pomiaru"
         app:endIconMode="clear_text"
         android:layout_marginBottom="16dp">
 
@@ -79,7 +78,7 @@
             android:clickable="false"
             android:cursorVisible="false"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,9 +90,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="24dp"
         android:onClick="zapiszNowaPozycia"
-        android:text="Zapisz nową pozycję"
+        android:text="@string/zapisz_pomiar"
         app:icon="@drawable/ic_add_24" />
-
 
 
 </LinearLayout>

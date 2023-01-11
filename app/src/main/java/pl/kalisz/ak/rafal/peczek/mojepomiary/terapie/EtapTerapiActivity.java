@@ -1,9 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -16,6 +12,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -79,8 +79,6 @@ public class EtapTerapiActivity extends AppCompatActivity {
     private WpisLekRepository wpisLekRepository;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,20 +98,19 @@ public class EtapTerapiActivity extends AppCompatActivity {
         //progers.getWindow().getAttributes().windowAnimations = R.style.FaidDialogAnimation;
         progers.show();
 
-        godzinaWykonania = (TextInputLayout) findViewById(R.id.godzinaWykonaniaLayout);
-        notatka = (TextInputLayout) findViewById(R.id.editTextNotatkaLayout);
-        przycisk = (Button) findViewById(R.id.button_save_edit);
+        godzinaWykonania = findViewById(R.id.godzinaWykonaniaLayout);
+        notatka = findViewById(R.id.editTextNotatkaLayout);
+        przycisk = findViewById(R.id.button_save_edit);
 
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu));
 
-        if(aktywnosc != 1 || etapTerapa.getDataWykonania() == null) {
+        if (aktywnosc != 1 || etapTerapa.getDataWykonania() == null) {
             przycisk.setText("Wykonaj etap");
             Date date = new Date();
             godzinaWykonania.getEditText().setText(simpleDateFormat.format(date));
             dodajTimePicker(godzinaWykonania.getEditText());
-        }
-        else {
+        } else {
             przycisk.setText("Aktualizuj");
             notatka.getEditText().setText(etapTerapa.getNotatka());
             godzinaWykonania.getEditText().setText(simpleDateFormat.format(etapTerapa.getDataWykonania()));
@@ -134,27 +131,27 @@ public class EtapTerapiActivity extends AppCompatActivity {
 
 
                 listaElementowL = new ArrayList<>();
-                viewListyElementow = (LinearLayout) findViewById(R.id.listaElementow);
+                viewListyElementow = findViewById(R.id.listaElementow);
 
 
                 terapia = terapiaRepository.findById(etapTerapa.getIdTerapi());
                 ArrayList listaCzynnosci = new ArrayList();
 
-                for(String uidCzynnosci : terapia.getIdsCzynnosci()){
+                for (String uidCzynnosci : terapia.getIdsCzynnosci()) {
                     View elementView = null;
                     try {
                         JSONObject czynnosc = new JSONObject(uidCzynnosci);
                         String szukaneId = (String) czynnosc.get("id");
-                        if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
+                        if (czynnosc.get("typ").equals(Pomiar.class.getName())) {
                             Pomiar pomiar = pomiarRepository.findById(szukaneId);
-                            if(pomiar!=null) {
+                            if (pomiar != null) {
                                 listaCzynnosci.add(pomiar);
 
                                 elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_pomiar, null, false);
-                                TextView textView = (TextView) elementView.findViewById(R.id.textView3);
-                                TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
-                                TextView jednostkaTextView = (TextView) elementView.findViewById(R.id.jednostka);
-                                EditText wynikEditText = (EditText) elementView.findViewById(R.id.editTextWynik);
+                                TextView textView = elementView.findViewById(R.id.textView3);
+                                TextView textView1 = elementView.findViewById(R.id.notayka);
+                                TextView jednostkaTextView = elementView.findViewById(R.id.jednostka);
+                                EditText wynikEditText = elementView.findViewById(R.id.editTextWynik);
 
                                 textView.setText(pomiar.getNazwa());
                                 textView1.setText(pomiar.getNotatka());
@@ -177,15 +174,14 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                 }
                             }
 
-                        }
-                        else if(czynnosc.get("typ").equals(Lek.class.getName())) {
+                        } else if (czynnosc.get("typ").equals(Lek.class.getName())) {
                             Lek lek = lekRepository.findById(szukaneId);
-                            if(lek!=null) {
+                            if (lek != null) {
                                 listaCzynnosci.add(lek);
 
                                 elementView = getLayoutInflater().inflate(R.layout.activity_etap_terapi_element_lek, null, false);
-                                TextView textView = (TextView) elementView.findViewById(R.id.textView3);
-                                TextView textView1 = (TextView) elementView.findViewById(R.id.notayka);
+                                TextView textView = elementView.findViewById(R.id.textView3);
+                                TextView textView1 = elementView.findViewById(R.id.notayka);
 
                                 String nazwa = lek.getNazwa() + ": ";
                                 Jednostka jednostka = jednostkiRepository.findById(lek.getIdJednostki());
@@ -193,30 +189,30 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                     nazwa += (int) czynnosc.getInt("dawka");
                                 else
                                     nazwa += czynnosc.getDouble("dawka");
-                                nazwa += " " + jednostka.getWartosc();
+                                nazwa += getString(R.string.spacia) + jednostka.getWartosc();
                                 textView.setText(nazwa);
                                 textView1.setText(lek.getNotatka());
                             }
                         }
 
-                    }catch (
+                    } catch (
                             JSONException e) {
                         e.printStackTrace();
                     }
-                    if(elementView != null) {
+                    if (elementView != null) {
                         listaElementowL.add(elementView);
                         viewListyElementow.addView(elementView);
                     }
                 }
 
 
-                if(aktywnosc != 1 || etapTerapa.getDataWykonania() == null) {
+                if (aktywnosc != 1 || etapTerapa.getDataWykonania() == null) {
                     przycisk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 
                             ArrayList<String> listaWynikow = validate(listaCzynnosci);
-                            if(listaWynikow == null)
+                            if (listaWynikow == null)
                                 return;
 
                             Calendar c = Calendar.getInstance();
@@ -231,20 +227,19 @@ public class EtapTerapiActivity extends AppCompatActivity {
                             cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
 
                             int index = 0;
-                            for( Object czynnosc : listaCzynnosci){
-                                if(czynnosc.getClass().equals(Pomiar.class)) {
+                            for (Object czynnosc : listaCzynnosci) {
+                                if (czynnosc.getClass().equals(Pomiar.class)) {
                                     Pomiar pomiar = (Pomiar) czynnosc;
 
-                                    wpisPomiarRepository.insert(new WpisPomiar(listaWynikow.get(index).toString(), pomiar.getId(), FirebaseAuth.getInstance().getCurrentUser().getUid(), etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
+                                    wpisPomiarRepository.insert(new WpisPomiar(listaWynikow.get(index), pomiar.getId(), FirebaseAuth.getInstance().getCurrentUser().getUid(), etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
 
-                                }
-                                else if(czynnosc.getClass().equals(Lek.class)) {
+                                } else if (czynnosc.getClass().equals(Lek.class)) {
                                     Lek lek = (Lek) czynnosc;
                                     int finalIndex = index;
                                     wpisLekRepository.getQueryByLekId(lek.getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if(task.isSuccessful()){
+                                            if (task.isSuccessful()) {
                                                 try {
                                                     List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
                                                     JSONObject czynnosc = new JSONObject(terapia.getIdsCzynnosci().get(finalIndex));
@@ -257,7 +252,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                                     if (listaWynikow.get(finalIndex).equals(String.valueOf(true))) {
                                                         wpisLekRepository.insert(new WpisLek(((Double) (obrut * -1)).toString(), ((Double) (zapasLeku - obrut)).toString(), ((Lek) listaCzynnosci.get(finalIndex)).getId(), userUid, etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
                                                     }
-                                                }catch (Exception e){
+                                                } catch (Exception e) {
                                                 }
                                             }
 
@@ -274,32 +269,30 @@ public class EtapTerapiActivity extends AppCompatActivity {
                             finish();
                         }
                     });
-                }
-                else {
+                } else {
                     List listaWpisow = new ArrayList<>();
                     int i = 0;
-                    for (Object czynnosc: listaCzynnosci) {
+                    for (Object czynnosc : listaCzynnosci) {
                         View elementView = listaElementowL.get(i);
-                        if(czynnosc.getClass().equals(Pomiar.class)){
+                        if (czynnosc.getClass().equals(Pomiar.class)) {
                             Pomiar pomiar = (Pomiar) czynnosc;
                             WpisPomiar wpisPomiar = wpisPomiarRepository.findByEtapIdPomiarId(etapTerapa.getId(), pomiar.getId());
                             listaWpisow.add(wpisPomiar);
-                            if(wpisPomiar!=null) {
-                                EditText editText = (EditText) elementView.findViewById(R.id.editTextWynik);
-                                if(editText.getInputType() == InputType.TYPE_CLASS_NUMBER) {
-                                    editText.setText(((int)Double.parseDouble(wpisPomiar.getWynikPomiary()))+"");
-                                }
-                                else {
+                            if (wpisPomiar != null) {
+                                EditText editText = elementView.findViewById(R.id.editTextWynik);
+                                if (editText.getInputType() == InputType.TYPE_CLASS_NUMBER) {
+                                    editText.setText(((int) Double.parseDouble(wpisPomiar.getWynikPomiary())) + "");
+                                } else {
                                     editText.setText(wpisPomiar.getWynikPomiary());
                                 }
                             }
                         }
-                        if(czynnosc.getClass().equals(Lek.class)) {
+                        if (czynnosc.getClass().equals(Lek.class)) {
                             Lek lek = (Lek) czynnosc;
                             WpisLek wpisLek = wpisLekRepository.findByEtapIdLekId(etapTerapa.getId(), lek.getId());
                             listaWpisow.add(wpisLek);
-                            if(wpisLek!=null) {
-                                MaterialSwitch materialSwitch = (MaterialSwitch) elementView.findViewById(R.id.toggleSwitch);
+                            if (wpisLek != null) {
+                                MaterialSwitch materialSwitch = elementView.findViewById(R.id.toggleSwitch);
                                 materialSwitch.setChecked(true);
                             }
                         }
@@ -310,10 +303,9 @@ public class EtapTerapiActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             ArrayList<String> listaWynikow = validate(listaCzynnosci);
-                            Log.w("TAG-etap", "listaWynikow: "+listaWynikow.toString());
-                            if(listaWynikow == null)
+                            Log.w("TAG-etap", "listaWynikow: " + listaWynikow.toString());
+                            if (listaWynikow == null)
                                 return;
-
 
 
                             Calendar c = Calendar.getInstance();
@@ -334,29 +326,27 @@ public class EtapTerapiActivity extends AppCompatActivity {
 //                            etapTerapiaRepository.update(etapTerapa);
 
                             int index = 0;
-                            for( Object wpis : listaWpisow){
-                                if(wpis != null && wpis.getClass().equals(WpisPomiar.class)) {
-                                    WpisPomiar wpisPomiar = (WpisPomiar)wpis;
-                                    wpisPomiar.setWynikPomiary(listaWynikow.get(index).toString());
+                            for (Object wpis : listaWpisow) {
+                                if (wpis != null && wpis.getClass().equals(WpisPomiar.class)) {
+                                    WpisPomiar wpisPomiar = (WpisPomiar) wpis;
+                                    wpisPomiar.setWynikPomiary(listaWynikow.get(index));
                                     wpisPomiar.setDataAktualizacji(new Date());
                                     wpisPomiarRepository.update(wpisPomiar);
-                                }
-                                else {
+                                } else {
 
-                                    WpisLek wpisLek = (WpisLek)wpis;
-                                    if(listaWynikow.get(index).equals(String.valueOf(true))){
+                                    WpisLek wpisLek = (WpisLek) wpis;
+                                    if (listaWynikow.get(index).equals(String.valueOf(true))) {
 
-                                        if(wpis != null) {
+                                        if (wpis != null) {
                                             wpisLek.setDataWykonania(cData.getTime());
                                             wpisLek.setDataAktualizacji(new Date());
                                             wpisLekRepository.update(wpisLek);
-                                        }
-                                        else {
+                                        } else {
                                             final int finalIndex = index;
-                                            wpisLekRepository.getQueryByLekId(((Lek)listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            wpisLekRepository.getQueryByLekId(((Lek) listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if(task.isSuccessful()){
+                                                    if (task.isSuccessful()) {
                                                         try {
                                                             List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
                                                             JSONObject czynnosc = new JSONObject(terapia.getIdsCzynnosci().get(finalIndex));
@@ -369,15 +359,14 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                                             if (listaWynikow.get(finalIndex).equals(String.valueOf(true))) {
                                                                 wpisLekRepository.insert(new WpisLek(((Double) (obrut * -1)).toString(), ((Double) (zapasLeku - obrut)).toString(), ((Lek) listaCzynnosci.get(finalIndex)).getId(), userUid, etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
                                                             }
-                                                        }catch (Exception e){
+                                                        } catch (Exception e) {
                                                         }
                                                     }
                                                 }
                                             });
                                         }
 
-                                    }
-                                    else if(wpis != null){
+                                    } else if (wpis != null) {
                                         wpisLekRepository.delete(wpisLek);
                                     }
 
@@ -401,13 +390,11 @@ public class EtapTerapiActivity extends AppCompatActivity {
         handler.postDelayed(r, 500);
 
 
-
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
                 finish();
                 return true;
@@ -417,12 +404,12 @@ public class EtapTerapiActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList validate(ArrayList listaCzynnosci){
+    private ArrayList validate(ArrayList listaCzynnosci) {
         ArrayList<String> listaWynikow = new ArrayList<>();
-        for(int i=0; i<listaElementowL.size(); i++) {
+        for (int i = 0; i < listaElementowL.size(); i++) {
             View element = listaElementowL.get(i);
             Object czynnosc = listaCzynnosci.get(i);
-            if(czynnosc.getClass().equals(Pomiar.class)) {
+            if (czynnosc.getClass().equals(Pomiar.class)) {
                 String wynikOdczyt = ((EditText) element.findViewById(R.id.editTextWynik)).getText().toString();
                 Pomiar pomiar = (Pomiar) czynnosc;
                 if (pomiar.getIdJednostki() != null) {
@@ -435,10 +422,9 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     }
                 }
                 listaWynikow.add(wynikOdczyt);
-            }
-            else if(czynnosc.getClass().equals(Lek.class)) {
+            } else if (czynnosc.getClass().equals(Lek.class)) {
                 MaterialSwitch materialSwitch = element.findViewById(R.id.toggleSwitch);
-                if(materialSwitch.isChecked())
+                if (materialSwitch.isChecked())
                     listaWynikow.add(String.valueOf(true));
                 else
                     listaWynikow.add(String.valueOf(false));
@@ -447,14 +433,14 @@ public class EtapTerapiActivity extends AppCompatActivity {
         return listaWynikow;
     }
 
-    private void dodajTimePicker(EditText editText){
+    private void dodajTimePicker(EditText editText) {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar c = Calendar.getInstance();
                 c.set(Calendar.MINUTE, 0);
-                if(editText.getText().length() > 0){
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                if (editText.getText().length() > 0) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu));
                     try {
                         Date data = sdf.parse(editText.getText().toString());
                         c.setTime(data);
@@ -475,7 +461,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(timePicker.getMinute() > 9)
+                        if (timePicker.getMinute() > 9)
                             editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
                         else
                             editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());

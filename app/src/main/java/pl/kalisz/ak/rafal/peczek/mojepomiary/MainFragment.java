@@ -1,39 +1,29 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.EtapTerapiaRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaAdapter;
 
 
 /**
@@ -43,16 +33,13 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.TerapiaAdapter;
  */
 public class MainFragment extends Fragment {
 
-
     private TextView dataWpsiow;
     private RecyclerView rvEtapy;
     private MainEtapAdapter mainEtapAdapter;
     private static EtapTerapiaRepository etapTerapiaRepository;
 
     public MainFragment() {
-        // Required empty public constructor
     }
-
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -67,20 +54,19 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getUid());
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        Button wczesniej = (Button) view.findViewById(R.id.button1);
+        Button wczesniej = view.findViewById(R.id.button1);
         wczesniej.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wczesniej();
             }
         });
-        Button pozniej = (Button) view.findViewById(R.id.button2);
+        Button pozniej = view.findViewById(R.id.button2);
         pozniej.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,12 +74,11 @@ public class MainFragment extends Fragment {
             }
         });
 
-        dataWpsiow = (TextView) view.findViewById(R.id.Data);
+        dataWpsiow = view.findViewById(R.id.Data);
         dodajDatePicker(dataWpsiow);
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
         dataWpsiow.setText(simpleDateFormat.format(date));
-
 
         try {
             date = simpleDateFormat.parse(dataWpsiow.getText().toString());
@@ -104,7 +89,7 @@ public class MainFragment extends Fragment {
         c.setTime(date);
         c.add(Calendar.DATE, 1);
         Date dateJutro = c.getTime();
-        rvEtapy = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvEtapy = view.findViewById(R.id.recycleView);
         rvEtapy.setLayoutManager(
                 new LinearLayoutManager(getContext()));
 
@@ -118,24 +103,22 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         mainEtapAdapter.startListening();
         rvEtapy.setAdapter(mainEtapAdapter);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         mainEtapAdapter.stopListening();
     }
 
-    private void odswiezListe(){
+    private void odswiezListe() {
         mainEtapAdapter.stopListening();
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
         Date date = null;
         try {
             date = simpleDateFormat.parse(dataWpsiow.getText().toString());
@@ -147,23 +130,20 @@ public class MainFragment extends Fragment {
         c.add(Calendar.DATE, 1);
         Date dateJutro = c.getTime();
 
-
         FirestoreRecyclerOptions<EtapTerapa> options
                 = new FirestoreRecyclerOptions.Builder<EtapTerapa>()
                 .setQuery(etapTerapiaRepository.getQuery().whereGreaterThanOrEqualTo("dataZaplanowania", date).whereLessThanOrEqualTo("dataZaplanowania", dateJutro), EtapTerapa.class)
                 .build();
 
         mainEtapAdapter = new MainEtapAdapter(options);
-
         mainEtapAdapter.startListening();
         rvEtapy.setHasFixedSize(true);
         rvEtapy.setAdapter(mainEtapAdapter);
-
         rvEtapy.scheduleLayoutAnimation();
     }
 
     public void dalej() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
         Date date = null;
         try {
             date = simpleDateFormat.parse(dataWpsiow.getText().toString());
@@ -179,7 +159,7 @@ public class MainFragment extends Fragment {
     }
 
     public void wczesniej() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
         Date date = null;
         try {
             date = simpleDateFormat.parse(dataWpsiow.getText().toString());
@@ -194,11 +174,11 @@ public class MainFragment extends Fragment {
         odswiezListe();
     }
 
-    private void dodajDatePicker(TextView textView){
+    private void dodajDatePicker(TextView textView) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
@@ -210,8 +190,6 @@ public class MainFragment extends Fragment {
                 c.set(ct.get(Calendar.YEAR), ct.get(Calendar.MONTH), ct.get(Calendar.DAY_OF_MONTH), 0, 0);
                 Date dataWybrana = new Date(c.getTimeInMillis());
 
-
-
                 MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
                         .setSelection(dataWybrana.getTime())
                         .build();
@@ -221,7 +199,7 @@ public class MainFragment extends Fragment {
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis((Long) selection);
-                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.lacznik_daty) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.lacznik_daty) + calendar.get(Calendar.YEAR));
                         odswiezListe();
                     }
                 });

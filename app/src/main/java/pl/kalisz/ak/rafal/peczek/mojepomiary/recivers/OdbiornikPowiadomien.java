@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -26,7 +25,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.terapie.EtapTerapiActivity;
 
-public class OdbiornikPowiadomien  extends BroadcastReceiver {
+public class OdbiornikPowiadomien extends BroadcastReceiver {
 
     public static String EXTRA_Etap_ID = "etapId";
 
@@ -40,27 +39,26 @@ public class OdbiornikPowiadomien  extends BroadcastReceiver {
 
         EtapTerapa etapTerapa = etapTerapiaRepository.findById(etapId);
 
-        if(etapTerapa.getDataWykonania() == null) {
+        if (etapTerapa.getDataWykonania() == null) {
             Intent intent1 = new Intent(context, EtapTerapiActivity.class);
             intent1.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, etapId);
             intent1.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int)etapTerapa.getDataZaplanowania().getTime(), intent1, PendingIntent.FLAG_MUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) etapTerapa.getDataZaplanowania().getTime(), intent1, PendingIntent.FLAG_MUTABLE);
             String opis = "";
-            try{
+            try {
                 ArrayList<String> listaElementow = terapiaRepository.findById(etapTerapa.getIdTerapi()).getIdsCzynnosci();
-                for(int i=0; i<listaElementow.size();i++){
-                    if(i!=0){
+                for (int i = 0; i < listaElementow.size(); i++) {
+                    if (i != 0) {
                         opis += "\n";
                     }
                     JSONObject czynnosc = new JSONObject(listaElementow.get(i));
                     String szukaneId = (String) czynnosc.get("id");
-                    if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
+                    if (czynnosc.get("typ").equals(Pomiar.class.getName())) {
                         Pomiar pomiar = pomiarRepository.findById(szukaneId);
                         opis += pomiar.getNazwa();
-                    }
-                    else if(czynnosc.get("typ").equals(Lek.class.getName())) {
+                    } else if (czynnosc.get("typ").equals(Lek.class.getName())) {
                         Lek lek = lekRepository.findById(szukaneId);
                         opis += lek.getNazwa();
                     }

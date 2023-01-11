@@ -2,26 +2,24 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.repository;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 
 public class PomiarRepository {
 
-    private CollectionReference mDatabase;
-    private WpisPomiarRepository wpisPomiarRepository;
+    private final CollectionReference mDatabase;
+    private final WpisPomiarRepository wpisPomiarRepository;
     String userUid;
 
     public PomiarRepository(@NonNull String uid) {
@@ -30,7 +28,7 @@ public class PomiarRepository {
         wpisPomiarRepository = new WpisPomiarRepository(userUid);
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
@@ -41,7 +39,7 @@ public class PomiarRepository {
     public Pomiar findById(@NonNull String pomiarId) {
         Pomiar pomiar = null;
         Task<DocumentSnapshot> task = mDatabase.document(pomiarId).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -53,7 +51,7 @@ public class PomiarRepository {
     public Pomiar findByName(String name) {
         Pomiar pomiar = null;
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("nazwa", name).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -66,11 +64,11 @@ public class PomiarRepository {
         List<Pomiar> lista = new ArrayList<>();
 
         Task<QuerySnapshot> task = mDatabase.get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+            for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                 Pomiar pomiar = queryDocumentSnapshot.toObject(Pomiar.class);
                 lista.add(pomiar);
             }
@@ -87,9 +85,9 @@ public class PomiarRepository {
         wpisPomiarRepository.getQueryByPomiarId(pomiar.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<WpisPomiar> listaWpisow = task.getResult().toObjects(WpisPomiar.class);
-                    for (WpisPomiar wpisPomiar : listaWpisow){
+                    for (WpisPomiar wpisPomiar : listaWpisow) {
                         wpisPomiarRepository.delete(wpisPomiar);
                     }
                 }

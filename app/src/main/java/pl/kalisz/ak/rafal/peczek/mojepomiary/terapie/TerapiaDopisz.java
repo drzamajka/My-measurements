@@ -1,9 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -25,6 +21,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,14 +52,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.OdbiornikPowiadomien;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
+import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.OdbiornikPowiadomien;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.EtapTerapiaRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
@@ -92,17 +91,17 @@ public class TerapiaDopisz extends AppCompatActivity {
         listaElementowL = new ArrayList<>();
         listaGodzin = new ArrayList<>();
         wybranaCzestotliwosc = 0;
-        dataRozpoczecia = (TextInputLayout) findViewById(R.id.dataRozpoczeciaLayout);
-        dataZakonczenia = (TextInputLayout) findViewById(R.id.dataZakonczeniaLayout);
-        notatka = (TextInputLayout) findViewById(R.id.NotatkaLayout);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        dataRozpoczecia = findViewById(R.id.dataRozpoczeciaLayout);
+        dataZakonczenia = findViewById(R.id.dataZakonczeniaLayout);
+        notatka = findViewById(R.id.NotatkaLayout);
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty));
         Calendar c = Calendar.getInstance();
         dataRozpoczecia.getEditText().setText(sdf.format(c.getTime()));
         c.add(Calendar.DAY_OF_MONTH, 1);
         dataZakonczenia.getEditText().setText(sdf.format(c.getTime()));
-        viewListyElementow = (LinearLayout) findViewById(R.id.listaElementow);
-        viewListyCzestotliwosci = (LinearLayout) findViewById(R.id.listaCzestotliwosci);
-        czestotliwosc = (AutoCompleteTextView) findViewById(R.id.czestotliwosc);
+        viewListyElementow = findViewById(R.id.listaElementow);
+        viewListyCzestotliwosci = findViewById(R.id.listaCzestotliwosci);
+        czestotliwosc = findViewById(R.id.czestotliwosc);
 
         userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         terapiaRepository = new TerapiaRepository(userUid);
@@ -119,24 +118,24 @@ public class TerapiaDopisz extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 wybranaCzestotliwosc = position;
-                Toast.makeText(getApplicationContext(), "wybrano id:"+wybranaCzestotliwosc, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "wybrano id:" + wybranaCzestotliwosc, Toast.LENGTH_LONG).show();
                 viewListyCzestotliwosci.removeAllViews();
                 listaGodzin.clear();
-                View elementView = getczestotliwoscView((int) wybranaCzestotliwosc, true);
+                View elementView = getczestotliwoscView(wybranaCzestotliwosc, true);
                 listaGodzin.add(elementView);
                 viewListyCzestotliwosci.addView(elementView);
             }
         });
         czestotliwosc.setText(czestotliwosc.getAdapter().getItem(0).toString(), false);
-        View elementView = getczestotliwoscView((int) wybranaCzestotliwosc, true);
+        View elementView = getczestotliwoscView(wybranaCzestotliwosc, true);
         listaGodzin.add(elementView);
         viewListyCzestotliwosci.addView(elementView);
 
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
                 finish();
                 return true;
@@ -157,7 +156,7 @@ public class TerapiaDopisz extends AppCompatActivity {
         super.onStart();
     }
 
-    private View getczestotliwoscView(int wybranaCzestotliwosc, Boolean isOnItemChange){
+    private View getczestotliwoscView(int wybranaCzestotliwosc, Boolean isOnItemChange) {
         View elementView;
         switch (wybranaCzestotliwosc) {
             case 1:
@@ -174,46 +173,46 @@ public class TerapiaDopisz extends AppCompatActivity {
                 dodajTimePicker(editTextTime2);
                 break;
             case 2: {
-                    if(isOnItemChange){
-                        View daysSelecterView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_x_dni, null, false);
-                        viewListyCzestotliwosci.addView(daysSelecterView);
-                    }
-                    elementView = getczestotliwoscView(0, false);
+                if (isOnItemChange) {
+                    View daysSelecterView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_x_dni, null, false);
+                    viewListyCzestotliwosci.addView(daysSelecterView);
                 }
-                break;
+                elementView = getczestotliwoscView(0, false);
+            }
+            break;
             default: {
-                    elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_x_razy, null, false);
-                    EditText editText = elementView.findViewById(R.id.editTextTime);
-                    Button button = (Button) elementView.findViewById(R.id.usunGodzine);
-                    button.setEnabled(false);
-                    dodajTimePicker(editText);
+                elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_x_razy, null, false);
+                EditText editText = elementView.findViewById(R.id.editTextTime);
+                Button button = elementView.findViewById(R.id.usunGodzine);
+                button.setEnabled(false);
+                dodajTimePicker(editText);
 
-                    button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (listaGodzin.size() > 2) {
-                                viewListyCzestotliwosci.removeView(elementView);
-                                listaGodzin.remove(elementView);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Terapia musi posiadać conajmniej jedną godzine", Toast.LENGTH_LONG).show();
-                            }
-
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (listaGodzin.size() > 2) {
+                            viewListyCzestotliwosci.removeView(elementView);
+                            listaGodzin.remove(elementView);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Terapia musi posiadać conajmniej jedną godzine", Toast.LENGTH_LONG).show();
                         }
-                    });
-                }
-                break;
+
+                    }
+                });
+            }
+            break;
         }
         return elementView;
     }
 
-    private void dodajTimePicker(EditText editText){
+    private void dodajTimePicker(EditText editText) {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar c = Calendar.getInstance();
                 c.set(Calendar.MINUTE, 0);
-                if(editText.getText().length() > 0){
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                if (editText.getText().length() > 0) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu));
                     try {
                         Date data = sdf.parse(editText.getText().toString());
                         c.setTime(data);
@@ -234,13 +233,13 @@ public class TerapiaDopisz extends AppCompatActivity {
                 timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(wybranaCzestotliwosc != 1 && editText.getText().length() <= 0) {
+                        if (wybranaCzestotliwosc != 1 && editText.getText().length() <= 0) {
                             View elementView = getczestotliwoscView(wybranaCzestotliwosc, false);
-                            listaGodzin.get(listaGodzin.size()-1).findViewById(R.id.usunGodzine).setEnabled(true);
+                            listaGodzin.get(listaGodzin.size() - 1).findViewById(R.id.usunGodzine).setEnabled(true);
                             listaGodzin.add(elementView);
                             viewListyCzestotliwosci.addView(elementView);
                         }
-                        if(timePicker.getMinute() > 9)
+                        if (timePicker.getMinute() > 9)
                             editText.setText(timePicker.getHour() + ":" + timePicker.getMinute());
                         else
                             editText.setText(timePicker.getHour() + ":0" + timePicker.getMinute());
@@ -254,11 +253,11 @@ public class TerapiaDopisz extends AppCompatActivity {
         });
     }
 
-    private void dodajDateRangePicker(TextView textViewOd, TextView textViewDo){
+    private void dodajDateRangePicker(TextView textViewOd, TextView textViewDo) {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textViewOd.getText().toString()));
@@ -278,11 +277,10 @@ public class TerapiaDopisz extends AppCompatActivity {
                 Date dataWybranaDo = new Date(c.getTimeInMillis());
 
 
-
-                MaterialDatePicker dateRangePicker  = MaterialDatePicker.Builder.dateRangePicker ()
-                        .setSelection( new Pair<>(
-                                dataWybranaOd.getTime(),
-                                dataWybranaDo.getTime()
+                MaterialDatePicker dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+                        .setSelection(new Pair<>(
+                                        dataWybranaOd.getTime(),
+                                        dataWybranaDo.getTime()
                                 )
                         )
                         .setCalendarConstraints(
@@ -291,7 +289,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                                                 new CalendarConstraints.DateValidator() {
                                                     @Override
                                                     public boolean isValid(long date) {
-                                                        return MaterialDatePicker.todayInUtcMilliseconds() <= date ;
+                                                        return MaterialDatePicker.todayInUtcMilliseconds() <= date;
                                                     }
 
                                                     @Override
@@ -313,10 +311,10 @@ public class TerapiaDopisz extends AppCompatActivity {
                     @Override
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis((Long) ((Pair<Long, Long>)selection).first);
-                        textViewOd.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
-                        calendar.setTimeInMillis((Long) ((Pair<Long, Long>)selection).second);
-                        textViewDo.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                        calendar.setTimeInMillis(((Pair<Long, Long>) selection).first);
+                        textViewOd.setText(calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.lacznik_daty) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.lacznik_daty) + calendar.get(Calendar.YEAR));
+                        calendar.setTimeInMillis(((Pair<Long, Long>) selection).second);
+                        textViewDo.setText(calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.lacznik_daty) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.lacznik_daty) + calendar.get(Calendar.YEAR));
                     }
                 });
 
@@ -325,15 +323,15 @@ public class TerapiaDopisz extends AppCompatActivity {
             }
         };
 
-        textViewOd.setOnClickListener( onClickListener);
-        textViewDo.setOnClickListener( onClickListener);
+        textViewOd.setOnClickListener(onClickListener);
+        textViewDo.setOnClickListener(onClickListener);
     }
 
-    private void dodajDatePicker(TextView textView){
+    private void dodajDatePicker(TextView textView) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
                 Calendar ct = Calendar.getInstance();
                 try {
                     ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
@@ -347,7 +345,6 @@ public class TerapiaDopisz extends AppCompatActivity {
                 Log.i("Tag-main", "data:" + dataWybrana.getTime());
 
 
-
                 MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker()
                         .setSelection(dataWybrana.getTime())
                         .setCalendarConstraints(
@@ -356,7 +353,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                                                 new CalendarConstraints.DateValidator() {
                                                     @Override
                                                     public boolean isValid(long date) {
-                                                        return MaterialDatePicker.todayInUtcMilliseconds() <= date ;
+                                                        return MaterialDatePicker.todayInUtcMilliseconds() <= date;
                                                     }
 
                                                     @Override
@@ -379,7 +376,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                     public void onPositiveButtonClick(Object selection) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis((Long) selection);
-                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                        textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.lacznik_daty) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.lacznik_daty) + calendar.get(Calendar.YEAR));
                     }
                 });
                 materialDatePicker.show(getSupportFragmentManager(), "tag");
@@ -401,10 +398,10 @@ public class TerapiaDopisz extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 View elementView = getLayoutInflater().inflate(R.layout.activity_terapia_dopisz_element, null, false);
-                LinearLayout listaElementow = (LinearLayout) findViewById(R.id.listaElementow);
-                AutoCompleteTextView spinner = (AutoCompleteTextView) elementView.findViewById(R.id.spinner);
-                TextInputLayout spinnerL = (TextInputLayout) elementView.findViewById(R.id.spinnerLayout);
-                Button button = (Button) elementView.findViewById(R.id.usun);
+                LinearLayout listaElementow = findViewById(R.id.listaElementow);
+                AutoCompleteTextView spinner = elementView.findViewById(R.id.spinner);
+                TextInputLayout spinnerL = elementView.findViewById(R.id.spinnerLayout);
+                Button button = elementView.findViewById(R.id.usun);
 
                 switch (which) {
                     case 0: {
@@ -414,13 +411,13 @@ public class TerapiaDopisz extends AppCompatActivity {
                         pomiarRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     ArrayList<String> data = new ArrayList<>();
-                                    for (Pomiar pomiar : task.getResult().toObjects(Pomiar.class)){
+                                    for (Pomiar pomiar : task.getResult().toObjects(Pomiar.class)) {
                                         listaPomiarow.add(pomiar);
                                         data.add(pomiar.getNazwa());
                                     }
-                                    ArrayAdapter adapter = new ArrayAdapter ( TerapiaDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
+                                    ArrayAdapter adapter = new ArrayAdapter(TerapiaDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
                                     spinner.setAdapter(adapter);
                                 }
                             }
@@ -434,13 +431,13 @@ public class TerapiaDopisz extends AppCompatActivity {
                         lekRepository.getQuery().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     ArrayList<String> data = new ArrayList<>();
-                                    for (Lek lek : task.getResult().toObjects(Lek.class)){
+                                    for (Lek lek : task.getResult().toObjects(Lek.class)) {
                                         listaLekow.add(lek);
                                         data.add(lek.getNazwa());
                                     }
-                                    ArrayAdapter adapter = new ArrayAdapter ( TerapiaDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
+                                    ArrayAdapter adapter = new ArrayAdapter(TerapiaDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
                                     spinner.setAdapter(adapter);
                                 }
                             }
@@ -455,24 +452,24 @@ public class TerapiaDopisz extends AppCompatActivity {
                                 TextView jednostka = extendelementView.findViewById(R.id.jednostka);
                                 LinearLayout extendContentLayout = elementView.findViewById(R.id.extendContent);
                                 extendContentLayout.removeAllViews();
-                                Log.w("TAG-terapia", "wbrano: "+listaLekow.get(position));
+                                Log.w("TAG-terapia", "wbrano: " + listaLekow.get(position));
                                 Lek lek = listaLekow.get(position);
 
-                                notatka.setText("Notatka: "+lek.getNotatka());
+                                notatka.setText("Notatka: " + lek.getNotatka());
                                 wpisLekRepository.getQueryByLekId(lek.getId(), 1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                     @Override
                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                         List<WpisLek> lista = queryDocumentSnapshots.toObjects(WpisLek.class);
-                                        if(!lista.isEmpty())
-                                            zapas.setText("W składzie pozostało: "+lista.get(0).getPozostalyZapas());
+                                        if (!lista.isEmpty())
+                                            zapas.setText("W składzie pozostało: " + lista.get(0).getPozostalyZapas());
 
                                         jednostkiRepository.queryById(lek.getIdJednostki()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                 Jednostka jednostka1 = documentSnapshot.toObject(Jednostka.class);
                                                 jednostka.setText(jednostka1.getWartosc());
-                                                zapas.setText(zapas.getText()+" "+jednostka1.getWartosc());
-                                                if(jednostka1.getTypZmiennej() == 0)
+                                                zapas.setText(zapas.getText() + getString(R.string.spacia) + jednostka1.getWartosc());
+                                                if (jednostka1.getTypZmiennej() == 0)
                                                     editTextZasob.setInputType(InputType.TYPE_CLASS_NUMBER);
                                             }
                                         });
@@ -491,10 +488,10 @@ public class TerapiaDopisz extends AppCompatActivity {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(listaElementowL.size()>1) {
+                        if (listaElementowL.size() > 1) {
                             listaElementow.removeView(elementView);
                             listaElementowL.remove(elementView);
-                        }else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "Terapia musi posiadać conajmniej jedną składową", Toast.LENGTH_LONG).show();
                         }
 
@@ -512,32 +509,31 @@ public class TerapiaDopisz extends AppCompatActivity {
 
     public void zapiszNowaTerapie(View view) throws ParseException, JSONException {
         Date dataRozpoczecia, dataZakonczenia;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty));
         dataRozpoczecia = sdf.parse(this.dataRozpoczecia.getEditText().getText().toString());
         dataZakonczenia = sdf.parse(this.dataZakonczenia.getEditText().getText().toString());
 
 
         ArrayList listaWybranych = new ArrayList();
         ArrayList<String> idsCzynnosci = new ArrayList<>();
-        for(View v: listaElementowL){
-            AutoCompleteTextView spinner = (AutoCompleteTextView) v.findViewById(R.id.spinner);
-            TextInputLayout spinnerL = (TextInputLayout) v.findViewById(R.id.spinnerLayout);
-            String wybranaCzynnosc = (String) spinner.getText().toString();
-            if(wybranaCzynnosc.length()>0) {
+        for (View v : listaElementowL) {
+            AutoCompleteTextView spinner = v.findViewById(R.id.spinner);
+            TextInputLayout spinnerL = v.findViewById(R.id.spinnerLayout);
+            String wybranaCzynnosc = spinner.getText().toString();
+            if (wybranaCzynnosc.length() > 0) {
                 spinnerL.setErrorEnabled(false);
                 if (spinnerL.getHint().equals("Lek")) {
                     TextInputLayout editTextZasob = v.findViewById(R.id.editTextZasobLayout);
                     Lek lek = (lekRepository.findByName(wybranaCzynnosc));
-                    if(editTextZasob.getEditText().getText().toString().length()==0) {
+                    if (editTextZasob.getEditText().getText().toString().length() == 0) {
                         editTextZasob.setError("Wprowadź poprawne dane");
                         return;
                     }
                     Double dawkaLeku = Double.parseDouble(editTextZasob.getEditText().getText().toString());
-                    if(dawkaLeku==0) {
+                    if (dawkaLeku == 0) {
                         editTextZasob.setError("Wprowadź poprawne dane");
                         return;
-                    }
-                    else
+                    } else
                         editTextZasob.setErrorEnabled(false);
                     listaWybranych.add(lek);
                     JSONObject czynnosc = new JSONObject();
@@ -559,8 +555,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                     else
                         listaElementowL.remove(v);
                 }
-            }
-            else{
+            } else {
                 spinnerL.setError("Wybierz element terapi");
             }
         }
@@ -569,18 +564,18 @@ public class TerapiaDopisz extends AppCompatActivity {
         ArrayList<Time> listaGodzin = new ArrayList<>();
         switch (wybranaCzestotliwosc) {
             case 1: { // co x godzin
-                Calendar c =Calendar.getInstance();
-                SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
-                Date dateOd = stf.parse(((EditText)viewListyCzestotliwosci.findViewById(R.id.editTextTime1)).getText().toString());
-                Date dateDo = stf.parse(((EditText)viewListyCzestotliwosci.findViewById(R.id.editTextTime2)).getText().toString());
-                TimePicker timePicker = (TimePicker) viewListyCzestotliwosci.findViewById(R.id.czestotliwoscWyk);
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat stf = new SimpleDateFormat(getString(R.string.format_czasu));
+                Date dateOd = stf.parse(((EditText) viewListyCzestotliwosci.findViewById(R.id.editTextTime1)).getText().toString());
+                Date dateDo = stf.parse(((EditText) viewListyCzestotliwosci.findViewById(R.id.editTextTime2)).getText().toString());
+                TimePicker timePicker = viewListyCzestotliwosci.findViewById(R.id.czestotliwoscWyk);
                 c.setTime(dateOd);
-                while (dateDo.after(c.getTime())){
+                while (dateDo.after(c.getTime())) {
                     listaGodzin.add(new Time(c.getTime().getTime()));
                     c.add(Calendar.HOUR, timePicker.getHour());
                     c.add(Calendar.MINUTE, timePicker.getMinute());
                 }
-                if(dateDo.equals(c.getTime())){
+                if (dateDo.equals(c.getTime())) {
                     listaGodzin.add(new Time(c.getTime().getTime()));
                 }
             }
@@ -589,8 +584,8 @@ public class TerapiaDopisz extends AppCompatActivity {
             default: {
                 for (View godzina : this.listaGodzin) {
                     EditText editText = godzina.findViewById(R.id.editTextTime);
-                    if(editText.getText().length()>0) {
-                        SimpleDateFormat stf = new SimpleDateFormat("HH:mm");
+                    if (editText.getText().length() > 0) {
+                        SimpleDateFormat stf = new SimpleDateFormat(getString(R.string.format_czasu));
                         Date date = stf.parse(editText.getText().toString());
                         listaGodzin.add(new Time(date.getTime()));
                     }
@@ -609,28 +604,28 @@ public class TerapiaDopisz extends AppCompatActivity {
             c.set(Calendar.HOUR, 0);
 
 
-            for (Time godzina: listaGodzin) {
+            for (Time godzina : listaGodzin) {
                 Calendar tmpC = (Calendar) c.clone();
                 tmpC.set(Calendar.MINUTE, godzina.getMinutes());
                 tmpC.set(Calendar.HOUR, godzina.getHours());
-                Log.v("TerapieDopisz-data", "lista dat:"+tmpC.getTime());
+                Log.v("TerapieDopisz-data", "lista dat:" + tmpC.getTime());
                 listaDatZaplanowanychTerapi.add(tmpC.getTime());
             }
 
-            if(wybranaCzestotliwosc == 2) {
-                String coDni = ((AutoCompleteTextView)viewListyCzestotliwosci.findViewById(R.id.spinnerDni)).getText().toString();
+            if (wybranaCzestotliwosc == 2) {
+                String coDni = ((AutoCompleteTextView) viewListyCzestotliwosci.findViewById(R.id.spinnerDni)).getText().toString();
                 c.add(Calendar.DATE, Integer.parseInt(coDni));
-            }else
+            } else
                 c.add(Calendar.DATE, 1);
         }
 
-        Log.w("TAG", "listaWybranych : "+listaWybranych.toString());
+        Log.w("TAG", "listaWybranych : " + listaWybranych);
 
-        if(listaWybranych.isEmpty()){
+        if (listaWybranych.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Terapia musi zawoerać conajmniej jedną czynność", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(listaDatZaplanowanychTerapi.isEmpty()){
+        if (listaDatZaplanowanychTerapi.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Terapia musi posiadać conajmniej jeden zaplanowany etap", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -645,7 +640,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                     Log.w("TAG-terapia", "dodano terapie");
                     terapia.setId(task.getResult().getId());
                     ArrayList<EtapTerapa> listaEtapowTerapi = new ArrayList<>();
-                    for (Date data: listaDatZaplanowanychTerapi ) {
+                    for (Date data : listaDatZaplanowanychTerapi) {
                         EtapTerapa etapTerapa = new EtapTerapa(data, null, "", terapia.getId(), userUid, new Date(), new Date());
                         listaEtapowTerapi.add(etapTerapa);
                         Task<DocumentReference> taskEtap = etapTerapiaRepository.insert(etapTerapa);
@@ -653,7 +648,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                 Log.w("TAG-terapia", "dodawanie etapu");
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     Log.w("TAG-terapia", "dodano etap");
                                     etapTerapa.setId(task.getResult().getId());
                                     setAlarm(etapTerapa);
@@ -663,8 +658,7 @@ public class TerapiaDopisz extends AppCompatActivity {
                     }
 
                     finish();
-                }
-                else Log.w("TAG-terapia", "nie dodano terapi");
+                } else Log.w("TAG-terapia", "nie dodano terapi");
             }
         });
 //        while (!task.isComplete()){
@@ -701,10 +695,10 @@ public class TerapiaDopisz extends AppCompatActivity {
 
         Intent intent = new Intent(this, OdbiornikPowiadomien.class);
         intent.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)etapTerapa.getDataZaplanowania().getTime(), intent,PendingIntent.FLAG_MUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) etapTerapa.getDataZaplanowania().getTime(), intent, PendingIntent.FLAG_MUTABLE);
 
-        alarmManager.setAndAllowWhileIdle (AlarmManager.RTC_WAKEUP,etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
 
-        Log.v("Tag-powiadomienie", "lista dat:"+intent.toString());
+        Log.v("Tag-powiadomienie", "lista dat:" + intent);
     }
 }

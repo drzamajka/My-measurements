@@ -45,9 +45,13 @@ public class WpisPomiar {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public String getId() {return id;}
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) {this.id = id;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getWynikPomiary() {
         return wynikPomiary;
@@ -57,11 +61,17 @@ public class WpisPomiar {
         this.wynikPomiary = wynikPomiary;
     }
 
-    public String getIdUzytkownika() { return idUzytkownika; }
+    public String getIdUzytkownika() {
+        return idUzytkownika;
+    }
 
-    public void setIdUzytkownika(String idUzytkownika) { this.idUzytkownika = idUzytkownika; }
+    public void setIdUzytkownika(String idUzytkownika) {
+        this.idUzytkownika = idUzytkownika;
+    }
 
-    public String getIdPomiar() {return idPomiar;}
+    public String getIdPomiar() {
+        return idPomiar;
+    }
 
     public void setIdPomiar(String idPomiar) {
         this.idPomiar = idPomiar;

@@ -1,19 +1,12 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,13 +14,15 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
@@ -60,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseFirestore mDatabase;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,19 +77,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         konto = findViewById(R.id.konto);
         wyloguj = findViewById(R.id.wyloguj);
-
-
         navigationView = findViewById(R.id.nav_viev);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if(mAuth.getCurrentUser() != null) {
-
-
+        if (mAuth.getCurrentUser() != null) {
             frame = findViewById(R.id.fooFragment);
             navigationView.getMenu().getItem(0).setChecked(true);
             zmienFragment(R.id.naw_etapy);
         }
-
 
         ComponentName receiver = new ComponentName(this, SampleBootReceiver.class);
         PackageManager pm = this.getPackageManager();
@@ -103,8 +92,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
-
-
     }
 
     @Override
@@ -116,23 +103,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        if( mAuth.getCurrentUser() != null) {
+        if (mAuth.getCurrentUser() != null) {
             mAuth.getCurrentUser().reload();
         }
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
-        }
-        else
-        {
+        } else {
             mDatabase.collection("users").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         Uzytkownik user = task.getResult().toObject(Uzytkownik.class);
-                        konto.setText(user.getImie() + " " + user.getNazwisko());
+                        konto.setText(user.getImie() + getString(R.string.spacia) + user.getNazwisko());
                     }
                 }
             });
@@ -140,46 +125,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             konto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if(!mAuth.getCurrentUser().isEmailVerified()) {
-//                        mAuth.getCurrentUser().sendEmailVerification();
-//                        Toast.makeText(getApplicationContext(), "wysyłam email werfikacyjny", Toast.LENGTH_LONG).show();
-//                    }
                     Intent intent0 = new Intent(getApplicationContext(), KontoActivity.class);
                     startActivity(intent0);
-
-
                 }
             });
+
             wyloguj.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
-                    builder.setMessage("Czy na pewno wylogować?");
-//                builder.setTitle("Alert !");
+                    builder.setMessage(R.string.czy_napewno_wylogowac);
                     builder.setCancelable(false);
-                    builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
-                        Toast.makeText(getApplicationContext(), "Wylogowanie", Toast.LENGTH_LONG).show();
+                    builder.setPositiveButton(R.string.tak, (dialog, which) -> {
+                        Toast.makeText(getApplicationContext(), (R.string.wylogowanie), Toast.LENGTH_LONG).show();
                         new SampleBootReceiver().cancleAlarmManager(getApplicationContext());
                         FirebaseAuth.getInstance().signOut();
                         finish();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     });
-                    builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    builder.setNegativeButton(R.string.nie, (dialog, which) -> {
                         dialog.cancel();
                     });
                     builder.show();
                 }
             });
-            Log.w("TAG", "user: "+currentUser.getUid());
+
             createNotificationChannel();
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.about: {
-                snackbar = Snackbar.make(findViewById(android.R.id.content), "Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji", Snackbar.LENGTH_INDEFINITE);
+                snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.o_programie, Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction(R.string.submit, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -197,22 +176,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         zmienFragment(item.getItemId());
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         navigationView.setCheckedItem(item);
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void zmienFragment(int id){
+    private void zmienFragment(int id) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction().setCustomAnimations(
-                R.anim.fade_in,  // enter
-                R.anim.fade_out,  // exit
-                R.anim.fade_in,   // popEnter
-                R.anim.fade_out  // popExit
+                R.anim.fade_in,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.fade_out
         );
-        switch (id){
+        switch (id) {
             case R.id.naw_etapy:
                 MainFragment mFragment = MainFragment.newInstance();
                 ft.replace(frame.getId(), mFragment).commit();
@@ -241,52 +218,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 WpisLekFragment wlFragment = WpisLekFragment.newInstance();
                 ft.replace(frame.getId(), wlFragment).commit();
                 break;
-
-
         }
     }
 
     @Override
-    public void onBackPressed(){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(GravityCompat.START)){
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else {
-            if(navigationView.getCheckedItem().getItemId() != R.id.naw_etapy) {
+        } else {
+            if (navigationView.getCheckedItem() != null && navigationView.getCheckedItem().getItemId() != R.id.naw_etapy) {
                 navigationView.getMenu().getItem(0).setChecked(true);
                 zmienFragment(R.id.naw_etapy);
-            }
-            else
+            } else
                 super.onBackPressed();
         }
     }
 
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, R.string.rotation_land, Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Toast.makeText(this, R.string.rotation_port, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void createNotificationChannel() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence nazwa = "mojePomiaryChanell";
-            String opis = "Źródło powiadomień";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence nazwa = getString(R.string.moje_pomiary_chanel);
+            String opis = getString(R.string.zrodlo_powiadomien);
             int znaczenie = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel chanel = new NotificationChannel("mojepomiary", nazwa, znaczenie);
+            NotificationChannel chanel = new NotificationChannel(getString(R.string.app_name), nazwa, znaczenie);
             chanel.setDescription(opis);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(chanel);
         }
     }
-
 
 
 }

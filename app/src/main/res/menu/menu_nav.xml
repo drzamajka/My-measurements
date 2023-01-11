@@ -5,55 +5,62 @@
     android:animateLayoutChanges="true">
 
 
-
-    <item android:id="@+id/naw_etapy"
+    <item
+        android:id="@+id/naw_etapy"
         android:icon="@drawable/ic_launcher_wlasna"
         android:checkable="true"
-        android:title="Etapy"/>
+        android:title="@string/etapy" />
 
-    <item android:id="@+id/naw_terapie"
+    <item
+        android:id="@+id/naw_terapie"
         android:icon="@drawable/ic_calendar_month_24"
         android:checkable="true"
-        android:title="Terapie"/>
+        android:title="@string/terapie" />
 
-    <item android:id="@+id/naw_jednostki"
+    <item
+        android:id="@+id/naw_jednostki"
         android:icon="@drawable/ic_skala_balance_24"
         android:checkable="true"
-        android:title="Jednostki"/>
+        android:title="@string/jednostki" />
 
-    <item android:title="Pomiary"
+    <item
+        android:title="@string/pomiary"
         android:id="@+id/group_pomiary">
         <menu>
 
-            <item android:id="@+id/naw_pomiary"
+            <item
+                android:id="@+id/naw_pomiary"
                 android:icon="@drawable/ic_pomiary_heart_24"
                 android:checkable="true"
-                android:title="Pomiary"/>
-            <item android:id="@+id/naw_wpisy_pomiary"
+                android:title="@string/pomiary" />
+            <item
+                android:id="@+id/naw_wpisy_pomiary"
                 android:icon="@drawable/ic_lista_24"
                 android:checkable="true"
-                android:title="Wpisy"/>
+                android:title="@string/wpisy" />
 
         </menu>
     </item>
 
-    <item android:title="Leki"
+    <item
+        android:title="@string/leki"
         android:id="@+id/group_leki">
         <menu>
 
-            <item android:id="@+id/naw_leki"
+            <item
+                android:id="@+id/naw_leki"
                 android:icon="@drawable/pill_icon_icons_com_64420"
                 android:checkable="true"
-                android:title="Leki"/>
-            <item android:id="@+id/naw_wpisy_leki"
+                android:title="@string/leki" />
+            <item
+                android:id="@+id/naw_wpisy_leki"
                 android:icon="@drawable/ic_lista_24"
                 android:checkable="true"
-                android:title="Wpisy"
-                android:paddingBottom="100dp"/>
+                android:title="@string/wpisy"
+                android:paddingBottom="100dp" />
 
         </menu>
     </item>
-
 
     <item
         android:id="@+id/footer_spacer_1"

@@ -2,17 +2,19 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
@@ -56,10 +58,10 @@ public class PomiarFragment extends Fragment {
             }
         };
 
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton button = view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
-        rvPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvPomiary = view.findViewById(R.id.recycleView);
         rvPomiary.setHasFixedSize(true);
         rvPomiary.setLayoutManager(
                 new LinearLayoutManager(getContext()));
@@ -75,16 +77,14 @@ public class PomiarFragment extends Fragment {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         pomiarAdapter.startListening();
         rvPomiary.setAdapter(pomiarAdapter);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         pomiarAdapter.stopListening();
     }

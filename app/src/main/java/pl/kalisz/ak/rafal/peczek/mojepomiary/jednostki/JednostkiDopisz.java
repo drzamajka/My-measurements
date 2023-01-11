@@ -1,7 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -21,7 +21,6 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 public class JednostkiDopisz extends AppCompatActivity {
 
     private EditText nazwa, wartosc;
-    private AutoCompleteTextView typZmiennej;
     private JednostkiRepository jednostkiRepository;
     private int typZmiennejSelectedId;
 
@@ -32,9 +31,9 @@ public class JednostkiDopisz extends AppCompatActivity {
 
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        nazwa = (EditText) findViewById(R.id.editTextNazwa);
-        wartosc = (EditText) findViewById(R.id.editTextJednostka);
-        typZmiennej = (AutoCompleteTextView) findViewById(R.id.spinner);
+        nazwa = findViewById(R.id.editTextNazwa);
+        wartosc = findViewById(R.id.editTextJednostka);
+        AutoCompleteTextView typZmiennej = findViewById(R.id.spinner);
         typZmiennejSelectedId = 0;
 
         typZmiennej.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,9 +46,8 @@ public class JednostkiDopisz extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home: {
                 finish();
                 return true;
@@ -59,19 +57,18 @@ public class JednostkiDopisz extends AppCompatActivity {
         }
     }
 
-    public void zapiszNowaPozycia(View view){
+    public void zapiszNowaPozycia(View view) {
         String nazwa = this.nazwa.getText().toString();
         String wartosc = this.wartosc.getText().toString();
 
-        if(nazwa.length() >= 2 && wartosc.length() >= 1)
-        {
+        if (nazwa.length() >= 2 && wartosc.length() >= 1) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
             String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            Jednostka jednostka = new Jednostka(nazwa, wartosc, typZmiennejSelectedId, false, userid, new Date(), new Date() );
+            Jednostka jednostka = new Jednostka(nazwa, wartosc, typZmiennejSelectedId, false, userid, new Date(), new Date());
 
             jednostkiRepository.insert(jednostka);
             finish();
-        }else
-                Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
     }
 }

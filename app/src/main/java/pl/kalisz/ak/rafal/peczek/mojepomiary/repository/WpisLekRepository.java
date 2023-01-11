@@ -20,7 +20,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
 
 public class WpisLekRepository {
 
-    private CollectionReference mDatabase;
+    private final CollectionReference mDatabase;
     String userUid;
     WpisLekRepository wpisPomiarRepository;
 
@@ -29,7 +29,7 @@ public class WpisLekRepository {
         userUid = uid;
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid);
     }
 
@@ -38,7 +38,7 @@ public class WpisLekRepository {
 
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get();
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -53,17 +53,17 @@ public class WpisLekRepository {
         Task<QuerySnapshot> task = mDatabase.whereEqualTo("idEtapTerapi", idEtapuTerapi).get(Source.DEFAULT);
 
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            for(WpisLek wpisLek : task.getResult().toObjects(WpisLek.class)){
-                if(wpisLek.getIdLeku().equals(idLeku))
+            for (WpisLek wpisLek : task.getResult().toObjects(WpisLek.class)) {
+                if (wpisLek.getIdLeku().equals(idLeku))
                     return wpisLek;
             }
         }
-        Log.w("TAG-repo", "idEtapuTerapi: "+idEtapuTerapi+"  idLeku: "+idLeku);
-        Log.w("TAG-repo", "lista findByEtapIdLekId: "+task.isSuccessful());
+        Log.w("TAG-repo", "idEtapuTerapi: " + idEtapuTerapi + "  idLeku: " + idLeku);
+        Log.w("TAG-repo", "lista findByEtapIdLekId: " + task.isSuccessful());
         return null;
     }
 
@@ -87,10 +87,10 @@ public class WpisLekRepository {
         mDatabase.whereEqualTo("idLeku", wpisLek.getIdLeku()).whereGreaterThan("dataWykonania", wpisLek.getDataWykonania()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
-                    for(WpisLek tmpWpisLek: lista){
-                        tmpWpisLek.setPozostalyZapas(((Double) (Double.parseDouble(tmpWpisLek.getPozostalyZapas())+Double.parseDouble(wpisLek.getSumaObrotu()))).toString());
+                    for (WpisLek tmpWpisLek : lista) {
+                        tmpWpisLek.setPozostalyZapas(((Double) (Double.parseDouble(tmpWpisLek.getPozostalyZapas()) + Double.parseDouble(wpisLek.getSumaObrotu()))).toString());
                         update(tmpWpisLek);
                     }
                 }
@@ -99,12 +99,11 @@ public class WpisLekRepository {
     }
 
 
-
     public WpisLek findById(@NonNull String wpisId) {
         WpisLek wpisLek = null;
         Task<DocumentSnapshot> task = mDatabase.document(wpisId).get();
 
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -126,11 +125,11 @@ public class WpisLekRepository {
         List<WpisLek> lista = new ArrayList<>();
 
         Task<QuerySnapshot> task = mDatabase.get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
-            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+            for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                 WpisLek wpisLek = queryDocumentSnapshot.toObject(WpisLek.class);
                 lista.add(wpisLek);
             }

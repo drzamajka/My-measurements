@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -84,7 +83,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
         jednostkiRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value!=null && !value.getDocumentChanges().isEmpty()){
+                if (value != null && !value.getDocumentChanges().isEmpty()) {
                     listaJednostek = value.toObjects(Jednostka.class);
                 }
             }
@@ -99,7 +98,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
         pomiarRepository.getQuery().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if(value!=null && !value.getDocumentChanges().isEmpty()){
+                if (value != null && !value.getDocumentChanges().isEmpty()) {
                     listaPomiarow = value.toObjects(Pomiar.class);
                 }
             }
@@ -116,8 +115,8 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
 
     @Override
     protected void onBindViewHolder(@NonNull EtapAdapter.etapViewholder holder, int position, @NonNull EtapTerapa model) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
-        holder.obiektNazwa.setText(position+1+". "+sdf.format(model.getDataZaplanowania()));
+        SimpleDateFormat sdf = new SimpleDateFormat(holder.view.getContext().getString(R.string.format_czasu) + holder.view.getContext().getString(R.string.format_daty));
+        holder.obiektNazwa.setText(position + 1 + ". " + sdf.format(model.getDataZaplanowania()));
 
 
         terapiaRepository.getById(model.getIdTerapi()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -125,16 +124,15 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Terapia terapia = documentSnapshot.toObject(Terapia.class);
                 if (terapia != null) {
-                    if(model.getDataWykonania() == null) {
-                        if(model.getDataZaplanowania().before(new Date())) {
+                    if (model.getDataWykonania() == null) {
+                        if (model.getDataZaplanowania().before(new Date())) {
                             holder.obiektOpis.setText("Pominiento etap");
                             holder.dotIndicator.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
-                        }
-                        else{
+                        } else {
                             holder.obiektOpis.setText("Jescze nie wykonano etapu");
                             holder.dotIndicator.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
                         }
-                    }else {
+                    } else {
                         holder.obiektOpis.setText("wykonany: " + sdf.format(model.getDataWykonania()) + "\n");
                         try {
                             holder.dotIndicator.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
@@ -165,7 +163,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                                                         if (tmp.getId().equals(pomiar.getIdJednostki()))
                                                             jednostka = tmp;
                                                     }
-                                                    holder.obiektOpis.setText(holder.obiektOpis.getText() + pomiar.getNazwa() + ": " + wpisPomiar.getWynikPomiary() + " " + jednostka.getWartosc());
+                                                    holder.obiektOpis.setText(holder.obiektOpis.getText() + pomiar.getNazwa() + ": " + wpisPomiar.getWynikPomiary() +holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
                                                 } else {
                                                     holder.obiektOpis.setText(holder.obiektOpis.getText() + pomiar.getNazwa() + ": " + wpisPomiar.getWynikPomiary());
                                                 }
@@ -214,30 +212,30 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                 String[] colors = {"Edytuj", "Usuń"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.view.getContext());
-                builder.setTitle("Etap "+(position+1)+". "+sdf.format(model.getDataZaplanowania()));
+                builder.setTitle("Etap " + (position + 1) + ". " + sdf.format(model.getDataZaplanowania()));
                 builder.setItems(colors, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        switch (which){
-                            case 0:{
+                        switch (which) {
+                            case 0: {
                                 Intent intent5 = new Intent(holder.view.getContext(), EtapTerapiActivity.class);
-                                intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, (String) model.getId());
+                                intent5.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, model.getId());
                                 intent5.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 1);
                                 holder.view.getContext().startActivity(intent5);
                                 break;
                             }
                             case 1: {
                                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
-                                builder.setMessage("Czy na pewno usunąć etap z dnia "+sdf.format(model.getDataZaplanowania()) );
+                                builder.setMessage("Czy na pewno usunąć etap z dnia " + sdf.format(model.getDataZaplanowania()));
                                 builder.setCancelable(false);
-                                builder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                                builder.setPositiveButton(holder.view.getContext().getString(R.string.tak), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         etapTerapiaRepository.delete(model);
                                     }
                                 });
-                                builder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                                builder.setNegativeButton(holder.view.getContext().getString(R.string.nie), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.cancel();
@@ -270,13 +268,13 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
         TextView obiektNazwa, obiektOpis;
         LinearLayout dotIndicator;
         View view;
-        public etapViewholder(@NonNull View itemView)
-        {
+
+        public etapViewholder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            obiektNazwa = (TextView) itemView.findViewById(R.id.nazwa);
-            obiektOpis = (TextView) itemView.findViewById(R.id.opis);
-            dotIndicator = (LinearLayout) itemView.findViewById(R.id.dotIndicator);
+            obiektNazwa = itemView.findViewById(R.id.nazwa);
+            obiektOpis = itemView.findViewById(R.id.opis);
+            dotIndicator = itemView.findViewById(R.id.dotIndicator);
         }
     }
 }

@@ -1,18 +1,11 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.auth;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +14,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -55,21 +52,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import pl.kalisz.ak.rafal.peczek.mojepomiary.MainActivity;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Pomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Uzytkownik;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki.JednostkiEdytuj;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.recivers.SampleBootReceiver;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.TerapiaRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisLekRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
 
 public class KontoActivity extends AppCompatActivity {
 
@@ -97,7 +89,7 @@ public class KontoActivity extends AppCompatActivity {
 
         edytowane = false;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty));
         Calendar c = Calendar.getInstance();
         dataUrodzenia.getEditText().setText(sdf.format(c.getTime()));
         dodajDatePicker(dataUrodzenia.getEditText());
@@ -105,9 +97,9 @@ public class KontoActivity extends AppCompatActivity {
         mDatabase.collection("users").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     uzytkownik = task.getResult().toObject(Uzytkownik.class);
-                    if(!mAuth.getCurrentUser().getEmail().equals(uzytkownik.getEMail())){
+                    if (!mAuth.getCurrentUser().getEmail().equals(uzytkownik.getEMail())) {
                         uzytkownik.setEMail(mAuth.getCurrentUser().getEmail());
                         mDatabase.collection("users").document(uzytkownik.getId()).set(uzytkownik);
                     }
@@ -123,12 +115,11 @@ public class KontoActivity extends AppCompatActivity {
         eMailCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     eMail.setEnabled(true);
-                }
-                else{
+                } else {
                     eMail.setEnabled(false);
-                    if(uzytkownik != null){
+                    if (uzytkownik != null) {
                         eMail.getEditText().setText(uzytkownik.getEMail());
                     }
                 }
@@ -140,13 +131,12 @@ public class KontoActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        Button eMailButton = (Button) findViewById(R.id.eMailButton);
-        TextView eMailTextView = (TextView) findViewById(R.id.eMailTextView);
-        if(mAuth.getCurrentUser().isEmailVerified()){
+        Button eMailButton = findViewById(R.id.eMailButton);
+        TextView eMailTextView = findViewById(R.id.eMailTextView);
+        if (mAuth.getCurrentUser().isEmailVerified()) {
             eMailButton.setVisibility(View.GONE);
             eMailTextView.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             eMailButton.setVisibility(View.VISIBLE);
             eMailTextView.setVisibility(View.GONE);
         }
@@ -159,15 +149,15 @@ public class KontoActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
             case R.id.edit: {
-                if(!edytowane) {
+                if (!edytowane) {
                     edytowane = true;
-                    Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
+                    Button aktualizuj = findViewById(R.id.button_save_edit);
                     aktualizuj.setEnabled(true);
-                    Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+                    Button anuluj = findViewById(R.id.button_disable_edit);
                     anuluj.setEnabled(true);
                     switchEditing(imie, true);
                     switchEditing(nazwisko, true);
@@ -180,27 +170,27 @@ public class KontoActivity extends AppCompatActivity {
             case R.id.drop: {
                 MaterialAlertDialogBuilder builder1 = new MaterialAlertDialogBuilder(KontoActivity.this);
                 MaterialAlertDialogBuilder builder2 = new MaterialAlertDialogBuilder(KontoActivity.this);
-                builder1.setMessage("Po usunięciu konta wszytkie dane zostaną trwale wymazane.");
-                builder1.setTitle("Usówanie konta");
+                builder1.setMessage(R.string.po_usunięciu_konta_wszytkie);
+                builder1.setTitle(R.string.us_wanie_konta);
                 builder1.setCancelable(false);
-                builder1.setPositiveButton("Usuń", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder1.setPositiveButton(R.string.usu, (dialog, which) -> {
                     dialog.cancel();
                     builder2.show();
                 });
 
-                builder1.setNegativeButton("Anuluj", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder1.setNegativeButton(R.string.anuluj, (dialog, which) -> {
                     dialog.cancel();
                 });
 
-                builder2.setMessage("To bęczie nieodwracalne.");
-                builder2.setTitle("Czy napewno usunąć?");
+                builder2.setMessage(R.string.To_b_czie_nieodwracalne);
+                builder2.setTitle(R.string.czy_napewno_usun);
                 builder2.setCancelable(false);
-                builder2.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder2.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     dialog.cancel();
                     deleteAccaunt();
                 });
 
-                builder2.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder2.setNegativeButton(getString(R.string.nie), (dialog, which) -> {
                     dialog.cancel();
                 });
                 builder1.show();
@@ -211,15 +201,15 @@ public class KontoActivity extends AppCompatActivity {
         }
     }
 
-    public void deleteAccaunt(){
-        if(isNetworkAvailable()) {
+    public void deleteAccaunt() {
+        if (isNetworkAvailable()) {
             View elementView = getLayoutInflater().inflate(R.layout.progres_bar, null, false);
             MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
                     .setCancelable(false)
-                    .setTitle("Usuwanie")
+                    .setTitle(R.string.usuwanie)
                     .setView(elementView);
             AlertDialog progers = progresbilder.show();
-            Boolean status[] = new Boolean[4];
+            Boolean[] status = new Boolean[4];
 
             String userUid = FirebaseAuth.getInstance().getUid();
             PomiarRepository pomiarRepository = new PomiarRepository(userUid);
@@ -235,7 +225,7 @@ public class KontoActivity extends AppCompatActivity {
                         for (Terapia obiekt : list) {
                             terapiaRepository.delete(obiekt);
                         }
-                        status[0]=true;
+                        status[0] = true;
                     }
                 }
             });
@@ -247,7 +237,7 @@ public class KontoActivity extends AppCompatActivity {
                         for (Pomiar obiekt : list) {
                             pomiarRepository.delete(obiekt);
                         }
-                        status[1]=true;
+                        status[1] = true;
                     }
                 }
             });
@@ -259,7 +249,7 @@ public class KontoActivity extends AppCompatActivity {
                         for (Lek obiekt : list) {
                             lekRepository.delete(obiekt);
                         }
-                        status[2]=true;
+                        status[2] = true;
                     }
                 }
             });
@@ -271,7 +261,7 @@ public class KontoActivity extends AppCompatActivity {
                         for (Jednostka obiekt : list) {
                             jednostkiRepository.delete(obiekt);
                         }
-                        status[3]=true;
+                        status[3] = true;
                     }
                 }
             });
@@ -281,31 +271,31 @@ public class KontoActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(Boolean[] booleans) {
                     Boolean ukonczono = true;
-                    for(Boolean tmp : booleans){
-                        if(tmp != null && !tmp){
+                    for (Boolean tmp : booleans) {
+                        if (tmp != null && !tmp) {
                             ukonczono = false;
                         }
                     }
-                    if(ukonczono){
+                    if (ukonczono) {
                         mDatabase.collection("users").document(mAuth.getUid()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if(user != null) {
+                                    if (user != null) {
                                         user.delete()
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
                                                             finish();
-                                                            Toast.makeText(getApplicationContext(), "Dane usunięte", Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(getApplicationContext(), (R.string.dane_usuniete), Toast.LENGTH_LONG).show();
                                                         }
                                                     }
                                                 });
-                                    }else {
+                                    } else {
                                         finish();
-                                        Toast.makeText(getApplicationContext(), "Błąd usuwania", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), (R.string.b__d_usuwania), Toast.LENGTH_LONG).show();
                                         progers.cancel();
                                     }
                                 }
@@ -316,12 +306,11 @@ public class KontoActivity extends AppCompatActivity {
             };
             observer.onChanged(status);
 
-        }
-        else{
+        } else {
             MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                    .setTitle("Usuwanie")
-                    .setMessage("Brak dostępu do internetu")
-                    .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    .setTitle(R.string.usuwanie)
+                    .setMessage(R.string.brak_dostępu_do_internetu)
+                    .setPositiveButton(R.string.submit, (dialog, which) -> {
                         dialog.cancel();
                     });
             progresbilder.show();
@@ -331,13 +320,10 @@ public class KontoActivity extends AppCompatActivity {
     public Boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void switchEditing(TextInputLayout pole, Boolean stan){
+    public void switchEditing(TextInputLayout pole, Boolean stan) {
 
         pole.getEditText().setClickable(stan);
         pole.getEditText().setFocusable(stan);
@@ -345,9 +331,9 @@ public class KontoActivity extends AppCompatActivity {
         pole.getEditText().setCursorVisible(stan);
     }
 
-    public void upadte(View view){
-        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-        if(getCurrentFocus() != null){
+    public void upadte(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        if (getCurrentFocus() != null) {
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             getCurrentFocus().clearFocus();
         }
@@ -355,7 +341,7 @@ public class KontoActivity extends AppCompatActivity {
         View elementView = getLayoutInflater().inflate(R.layout.progres_bar, null, false);
         MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
                 .setCancelable(false)
-                .setTitle("Aktualizacia")
+                .setTitle(R.string.aktualizacia)
                 .setView(elementView);
         AlertDialog progers = progresbilder.show();
 
@@ -364,7 +350,7 @@ public class KontoActivity extends AppCompatActivity {
         String nazwisko = this.nazwisko.getEditText().getText().toString().trim();
         //Data urodzenia
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty));
         try {
             calendar.setTime(sdf.parse(dataUrodzenia.getEditText().getText().toString()));
         } catch (ParseException e) {
@@ -372,25 +358,25 @@ public class KontoActivity extends AppCompatActivity {
         }
         Date dataUrodzenia = calendar.getTime();
 
-        if( validateData(eMail, imie, nazwisko, dataUrodzenia) ){
+        if (validateData(eMail, imie, nazwisko, dataUrodzenia)) {
             uzytkownik.setImie(imie.substring(0, 1).toUpperCase() + imie.substring(1));
             uzytkownik.setNazwisko(nazwisko.substring(0, 1).toUpperCase() + nazwisko.substring(1));
             uzytkownik.setDataUrodzenia(dataUrodzenia);
             uzytkownik.setDataAktualizacji(new Date());
 
-            if(eMailCheckBox.isChecked()) {
+            if (eMailCheckBox.isChecked()) {
                 View passwodView = getLayoutInflater().inflate(R.layout.password_view, null, false);
                 TextInputLayout staticEMail = this.eMail;
                 TextInputLayout staticHaslo = passwodView.findViewById(R.id.hasloLayout);
 
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(KontoActivity.this);
                 builder.setView(passwodView);
-                builder.setTitle("Wpisz hasło");
-                builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder.setTitle(R.string.wpisz_haslo);
+                builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     mAuth.signInWithEmailAndPassword(uzytkownik.getEMail(), staticHaslo.getEditText().getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 user.updateEmail(eMail).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -409,9 +395,9 @@ public class KontoActivity extends AppCompatActivity {
                                                             throw task.getException();
                                                         } catch (Exception e) {
                                                             MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                                                    .setTitle("Aktualizacia")
+                                                                    .setTitle(R.string.aktualizacia)
                                                                     .setMessage(e.getLocalizedMessage())
-                                                                    .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                                                    .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                                         dialog.cancel();
                                                                     });
                                                             progresbilder.show();
@@ -424,13 +410,13 @@ public class KontoActivity extends AppCompatActivity {
                                         } else {
                                             try {
                                                 throw task.getException();
-                                            } catch(FirebaseAuthUserCollisionException e) {
-                                                staticEMail.setError("Adres Email juz zajęty!");
+                                            } catch (FirebaseAuthUserCollisionException e) {
+                                                staticEMail.setError(getString(R.string.adres_email_juz_zajety));
                                             } catch (Exception e) {
                                                 MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                                        .setTitle("Aktualizacia")
+                                                        .setTitle(R.string.aktualizacia)
                                                         .setMessage(e.getLocalizedMessage())
-                                                        .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                                        .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                             dialog.cancel();
                                                         });
                                                 progresbilder.show();
@@ -439,39 +425,30 @@ public class KontoActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-                            }
-                            else{
+                            } else {
                                 try {
                                     throw task.getException();
-                                } catch(FirebaseNetworkException e) {
+                                } catch (FirebaseNetworkException e) {
                                     MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                            .setTitle("Aktualizacia")
-                                            .setMessage("Brak dostępu do internetu")
-                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                            .setTitle(R.string.aktualizacia)
+                                            .setMessage(R.string.brak_dostępu_do_internetu)
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                 dialog.cancel();
                                             });
                                     progresbilder.show();
-                                } catch(FirebaseAuthInvalidUserException e) {
+                                } catch (FirebaseAuthInvalidUserException | FirebaseAuthInvalidCredentialsException e) {
                                     MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                            .setTitle("Aktualizacia")
-                                            .setMessage("Nieprawidłowe dane logowania")
-                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                            .setTitle(R.string.aktualizacia)
+                                            .setMessage(R.string.nieprawidłowe_dane_logowania)
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                 dialog.cancel();
                                             });
                                     progresbilder.show();
-                                } catch(FirebaseAuthInvalidCredentialsException e) {
+                                } catch (Exception e) {
                                     MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                            .setTitle("Aktualizacia")
-                                            .setMessage("Nieprawidłowe dane logowania")
-                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                                dialog.cancel();
-                                            });
-                                    progresbilder.show();
-                                } catch(Exception e) {
-                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                            .setTitle("Aktualizacia")
+                                            .setTitle(R.string.aktualizacia)
                                             .setMessage(task.getException().getLocalizedMessage())
-                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                 dialog.cancel();
                                             });
                                     progresbilder.show();
@@ -482,7 +459,7 @@ public class KontoActivity extends AppCompatActivity {
                     });
 
                 });
-                builder.setNegativeButton("Anuluj", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder.setNegativeButton(R.string.anuluj, (dialog, which) -> {
                     progers.cancel();
                     dialog.cancel();
                 });
@@ -496,11 +473,7 @@ public class KontoActivity extends AppCompatActivity {
                 builder.show();
 
 
-
-
-
-            }
-            else{
+            } else {
                 mDatabase.collection("users").document(uzytkownik.getId()).set(uzytkownik).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -512,9 +485,9 @@ public class KontoActivity extends AppCompatActivity {
                                 throw task.getException();
                             } catch (Exception e) {
                                 MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                        .setTitle("Aktualizacia")
+                                        .setTitle(R.string.aktualizacia)
                                         .setMessage(e.getLocalizedMessage())
-                                        .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                        .setPositiveButton(R.string.submit, (dialog, which) -> {
                                             dialog.cancel();
                                         });
                                 progresbilder.show();
@@ -529,9 +502,9 @@ public class KontoActivity extends AppCompatActivity {
         }
     }
 
-    public void upadtePassword(View view){
-        InputMethodManager imm = (InputMethodManager)getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-        if(getCurrentFocus() != null){
+    public void upadtePassword(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+        if (getCurrentFocus() != null) {
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             getCurrentFocus().clearFocus();
         }
@@ -539,7 +512,7 @@ public class KontoActivity extends AppCompatActivity {
         View elementView = getLayoutInflater().inflate(R.layout.progres_bar, null, false);
         MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
                 .setCancelable(false)
-                .setTitle("Zmiana hasła")
+                .setTitle(R.string.zmiana_has_a)
                 .setView(elementView);
         AlertDialog progers = progresbilder.show();
 
@@ -551,9 +524,9 @@ public class KontoActivity extends AppCompatActivity {
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(KontoActivity.this);
         builder.setView(passwodView);
-        builder.setTitle("Zmien hasło");
-        builder.setPositiveButton("Aktualizuj", null);
-        builder.setNegativeButton("Anuluj", (DialogInterface.OnClickListener) (dialog, which) -> {
+        builder.setTitle(R.string.nmien_has_o);
+        builder.setPositiveButton(R.string.aktualizuj, null);
+        builder.setNegativeButton(R.string.anuluj, (dialog, which) -> {
             progers.cancel();
             dialog.cancel();
         });
@@ -568,7 +541,7 @@ public class KontoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 hasloDialog.hide();
-                if(validateData(staticStareHaslo, staticHaslo, staticPowtuzHaslo)) {
+                if (validateData(staticStareHaslo, staticHaslo, staticPowtuzHaslo)) {
                     mAuth.signInWithEmailAndPassword(uzytkownik.getEMail(), staticStareHaslo.getEditText().getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -582,19 +555,19 @@ public class KontoActivity extends AppCompatActivity {
                                     throw task.getException();
                                 } catch (FirebaseNetworkException e) {
                                     MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                            .setTitle("Logowanie")
-                                            .setMessage("Brak dostępu do internetu")
-                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                            .setTitle(R.string.logowanie)
+                                            .setMessage(R.string.brak_dostępu_do_internetu)
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                 dialog.cancel();
                                             });
                                     progresbilder.show();
                                 } catch (FirebaseAuthInvalidCredentialsException e) {
-                                    staticStareHaslo.setError("Nieprawidłowe hasło");
+                                    staticStareHaslo.setError(getString(R.string.nieprawid_owe_has_o));
                                 } catch (Exception e) {
                                     MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
-                                            .setTitle("Logowanie")
+                                            .setTitle(R.string.logowanie)
                                             .setMessage(task.getException().getLocalizedMessage())
-                                            .setPositiveButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
                                                 dialog.cancel();
                                             });
                                     progresbilder.show();
@@ -602,19 +575,18 @@ public class KontoActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }
-                else{
+                } else {
                     hasloDialog.show();
                 }
             }
         });
     }
 
-    public void stopEdit(View view){
+    public void stopEdit(View view) {
         edytowane = false;
-        Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
+        Button aktualizuj = findViewById(R.id.button_save_edit);
         aktualizuj.setEnabled(false);
-        Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+        Button anuluj = findViewById(R.id.button_disable_edit);
         anuluj.setEnabled(false);
 
         anuluj.setEnabled(false);
@@ -625,8 +597,8 @@ public class KontoActivity extends AppCompatActivity {
         eMail.setEnabled(true);
         eMailCheckBox.setVisibility(View.GONE);
 
-        if(uzytkownik != null){
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        if (uzytkownik != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty));
             eMail.getEditText().setText(uzytkownik.getEMail());
             imie.getEditText().setText(uzytkownik.getImie());
             nazwisko.getEditText().setText(uzytkownik.getNazwisko());
@@ -634,23 +606,22 @@ public class KontoActivity extends AppCompatActivity {
         }
     }
 
-    public void sendVerfyEmail(View view){
-        Button eMailButton = (Button) findViewById(R.id.eMailButton);
+    public void sendVerfyEmail(View view) {
+        Button eMailButton = findViewById(R.id.eMailButton);
         eMailButton.setEnabled(false);
         mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Wysłano wiadomość email", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), (R.string.wys_ano_wiadomo___email), Toast.LENGTH_SHORT).show();
+                } else {
                     try {
                         throw task.getException();
-                    } catch(FirebaseNetworkException e) {
-                        Toast.makeText(getApplicationContext(), "Brak dostępu do internetu!", Toast.LENGTH_SHORT).show();
-                    } catch(FirebaseTooManyRequestsException e) {
-                        Toast.makeText(getApplicationContext(), "Za dużo zapytań, spróbuj pozniej!", Toast.LENGTH_SHORT).show();
-                    } catch(Exception e) {
+                    } catch (FirebaseNetworkException e) {
+                        Toast.makeText(getApplicationContext(), R.string.brak_dostępu_do_internetu, Toast.LENGTH_SHORT).show();
+                    } catch (FirebaseTooManyRequestsException e) {
+                        Toast.makeText(getApplicationContext(), (R.string.za_du_o_zapyta_), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -660,39 +631,38 @@ public class KontoActivity extends AppCompatActivity {
         });
     }
 
-    boolean validateData(String eMail, String imie, String nazwisko, Date dataUrodzenia){
+    boolean validateData(String eMail, String imie, String nazwisko, Date dataUrodzenia) {
         boolean status = true;
-        if(!Patterns.EMAIL_ADDRESS.matcher(eMail).matches()){
-            this.eMail.setError("Niepoprawny Email!");
+        if (!Patterns.EMAIL_ADDRESS.matcher(eMail).matches()) {
+            this.eMail.setError(getString(R.string.niepoprawny_e_mail));
             status = false;
-        }else
+        } else
             this.eMail.setErrorEnabled(false);
 
-        if(imie.length()<3){
-            this.imie.setError("Nieprawidłowe imie!");
+        if (imie.length() < 3) {
+            this.imie.setError(getString(R.string.nieprawid_owe_imie));
             status = false;
-        }else
+        } else
             this.imie.setErrorEnabled(false);
 
-        if(nazwisko.length()<3){
-            this.nazwisko.setError("Nieprawidłowe nazwisko!");
+        if (nazwisko.length() < 3) {
+            this.nazwisko.setError(getString(R.string.nieprawid_owe_nazwisko));
             status = false;
-        }else
+        } else
             this.nazwisko.setErrorEnabled(false);
 
         return status;
     }
 
-    boolean validateData( TextInputLayout stareHaslo, TextInputLayout haslo, TextInputLayout hasloPowtuz){
+    boolean validateData(TextInputLayout stareHaslo, TextInputLayout haslo, TextInputLayout hasloPowtuz) {
         boolean status = true;
 
 
-        if(stareHaslo.getEditText().getText().length()<6){
-            stareHaslo.setError("Minimum 6 znaków!");
+        if (stareHaslo.getEditText().getText().length() < 6) {
+            stareHaslo.setError(getString(R.string.minimum_6_znak_w));
             status = false;
-        }else
+        } else
             stareHaslo.setErrorEnabled(false);
-
 
 
         // Create our configuration object and set our custom minimum
@@ -708,32 +678,31 @@ public class KontoActivity extends AppCompatActivity {
         // PasswordType can be (VERY_WEAK, WEAK, MEDIUM, STRONG, VERY_STRONG)
         PasswordType passwordStrength = passwordChecker.estimate(haslo.getEditText().getText().toString()).getStrength();
 
-        if( passwordStrength.equals(PasswordType.VERY_WEAK) || haslo.getEditText().getText().length()<6){
-            if(haslo.getEditText().getText().length()<6){
-                haslo.setError("Minimum 6 znaków!");
-            }
-            else {
-                haslo.setError("słabe hasło!");
+        if (passwordStrength.equals(PasswordType.VERY_WEAK) || haslo.getEditText().getText().length() < 6) {
+            if (haslo.getEditText().getText().length() < 6) {
+                haslo.setError(getString(R.string.minimum_6_znak_w));
+            } else {
+                haslo.setError(getString(R.string.s_abe_has_o));
             }
             status = false;
-        }else
+        } else
             haslo.setErrorEnabled(false);
 
-        if(!haslo.getEditText().getText().toString().equals(hasloPowtuz.getEditText().getText().toString())){
-            hasloPowtuz.setError("Hasła nie są zgodne!");
+        if (!haslo.getEditText().getText().toString().equals(hasloPowtuz.getEditText().getText().toString())) {
+            hasloPowtuz.setError(getString(R.string.has_a_nie_s_));
             status = false;
-        }else
+        } else
             hasloPowtuz.setErrorEnabled(false);
 
         return status;
     }
 
-    private void dodajDatePicker(TextView textView){
+    private void dodajDatePicker(TextView textView) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(edytowane) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                if (edytowane) {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_daty));
                     Calendar ct = Calendar.getInstance();
                     try {
                         ct.setTime(simpleDateFormat.parse(textView.getText().toString()));
@@ -776,7 +745,7 @@ public class KontoActivity extends AppCompatActivity {
                         public void onPositiveButtonClick(Object selection) {
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTimeInMillis((Long) selection);
-                            textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                            textView.setText(calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.lacznik_daty) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.lacznik_daty) + calendar.get(Calendar.YEAR));
                         }
                     });
                     materialDatePicker.show(getSupportFragmentManager(), "tag");

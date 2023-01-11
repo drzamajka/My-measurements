@@ -9,7 +9,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:enabled="false"
                 android:layout_marginBottom="16dp"
-                android:hint="Nazwa"
+                android:hint="@string/nazwa"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:enabled="false"
-                android:hint="Notatka"
+                android:hint="@string/notatka"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -51,14 +52,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/spinnerLayout"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Jednostka">
+                android:hint="@string/jednostka">
 
                 <AutoCompleteTextView
                     android:id="@+id/spinner"
@@ -66,8 +66,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     app:simpleItems="@array/typZmiennej"
-
-                    />
+                    tools:ignore="LabelFor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,7 +79,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:onClick="aktualizuj"
                 android:enabled="false"
-                android:text="Aktualizuj pomiar"
+                android:text="@string/aktualizuj_pomiar"
                 app:icon="@drawable/ic_update_24" />
 
             <Button
@@ -92,9 +91,8 @@
                 android:layout_marginHorizontal="24dp"
                 android:enabled="false"
                 android:onClick="stopEdit"
-                android:text="Anuluj edycie"
-                app:icon="@drawable/ic_clear_24"/>
-
+                android:text="@string/anuluj_edycie"
+                app:icon="@drawable/ic_clear_24" />
 
 
             <com.google.android.material.card.MaterialCardView
@@ -114,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Ostatnie 10 wpisów"
+                        android:text="@string/ostatnie_10_wpis_w"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -137,7 +135,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="50dp"
-                            android:text="Brak wpisów"
+                            android:text="@string/brak_wpis_w"
                             android:textAlignment="center" />
                     </LinearLayout>
 
@@ -150,7 +148,7 @@
                         android:layout_marginBottom="8dp"
                         android:enabled="false"
                         android:onClick="wyswietlWszystkie"
-                        android:text="wyświetl wszystkie wpisy"
+                        android:text="@string/wy_wietl_wszystkie_wpisy"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/wpisyLayout" />

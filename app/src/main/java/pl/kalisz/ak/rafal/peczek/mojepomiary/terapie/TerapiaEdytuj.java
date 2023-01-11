@@ -1,9 +1,5 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mikephil.charting.charts.BarChart;
@@ -81,10 +81,10 @@ public class TerapiaEdytuj extends AppCompatActivity {
         setContentView(R.layout.activity_terapia_edytuj);
         terapiaId = (String) getIntent().getExtras().get(EXTRA_Terapia_ID);
 
-        elementyTerapi = (TextInputLayout) findViewById(R.id.elementyLayout);
-        dataRozpoczecia = (TextInputLayout) findViewById(R.id.dataRozpoczeciaLayout);
-        dataZakonczenia = (TextInputLayout) findViewById(R.id.dataZakonczeniaLayout);
-        notatka = (TextInputLayout) findViewById(R.id.NotatkaLayout);
+        elementyTerapi = findViewById(R.id.elementyLayout);
+        dataRozpoczecia = findViewById(R.id.dataRozpoczeciaLayout);
+        dataZakonczenia = findViewById(R.id.dataZakonczeniaLayout);
+        notatka = findViewById(R.id.NotatkaLayout);
 
         userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         terapiaRepository = new TerapiaRepository(userUid);
@@ -106,25 +106,24 @@ public class TerapiaEdytuj extends AppCompatActivity {
         dataZakonczenia.getEditText().setText(sdf.format(terapia.getDataZakonczenia()));
         notatka.getEditText().setText(terapia.getNotatka());
 
-        try{
+        try {
             String tytul = "";
             ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
-            for(int i=0; i<listaElementow.size();i++){
-                if(i!=0){
+            for (int i = 0; i < listaElementow.size(); i++) {
+                if (i != 0) {
                     tytul += "\n";
                 }
                 JSONObject czynnosc = new JSONObject(listaElementow.get(i));
                 String szukaneId = (String) czynnosc.get("id");
-                if(czynnosc.get("typ").equals(Pomiar.class.getName())) {
+                if (czynnosc.get("typ").equals(Pomiar.class.getName())) {
                     Pomiar pomiar = pomiarRepository.findById(szukaneId);
-                    if(pomiar!=null) {
+                    if (pomiar != null) {
                         listaElementowTerapi.add(pomiar);
                         tytul += pomiar.getNazwa();
                     }
-                }
-                else if(czynnosc.get("typ").equals(Lek.class.getName())) {
+                } else if (czynnosc.get("typ").equals(Lek.class.getName())) {
                     Lek lek = lekRepositoryl.findById(szukaneId);
-                    if(lek!=null) {
+                    if (lek != null) {
                         listaElementowTerapi.add(lek);
                         tytul += lek.getNazwa() + ": ";
 
@@ -139,7 +138,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
                                 tytul += (int) czynnosc.get("dawka");
                             else
                                 tytul += czynnosc.get("dawka");
-                            tytul += " " + jednostka.getWartosc();
+                            tytul += getString(R.string.spacia) + jednostka.getWartosc();
                         }
                     }
                 }
@@ -151,15 +150,12 @@ public class TerapiaEdytuj extends AppCompatActivity {
         }
 
 
-
-
-
         etapTerapiaRepository.getQueryByIdTerapi(terapia.getId()).orderBy("dataZaplanowania", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<EtapTerapa> listaEtapTerapi = task.getResult().toObjects(EtapTerapa.class);
-                    if(listaEtapTerapi.size()>0) {
+                    if (listaEtapTerapi.size() > 0) {
                         Button button = findViewById(R.id.button_all);
                         button.setEnabled(true);
                         setupChart(task.getResult().toObjects(EtapTerapa.class));
@@ -180,7 +176,6 @@ public class TerapiaEdytuj extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_object_delete, menu);
@@ -189,17 +184,16 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
     private void setupChart(List<EtapTerapa> listaEtapTerapi) {
         View elementView = null;
-        LinearLayout wpisyLayout = (LinearLayout) findViewById(R.id.wpisyLayout);
+        LinearLayout wpisyLayout = findViewById(R.id.wpisyLayout);
         wpisyLayout.removeAllViews();
 
-        for(Object czynnosc: listaElementowTerapi){
-            if(czynnosc.getClass().equals(Lek.class)){
+        for (Object czynnosc : listaElementowTerapi) {
+            if (czynnosc.getClass().equals(Lek.class)) {
                 elementView = getLekChart((Lek) czynnosc, listaEtapTerapi);
-            }
-            else if(czynnosc.getClass().equals(Pomiar.class)){
+            } else if (czynnosc.getClass().equals(Pomiar.class)) {
                 elementView = getPomiarChart((Pomiar) czynnosc, listaEtapTerapi);
             }
-            if(elementView != null)
+            if (elementView != null)
                 wpisyLayout.addView(elementView);
         }
 
@@ -207,13 +201,13 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
     private View getLekChart(Lek lek, List<EtapTerapa> listaEtapTerapi) {
         View elementView = getLayoutInflater().inflate(R.layout.chart_view, null, false);
-        BarChart chart = (BarChart) elementView.findViewById(R.id.chart);
+        BarChart chart = elementView.findViewById(R.id.chart);
 
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light);
         int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark);
 
-        switch (getResources().getConfiguration().uiMode-1) {
+        switch (getResources().getConfiguration().uiMode - 1) {
             case Configuration.UI_MODE_NIGHT_YES:
                 chart.getAxisLeft().setTextColor(colorTextDark);
                 break;
@@ -227,15 +221,15 @@ public class TerapiaEdytuj extends AppCompatActivity {
         chart.getAxisLeft().setDrawAxisLine(true);
         chart.getAxisLeft().setDrawGridLines(true);
         chart.getAxisLeft().setTextSize(14f);
-        chart.getAxisLeft().setValueFormatter(new IndexAxisValueFormatter(){
+        chart.getAxisLeft().setValueFormatter(new IndexAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
                 int index = Math.round(value);
 
-                if(index == 1 && Float.parseFloat(index+"") == value)
-                    return "Tak";
-                if(index == 0 && Float.parseFloat(index+"") == value)
-                    return "Nie";
+                if (index == 1 && Float.parseFloat(index + "") == value)
+                    return getString(R.string.tak);
+                if (index == 0 && Float.parseFloat(index + "") == value)
+                    return getString(R.string.nie);
 
                 return "";
             }
@@ -257,36 +251,35 @@ public class TerapiaEdytuj extends AppCompatActivity {
         chart.setDoubleTapToZoomEnabled(false);
         chart.setPinchZoom(true);
 
-        if(lek != null) {
+        if (lek != null) {
             TextView tytulView = elementView.findViewById(R.id.textView5);
             tytulView.setText(lek.getNazwa());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
             wpisLekRepository.getQueryByLekId(lek.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: "+task.isSuccessful());
-                    if(task.isSuccessful()){
+                    Log.w("TAG-grap", "task: " + task.isSuccessful());
+                    if (task.isSuccessful()) {
                         List<WpisLek> wpisLekList = task.getResult().toObjects(WpisLek.class);
                         List<BarEntry> entries = new ArrayList<>();
 
-                        for(int i=0; i<listaEtapTerapi.size(); i++) {
-                            EtapTerapa etapTerapa = listaEtapTerapi.get(listaEtapTerapi.size()-1-i);
+                        for (int i = 0; i < listaEtapTerapi.size(); i++) {
+                            EtapTerapa etapTerapa = listaEtapTerapi.get(listaEtapTerapi.size() - 1 - i);
                             WpisLek wpisLekTMP = null;
-                            for(WpisLek wpisLek : wpisLekList){
-                                if(etapTerapa.getId().equals(wpisLek.getIdEtapTerapi())){
+                            for (WpisLek wpisLek : wpisLekList) {
+                                if (etapTerapa.getId().equals(wpisLek.getIdEtapTerapi())) {
                                     wpisLekTMP = wpisLek;
                                 }
                             }
-                            if(wpisLekTMP != null){
+                            if (wpisLekTMP != null) {
                                 entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("1")));
-                            }
-                            else if(i+1==listaEtapTerapi.size()) {
+                            } else if (i + 1 == listaEtapTerapi.size()) {
                                 entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("0")));
                             }
 
                         }
-                        if(entries.get(0).getX()!=0f){
+                        if (entries.get(0).getX() != 0f) {
                             entries.add(new BarEntry(Float.parseFloat("0"), Float.parseFloat("0")));
                         }
 
@@ -299,7 +292,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
                         chart.setData(data);
                         chart.setFitBars(true); // make the x-axis fit exactly all bars
 
-                        Log.w("TAG-grap", "wpisLekList: "+wpisLekList.size());
+                        Log.w("TAG-grap", "wpisLekList: " + wpisLekList.size());
                         chart.invalidate(); // refresh
                         TextView jednostkaView = elementView.findViewById(R.id.textView3);
                         jednostkaView.setText("Czy pobrano lek");
@@ -316,14 +309,14 @@ public class TerapiaEdytuj extends AppCompatActivity {
     private View getPomiarChart(Pomiar pomiar, List<EtapTerapa> listaEtapTerapi) {
         View elementView = getLayoutInflater().inflate(R.layout.chart_view, null, false);
 
-        BarChart chart = (BarChart) elementView.findViewById(R.id.chart);
+        BarChart chart = elementView.findViewById(R.id.chart);
 
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light);
         int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark);
 
 
-        switch (getResources().getConfiguration().uiMode-1) {
+        switch (getResources().getConfiguration().uiMode - 1) {
             case Configuration.UI_MODE_NIGHT_YES:
                 chart.getAxisLeft().setTextColor(colorTextDark);
                 break;
@@ -355,63 +348,60 @@ public class TerapiaEdytuj extends AppCompatActivity {
         chart.setDoubleTapToZoomEnabled(false);
         chart.setPinchZoom(true);
 
-        if(pomiar   != null) {
+        if (pomiar != null) {
             TextView tytulView = elementView.findViewById(R.id.textView5);
             tytulView.setText(pomiar.getNazwa());
 
-            if(pomiar.getIdJednostki() == null) {
+            if (pomiar.getIdJednostki() == null) {
                 chart.getAxisLeft().setValueFormatter(new IndexAxisValueFormatter() {
                     @Override
                     public String getFormattedValue(float value) {
                         int index = Math.round(value);
 
                         if (index == 1 && Float.parseFloat(index + "") == value)
-                            return "Tak";
+                            return getString(R.string.tak);
                         if (index == 0 && Float.parseFloat(index + "") == value)
-                            return "Nie";
+                            return getString(R.string.nie);
 
                         return "";
                     }
                 });
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
             wpisPomiarRepository.getQueryByPomiarId(pomiar.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: "+task.isSuccessful());
-                    if(task.isSuccessful()){
+                    Log.w("TAG-grap", "task: " + task.isSuccessful());
+                    if (task.isSuccessful()) {
                         List<WpisPomiar> wpisPomiarList = task.getResult().toObjects(WpisPomiar.class);
                         List<BarEntry> entries = new ArrayList<>();
 
 
-                        for(int i=0; i<listaEtapTerapi.size(); i++) {
-                            EtapTerapa etapTerapa = listaEtapTerapi.get(listaEtapTerapi.size()-1-i);
+                        for (int i = 0; i < listaEtapTerapi.size(); i++) {
+                            EtapTerapa etapTerapa = listaEtapTerapi.get(listaEtapTerapi.size() - 1 - i);
                             WpisPomiar wpisPomiarTMP = null;
-                            for(WpisPomiar wpisPomiar : wpisPomiarList){
-                                if(etapTerapa.getId().equals(wpisPomiar.getIdEtapTerapi())){
+                            for (WpisPomiar wpisPomiar : wpisPomiarList) {
+                                if (etapTerapa.getId().equals(wpisPomiar.getIdEtapTerapi())) {
                                     wpisPomiarTMP = wpisPomiar;
                                 }
                             }
-                            if(wpisPomiarTMP != null){
-                                if(pomiar.getIdJednostki() != null) {
+                            if (wpisPomiarTMP != null) {
+                                if (pomiar.getIdJednostki() != null) {
                                     entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat(wpisPomiarTMP.getWynikPomiary())));
-                                }
-                                else{
-                                    if(wpisPomiarTMP.getWynikPomiary().length()>1) {
+                                } else {
+                                    if (wpisPomiarTMP.getWynikPomiary().length() > 1) {
                                         entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("1")));
-                                    }
-                                    else{
+                                    } else {
                                         entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("0")));
                                     }
                                 }
-                            }
-                            else if(i+1==listaEtapTerapi.size()) {
+                            } else if (i + 1 == listaEtapTerapi.size()) {
                                 entries.add(new BarEntry(Float.parseFloat("" + (i)), 0));
                             }
 
                         }
-                        if(entries.get(0).getX()!=0f){
+                        if (entries.get(0).getX() != 0f) {
                             entries.add(new BarEntry(Float.parseFloat("" + 0), 0));
                         }
 
@@ -428,20 +418,18 @@ public class TerapiaEdytuj extends AppCompatActivity {
                         chart.invalidate(); // refresh
 
                         Jednostka jednostka = null;
-                        for(Jednostka jednostkaTMP : listaJednostek){
-                            if(jednostkaTMP.getId().equals(pomiar.getIdJednostki()))
+                        for (Jednostka jednostkaTMP : listaJednostek) {
+                            if (jednostkaTMP.getId().equals(pomiar.getIdJednostki()))
                                 jednostka = jednostkaTMP;
                         }
                         TextView jednostkaView = elementView.findViewById(R.id.textView3);
-                        if(jednostka != null) {
+                        if (jednostka != null) {
                             jednostkaView.setText(jednostka.getNazwa());
-                        }
-                        else{
+                        } else {
                             jednostkaView.setText("Czy wykonano pomiar");
                         }
-                    }
-                    else{
-                        Log.w("TAG-grap", "task error: "+task.getException());
+                    } else {
+                        Log.w("TAG-grap", "task error: " + task.getException());
                     }
                 }
             });
@@ -451,7 +439,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
         return elementView;
     }
 
-    public void wyswietlWszystkie(View view){
+    public void wyswietlWszystkie(View view) {
         FirestoreRecyclerOptions<EtapTerapa> options
                 = new FirestoreRecyclerOptions.Builder<EtapTerapa>()
                 .setQuery(etapTerapiaRepository.getQuery().whereEqualTo("idTerapi", terapia.getId()).orderBy("dataZaplanowania", Query.Direction.ASCENDING), EtapTerapa.class)
@@ -464,22 +452,21 @@ public class TerapiaEdytuj extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
-        switch (item.getItemId() ) {
-            case R.id.drop:{
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.drop: {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TerapiaEdytuj.this);
                 builder.setMessage("Czy na pewno usunąć");
                 builder.setTitle("Alert !");
                 builder.setCancelable(false);
-                builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     if (terapia != null) {
                         terapiaRepository.delete(terapia);
                     }
                     finish();
                 });
 
-                builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder.setNegativeButton(getString(R.string.nie), (dialog, which) -> {
                     dialog.cancel();
                 });
                 builder.show();

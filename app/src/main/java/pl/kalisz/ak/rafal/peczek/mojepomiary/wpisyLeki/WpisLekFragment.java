@@ -1,7 +1,6 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyLeki;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +18,7 @@ import com.google.firebase.firestore.Query;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisLek;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.WpisPomiar;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisLekRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.WpisPomiarRepository;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary.WpisPomiarAdapter;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary.WpisPomiarDopisz;
 
 
 public class WpisLekFragment extends Fragment {
@@ -63,12 +57,11 @@ public class WpisLekFragment extends Fragment {
             }
         };
 
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton button = view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
 
-
-        rvWpisLek = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvWpisLek = view.findViewById(R.id.recycleView);
 
         rvWpisLek.setLayoutManager(
                 new LinearLayoutManager(getContext()));
@@ -81,23 +74,21 @@ public class WpisLekFragment extends Fragment {
         wpisLekAdapter = new WpisLekAdapter(options);
 
 
-        rvWpisLek = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvWpisLek = view.findViewById(R.id.recycleView);
         rvWpisLek.setHasFixedSize(true);
 
         return view;
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         wpisLekAdapter.startListening();
         rvWpisLek.setAdapter(wpisLekAdapter);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         wpisLekAdapter.stopListening();
     }

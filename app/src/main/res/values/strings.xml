@@ -1,38 +1,4 @@
 <resources>
-    <string name="app_name">Moje Pomiary</string>
-    <string name="about">O programie</string>
-
-    <string-array name="colors">
-
-        <item>White</item>
-        <item>Black</item>
-        <item>Primary</item>
-
-    </string-array>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="wyloguj">Wylogój</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="title_activity_jednostki">Jednostki</string>
-    <string name="menu_object_drop">Usuń obiekt</string>
-    <string name="menu_object_edit">Edytuj obiekt</string>
-
-
-    <!--    jednostki-->
     <string-array name="typZmiennej">
         <item>Całkowity</item>
         <item>Zmienno przecinkowy</item>
@@ -61,7 +27,135 @@
         <item>9</item>
         <item>10</item>
     </string-array>
+
+    <string name="lacznik_daty">/</string>
+    <string name="format_daty">dd/MM/yyyy</string>
+    <string name="format_czasu">HH:mm</string>
+
+    <string name="app_name">Moje Pomiary</string>
+    <string name="about">O programie</string>
+    <string name="submit">OK</string>
+    <string name="naw_open">Otwórz szuflade</string>
+    <string name="naw_close">Zamknij szuflade</string>
+    <string name="wyloguj">Wylogój</string>
+    <string name="title_activity_jednostki">Jednostki</string>
+    <string name="menu_object_drop">Usuń obiekt</string>
+    <string name="menu_object_edit">Edytuj obiekt</string>
     <string name="title_activity_etap_perapi_wykonaj">EtapPerapiWykonaj</string>
     <string name="etap_nie_wykonany">Jescze nie wykonano etapu</string>
+    <string name="wykonaj">Wykonaj</string>
+    <string name="wyswietl_sczeguly_terapi">Wyświetl sczegóły terapi</string>
+    <string name="wyswietl_sczegoly_terapi">Wyświetl sczegóły terapi</string>
+    <string name="pobrano">\"Pobrano \"</string>
+    <string name="pominieto">\"Pominiento \"</string>
+    <string name="edytuj">Edytuj</string>
+    <string name="przecinek">, </string>
+    <string name="czy_napewno_wylogowac">Czy na pewno wylogować?</string>
+    <string name="tak">Tak</string>
+    <string name="wylogowanie">Wylogowanie</string>
+    <string name="nie">Nie</string>
+    <string name="o_programie">Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji</string>
+    <string name="zrodlo_powiadomien">Źródło powiadomień</string>
+    <string name="moje_pomiary_chanel">Kanał moje pomiary</string>
+    <string name="wykonaj_pomiar">Wykonaj pomiar</string>
+    <string name="dodaj_jednostke">Dodaj jednostke</string>
+    <string name="dodaj_pomiar">Dodaj pomiar</string>
+    <string name="pomiary">Pomiary</string>
+    <string name="wynik_pomiaru">Wynik pomiaru</string>
+    <string name="godzina_wykonania_pomiaru">Godzina wykonania pomiaru</string>
+    <string name="data_wykonania_pomiaru">Data wykonania pomiaru</string>
+    <string name="aktualizuj_wpis">Aktualizuj wpis</string>
+    <string name="dopisz_terapie">Dopisz terapie</string>
+    <string name="edytuj_dane_konta">Edytuj dane konta</string>
+    <string name="usu_konto">Usuń konto</string>
+    <string name="wcze_niej">Wcześniej</string>
+    <string name="p_niej">Póżniej</string>
+    <string name="dopisz_lek">Dopisz lek</string>
+    <string name="dopisz_zas_b_leku">Dopisz zasób leku</string>
+    <string name="dopisz_jednostke">Dopisz jednostke</string>
+    <string name="dopisz_wynik_pomiaru">Dopisz wynik pomiaru</string>
+    <string name="etapy">Etapy</string>
+    <string name="terapie">Terapie</string>
+    <string name="jednostki">Jednostki</string>
+    <string name="wpisy">Wpisy</string>
+    <string name="leki">Leki</string>
+    <string name="nazwa">Nazwa</string>
+    <string name="notatka">Notatka</string>
+    <string name="jednostka">Jednostka</string>
+    <string name="aktualizuj_pomiar">Aktualizuj pomiar</string>
+    <string name="anuluj_edycie">Anuluj edycie</string>
+    <string name="ostatnie_10_wpis_w">Ostatnie 10 wpisów</string>
+    <string name="brak_wpis_w">Brak wpisów</string>
+    <string name="wy_wietl_wszystkie_wpisy">wyświetl wszystkie wpisy</string>
+    <string name="logo">Logo</string>
+    <string name="adres_e_mail">Adres e-mail</string>
+    <string name="has_o">Hasło</string>
+    <string name="nie_pamietam_has_a">Nie pamietam hasła</string>
+    <string name="zaloguj">Zaloguj</string>
+    <string name="zarejestruj">Zarejestruj</string>
+    <string name="imie">Imie</string>
+    <string name="nazwisko">Nazwisko</string>
+    <string name="powt_z_has_o">Powtóz hasło</string>
+    <string name="data_urodzenia">Data urodzenia</string>
+    <string name="godzina_rozpocz_cia">Godzina rozpoczęcia</string>
+    <string name="godzina_zakonczenia">Godzina zakonczenia</string>
+    <string name="co">co</string>
+    <string name="godzin">godzin</string>
+    <string name="dopisz_pomiar">Dopisz pomiar</string>
+    <string name="lek">Lek</string>
+    <string name="notatka_dwukropek">Notatka:</string>
+    <string name="nowe_has_o">Nowe hasło</string>
+    <string name="stare_has_o">Stare hasło</string>
+    <string name="powt_z_nowe_has_o">Powtóz nowe hasło</string>
+    <string name="warto">Wartość</string>
+    <string name="typ_zmiennej">Typ zmiennej</string>
+    <string name="aktualizuj_jednostk">Aktualizuj jednostkę</string>
+    <string name="zapisz_now_jednostk">Zapisz nową jednostkę</string>
+    <string name="o_godzinie">O godzinie</string>
+    <string name="usu">Usuń</string>
+    <string name="dodawany_zas_b">dodawany zasób</string>
+    <string name="dopisz_nowy_zas_b">dopisz nowy zasób</string>
+    <string name="zapisz_now_pozycj">Zapisz nową pozycję</string>
+    <string name="zapisz_pomiar">Zapisz pomiar</string>
+    <string name="powtazaj_co_x_dni">Powtazaj co x dni</string>
+    <string name="dawka_leku">Dawka leku</string>
+    <string name="czy_aktualizowa_adres_email">Czy aktualizować adres e-mail?</string>
+    <string name="wy_lij_ponownie_e_mail_werfikacyjny">Wyślij ponownie e-mail werfikacyjny</string>
+    <string name="adres_e_mail_potwierdzony">Adres e-mail potwierdzony</string>
+    <string name="aktualizuj_dane">Aktualizuj dane</string>
+    <string name="zmien_has_o">Zmien hasło</string>
+    <string name="usu_wpis">Usuń wpis</string>
+    <string name="logowanie">Logowanie</string>
+    <string name="Brak_dostępu_do_internetu">Brak dostępu do internetu</string>
+    <string name="nieprawidłowe_dane_logowania">Nieprawidłowe dane logowania</string>
+    <string name="resetowanie">Resetowanie</string>
+    <string name="brak_dostępu_do_internetu">Brak dostępu do internetu</string>
+    <string name="Nie_znaleziono_urzytkownika_o_takim_adresie_email">Nie znaleziono urzytkownika o takim adresie e-mail!</string>
+    <string name="niepoprawny_e_mail">Niepoprawny e-mail</string>
+    <string name="spacia"> </string>
+    <string name="po_usunięciu_konta_wszytkie">Po usunięciu konta wszytkie dane zostaną trwale wymazane.</string>
+    <string name="us_wanie_konta">Usówanie konta</string>
+    <string name="anuluj">Anuluj</string>
+    <string name="To_b_czie_nieodwracalne">To bęczie nieodwracalne.</string>
+    <string name="czy_napewno_usun">Czy napewno usunąć?</string>
+    <string name="usuwanie">Usuwanie</string>
+    <string name="dane_usuniete">Dane usunięte</string>
+    <string name="b__d_usuwania">Błąd usuwania</string>
+    <string name="aktualizacia">Aktualizacia</string>
+    <string name="wpisz_haslo">Wpisz hasło</string>
+    <string name="adres_email_juz_zajety">Adres e-mail juz zajęty!</string>
+    <string name="zmiana_has_a">Zmiana hasła</string>
+    <string name="nmien_has_o">Zmien hasło</string>
+    <string name="aktualizuj">Aktualizuj</string>
+    <string name="nieprawid_owe_has_o">Nieprawidłowe hasło</string>
+    <string name="wys_ano_wiadomo___email">Wysłano wiadomość e-mail</string>
+    <string name="za_du_o_zapyta_">Za dużo zapytań, spróbuj pozniej!</string>
+    <string name="nieprawid_owe_imie">Nieprawidłowe imie!</string>
+    <string name="nieprawid_owe_nazwisko">Nieprawidłowe nazwisko!</string>
+    <string name="minimum_6_znak_w">Minimum 6 znaków!</string>
+    <string name="s_abe_has_o">słabe hasło!</string>
+    <string name="has_a_nie_s_">Hasła nie są zgodne!</string>
+    <string name="rejsreacia">Rejsreacia</string>
+    <string name="z_ozono__">"złozoność: "</string>
 
 </resources>

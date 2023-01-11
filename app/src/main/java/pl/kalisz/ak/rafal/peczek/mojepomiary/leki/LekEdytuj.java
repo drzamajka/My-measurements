@@ -84,13 +84,13 @@ public class LekEdytuj extends AppCompatActivity {
         textWybranejJednostki = "";
         lekId = (String) getIntent().getExtras().get(EXTRA_Lek_ID);
 
-        nazwa = (TextInputLayout) findViewById(R.id.editTextNazwaLayout);
-        notatka = (TextInputLayout) findViewById(R.id.editTextJednostkaLayout);
-        jednostki = (AutoCompleteTextView) findViewById(R.id.spinner);
-        jednostkiL = (TextInputLayout) findViewById(R.id.spinnerLayout);
+        nazwa = findViewById(R.id.editTextNazwaLayout);
+        notatka = findViewById(R.id.editTextJednostkaLayout);
+        jednostki = findViewById(R.id.spinner);
+        jednostkiL = findViewById(R.id.spinnerLayout);
 
         lek = lekRepository.findById(lekId);
-        if(lek == null){
+        if (lek == null) {
             finish();
         }
 
@@ -100,33 +100,30 @@ public class LekEdytuj extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()) {
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                         Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                         jednostka.setId(queryDocumentSnapshot.getId());
                         listaJednostek.add(jednostka);
-                        data.add(jednostka.getNazwa()+" "+jednostka.getWartosc());
-                        if(lek.getIdJednostki().equals(jednostka.getId())) {
-                            idWybranejJednostki = data.size()-1;
+                        data.add(jednostka.getNazwa() + getString(R.string.spacia) + jednostka.getWartosc());
+                        if (lek.getIdJednostki().equals(jednostka.getId())) {
+                            idWybranejJednostki = data.size() - 1;
                         }
                     }
-                    ArrayAdapter adapter = new ArrayAdapter ( LekEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
+                    ArrayAdapter adapter = new ArrayAdapter(LekEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
 
                     textWybranejJednostki = data.get(idWybranejJednostki);
                     jednostki.setText(textWybranejJednostki, false);
                     jednostkiL.setEnabled(false);
-                }
-                else {
-                    Log.i("Tag", "błąd odczytu jednostek" );
+                } else {
+                    Log.i("Tag", "błąd odczytu jednostek");
                 }
             }
         });
 
 
-
         nazwa.getEditText().setText(lek.getNazwa());
         notatka.getEditText().setText(lek.getNotatka());
-
 
 
         jednostki.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -141,14 +138,12 @@ public class LekEdytuj extends AppCompatActivity {
 
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
     }
 
@@ -159,30 +154,30 @@ public class LekEdytuj extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch (item.getItemId() ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 
             case R.id.edit:
-                Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
-                Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+                Button aktualizuj = findViewById(R.id.button_save_edit);
+                Button anuluj = findViewById(R.id.button_disable_edit);
                 aktualizuj.setEnabled(true);
                 anuluj.setEnabled(true);
                 nazwa.setEnabled(true);
                 notatka.setEnabled(true);
                 jednostkiL.setEnabled(true);
                 return true;
-            case R.id.drop:{
+            case R.id.drop: {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(LekEdytuj.this);
                 builder.setMessage("Czy na pewno usunąć");
                 builder.setCancelable(false);
-                builder.setPositiveButton("Tak", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     if (lek != null) {
                         lekRepository.delete(lek);
                     }
                     finish();
                 });
 
-                builder.setNegativeButton("Nie", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builder.setNegativeButton(getString(R.string.nie), (dialog, which) -> {
                     dialog.cancel();
                 });
                 builder.show();
@@ -204,18 +199,18 @@ public class LekEdytuj extends AppCompatActivity {
 
     private void setupChart() {
         View elementView = getLayoutInflater().inflate(R.layout.chart_view, null, false);
-        LinearLayout wpisyLayout = (LinearLayout) findViewById(R.id.wpisyLayout);
+        LinearLayout wpisyLayout = findViewById(R.id.wpisyLayout);
         wpisyLayout.removeAllViews();
         wpisyLayout.addView(elementView);
 
-        BarChart chart = (BarChart) elementView.findViewById(R.id.chart);
+        BarChart chart = elementView.findViewById(R.id.chart);
 
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light);
         int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark);
 
 
-        switch (getResources().getConfiguration().uiMode-1) {
+        switch (getResources().getConfiguration().uiMode - 1) {
             case Configuration.UI_MODE_NIGHT_YES:
                 chart.getAxisLeft().setTextColor(colorTextDark);
                 break;
@@ -253,28 +248,26 @@ public class LekEdytuj extends AppCompatActivity {
         chart.setPinchZoom(true);
 
 
-
 //wpisywanie danych
-        if(lek   != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+        if (lek != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
             wpisLekRepository.getQueryByLekId(lek.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: "+task.isSuccessful());
-                    if(task.isSuccessful()){
+                    Log.w("TAG-grap", "task: " + task.isSuccessful());
+                    if (task.isSuccessful()) {
                         List<WpisLek> wpisLekList = task.getResult().toObjects(WpisLek.class);
                         List<BarEntry> entries = new ArrayList<>();
 
 
-                        if(wpisLekList.size()>0)
-                            ((Button) findViewById(R.id.button_all)).setEnabled(true);
+                        if (wpisLekList.size() > 0)
+                            findViewById(R.id.button_all).setEnabled(true);
 
 
-
-                        for(int i = 0; i<wpisLekList.size(); i++){
-                        //for(WpisLek wpisLek : wpisLekList){
-                            WpisLek wpisLek = wpisLekList.get(wpisLekList.size()-(i+1));
-                            entries.add(new BarEntry(Float.parseFloat(""+i), Float.parseFloat(wpisLek.getPozostalyZapas())));
+                        for (int i = 0; i < wpisLekList.size(); i++) {
+                            //for(WpisLek wpisLek : wpisLekList){
+                            WpisLek wpisLek = wpisLekList.get(wpisLekList.size() - (i + 1));
+                            entries.add(new BarEntry(Float.parseFloat("" + i), Float.parseFloat(wpisLek.getPozostalyZapas())));
                         }
 
                         BarDataSet set = new BarDataSet(entries, "DataSet");
@@ -286,7 +279,7 @@ public class LekEdytuj extends AppCompatActivity {
                         chart.setData(data);
                         chart.setFitBars(true); // make the x-axis fit exactly all bars
 
-                        Log.w("TAG-grap", "wpisLekList: "+wpisLekList.size());
+                        Log.w("TAG-grap", "wpisLekList: " + wpisLekList.size());
                         chart.invalidate(); // refresh
                         TextView jednostka = elementView.findViewById(R.id.textView3);
                         jednostka.setText(listaJednostek.get(idWybranejJednostki).getNazwa());
@@ -298,31 +291,26 @@ public class LekEdytuj extends AppCompatActivity {
                                 TextView wpisTextView = elementView.findViewById(R.id.wpisTextView);
                                 TextView dataTextView = elementView.findViewById(R.id.dataTextView);
                                 WpisLek wpisLek = wpisLekList.get(wpisLekList.size() - (((int) e.getX() + 1)));
-                                if(Double.parseDouble(wpisLek.getSumaObrotu())>=0) {
+                                if (Double.parseDouble(wpisLek.getSumaObrotu()) >= 0) {
                                     wpisTextView.setText("uzupełniono o ");
-                                    if(listaJednostek.get(idWybranejJednostki).getTypZmiennej() == 0){
-                                        wpisTextView.setText(wpisTextView.getText()+((int)Double.parseDouble(wpisLek.getSumaObrotu())+" ")+listaJednostek.get(idWybranejJednostki).getWartosc()+" leku");
+                                    if (listaJednostek.get(idWybranejJednostki).getTypZmiennej() == 0) {
+                                        wpisTextView.setText(wpisTextView.getText() + ((int) Double.parseDouble(wpisLek.getSumaObrotu()) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
+                                    } else {
+                                        wpisTextView.setText(wpisTextView.getText() + (Double.parseDouble(wpisLek.getSumaObrotu()) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
                                     }
-                                    else{
-                                        wpisTextView.setText(wpisTextView.getText()+(Double.parseDouble(wpisLek.getSumaObrotu())+" ")+listaJednostek.get(idWybranejJednostki).getWartosc()+" leku");
-                                    }
-                                }
-                                else{
+                                } else {
                                     wpisTextView.setText("pobrano ");
-                                    if(listaJednostek.get(idWybranejJednostki).getTypZmiennej() == 0){
-                                        wpisTextView.setText(wpisTextView.getText()+((int)(Double.parseDouble(wpisLek.getSumaObrotu())*-1)+" ")+listaJednostek.get(idWybranejJednostki).getWartosc()+" leku");
-                                    }
-                                    else{
-                                        wpisTextView.setText(wpisTextView.getText()+((Double.parseDouble(wpisLek.getSumaObrotu())*-1)+" ")+listaJednostek.get(idWybranejJednostki).getWartosc()+" leku");
+                                    if (listaJednostek.get(idWybranejJednostki).getTypZmiennej() == 0) {
+                                        wpisTextView.setText(wpisTextView.getText() + ((int) (Double.parseDouble(wpisLek.getSumaObrotu()) * -1) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
+                                    } else {
+                                        wpisTextView.setText(wpisTextView.getText() + ((Double.parseDouble(wpisLek.getSumaObrotu()) * -1) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
                                     }
                                 }
 
-
-                                            //+Double.parseDouble(wpisLek.getSumaObrotu())+" "+listaJednostek.get(idWybranejJednostki).getWartosc());
                                 dataTextView.setText(sdf.format(wpisLek.getDataWykonania()));
-                                wpisyLayout.addView(elementView,1);
+                                wpisyLayout.addView(elementView, 1);
 
-                                if(wpisyLayout.getChildCount()>2)
+                                if (wpisyLayout.getChildCount() > 2)
                                     wpisyLayout.removeViewAt(2);
                             }
 
@@ -338,7 +326,7 @@ public class LekEdytuj extends AppCompatActivity {
         }
     }
 
-    public void wyswietlWszystkie(View view){
+    public void wyswietlWszystkie(View view) {
         FirestoreRecyclerOptions<WpisLek> options
                 = new FirestoreRecyclerOptions.Builder<WpisLek>()
                 .setQuery(wpisLekRepository.getQuery().whereEqualTo("idLeku", lek.getId()).orderBy("dataWykonania", Query.Direction.DESCENDING), WpisLek.class)
@@ -351,8 +339,8 @@ public class LekEdytuj extends AppCompatActivity {
     }
 
     public void stopEdit(View view) {
-        Button aktualizuj = (Button) findViewById(R.id.button_save_edit);
-        Button anuluj = (Button) findViewById(R.id.button_disable_edit);
+        Button aktualizuj = findViewById(R.id.button_save_edit);
+        Button anuluj = findViewById(R.id.button_disable_edit);
         aktualizuj.setEnabled(false);
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
@@ -367,7 +355,7 @@ public class LekEdytuj extends AppCompatActivity {
         String nazwa = this.nazwa.getEditText().getText().toString();
         String notatka = this.notatka.getEditText().getText().toString();
 
-        if( jednostki.getText().length()>0 && nazwa.length()>=2 && notatka.length()>=2) {
+        if (jednostki.getText().length() > 0 && nazwa.length() >= 2 && notatka.length() >= 2) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
@@ -381,7 +369,7 @@ public class LekEdytuj extends AppCompatActivity {
 
             lekRepository.update(lek);
             finish();
-        }else
+        } else
             Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
     }
 

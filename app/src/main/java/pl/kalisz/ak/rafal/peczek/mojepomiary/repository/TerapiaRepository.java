@@ -8,7 +8,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.EtapTerapa;
@@ -16,9 +15,9 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Terapia;
 
 public class TerapiaRepository {
 
-    private CollectionReference mDatabase;
+    private final CollectionReference mDatabase;
     String userUid;
-    private EtapTerapiaRepository etapTerapiaRepository;
+    private final EtapTerapiaRepository etapTerapiaRepository;
 
     public TerapiaRepository(@NonNull String uid) {
         mDatabase = FirebaseFirestore.getInstance().collection("Terapie");
@@ -26,7 +25,7 @@ public class TerapiaRepository {
         etapTerapiaRepository = new EtapTerapiaRepository(userUid);
     }
 
-    public Query getQuery(){
+    public Query getQuery() {
         return mDatabase.whereEqualTo("idUzytkownika", userUid).orderBy("dataUtwozenia", Query.Direction.DESCENDING);
     }
 
@@ -44,7 +43,7 @@ public class TerapiaRepository {
     public Terapia findById(@NonNull String idTerapi) {
         Terapia terapia = null;
         Task<DocumentSnapshot> task = mDatabase.document(idTerapi).get();
-        while(!task.isComplete()) {
+        while (!task.isComplete()) {
 
         }
         if (task.isSuccessful()) {
@@ -61,7 +60,7 @@ public class TerapiaRepository {
         etapTerapiaRepository.getQuery().whereEqualTo("idTerapi", terapia.getId()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for( EtapTerapa etapTerapa : queryDocumentSnapshots.toObjects(EtapTerapa.class)){
+                for (EtapTerapa etapTerapa : queryDocumentSnapshots.toObjects(EtapTerapa.class)) {
                     etapTerapiaRepository.delete(etapTerapa);
                 }
             }

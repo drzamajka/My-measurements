@@ -3,14 +3,16 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,12 +59,11 @@ public class WpisPomiarFragment extends Fragment {
             }
         };
 
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton button = view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
 
-
-        rvWpisPomiary = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvWpisPomiary = view.findViewById(R.id.recycleView);
         rvWpisPomiary.setHasFixedSize(true);
         Configuration config = getResources().getConfiguration();
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -87,16 +88,14 @@ public class WpisPomiarFragment extends Fragment {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         wpisPomiarAdapter.startListening();
         rvWpisPomiary.setAdapter(wpisPomiarAdapter);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         wpisPomiarAdapter.stopListening();
     }

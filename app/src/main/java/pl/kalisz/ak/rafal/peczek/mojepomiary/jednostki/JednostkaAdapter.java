@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -35,7 +34,7 @@ public class JednostkaAdapter extends FirestoreRecyclerAdapter<
             public void onClick(View v) {
                 //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(holder.view.getContext(), JednostkiEdytuj.class);
-                intent.putExtra(JednostkiEdytuj.EXTRA_JEDNOSTKA_ID, (String) model.getId());
+                intent.putExtra(JednostkiEdytuj.EXTRA_JEDNOSTKA_ID, model.getId());
                 holder.view.getContext().startActivity(intent);
             }
         });
@@ -54,12 +53,12 @@ public class JednostkaAdapter extends FirestoreRecyclerAdapter<
             extends RecyclerView.ViewHolder {
         TextView obiektNazwa, obiektOpis;
         View view;
-        public jednostkaViewholder(@NonNull View itemView)
-        {
+
+        public jednostkaViewholder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            obiektNazwa = (TextView) itemView.findViewById(R.id.nazwa);
-            obiektOpis = (TextView) itemView.findViewById(R.id.opis);
+            obiektNazwa = itemView.findViewById(R.id.nazwa);
+            obiektOpis = itemView.findViewById(R.id.opis);
         }
     }
 }

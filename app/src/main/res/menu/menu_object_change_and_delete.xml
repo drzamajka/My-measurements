@@ -5,9 +5,9 @@
     <item
         android:id="@+id/edit"
         android:title="@string/menu_object_edit"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/drop"
         android:title="@string/menu_object_drop"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

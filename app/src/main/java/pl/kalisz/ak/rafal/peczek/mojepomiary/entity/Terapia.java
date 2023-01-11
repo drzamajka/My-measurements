@@ -36,9 +36,13 @@ public class Terapia {
         this.dataAktualizacji = dataAktualizacji;
     }
 
-    public String getId() {return id;}
+    public String getId() {
+        return id;
+    }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getIdUzytkownika() {
         return idUzytkownika;
@@ -56,15 +60,21 @@ public class Terapia {
         this.typ = typ;
     }
 
-    public String getNotatka() { return notatka; }
+    public String getNotatka() {
+        return notatka;
+    }
 
-    public void setNotatka(String notatka) { this.notatka = notatka; }
+    public void setNotatka(String notatka) {
+        this.notatka = notatka;
+    }
 
     public ArrayList<String> getIdsCzynnosci() {
         return idsCzynnosci;
     }
 
-    public void setIdsCzynnosci(ArrayList<String> idsCzynnosci) { this.idsCzynnosci = idsCzynnosci; }
+    public void setIdsCzynnosci(ArrayList<String> idsCzynnosci) {
+        this.idsCzynnosci = idsCzynnosci;
+    }
 
     public Date getDataRozpoczecia() {
         return dataRozpoczecia;

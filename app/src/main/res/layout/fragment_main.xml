@@ -23,7 +23,7 @@
                 android:layout_height="5dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/button1"
@@ -31,11 +31,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:drawableLeft="@drawable/ic_arrow_back_ios_24"
-                android:onClick="dalej"
+                android:drawableStart="@drawable/ic_arrow_back_ios_24"
                 android:drawableTint="@color/white"
                 android:textColor="@color/white"
-                android:text="Wcześniej"
+                android:text="@string/wcze_niej"
 
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -47,7 +46,6 @@
                 android:id="@+id/Data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,11 +58,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:drawableRight="@drawable/ic_arrow_forward_ios_24"
+                android:drawableEnd="@drawable/ic_arrow_forward_ios_24"
                 android:drawableTint="@color/white"
-                android:onClick="dalej"
                 android:textColor="@color/white"
-                android:text="Póżniej"
+                android:text="@string/p_niej"
 
 
                 app:layout_constrainedWidth="true"
@@ -74,18 +71,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycleView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:scrollbars="vertical"
-                android:layoutAnimation="@anim/layout_animation"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:scrollbars="vertical"
+            android:layoutAnimation="@anim/layout_animation"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            </androidx.recyclerview.widget.RecyclerView>
-
+        </androidx.recyclerview.widget.RecyclerView>
 
 
     </LinearLayout>

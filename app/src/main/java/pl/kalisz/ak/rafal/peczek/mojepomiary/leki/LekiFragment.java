@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Lek;
-import pl.kalisz.ak.rafal.peczek.mojepomiary.pomiary.PomiarDopisz;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.LekRepository;
 
 /**
@@ -59,10 +58,10 @@ public class LekiFragment extends Fragment {
             }
         };
 
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton button = view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
-        rvLeki = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvLeki = view.findViewById(R.id.recycleView);
         rvLeki.setHasFixedSize(true);
         rvLeki.setLayoutManager(
                 new LinearLayoutManager(getContext()));
@@ -78,16 +77,14 @@ public class LekiFragment extends Fragment {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         lekAdapter.startListening();
         rvLeki.setAdapter(lekAdapter);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         lekAdapter.stopListening();
     }

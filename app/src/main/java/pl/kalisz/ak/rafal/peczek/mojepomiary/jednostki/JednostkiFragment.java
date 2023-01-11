@@ -1,29 +1,19 @@
 package pl.kalisz.ak.rafal.peczek.mojepomiary.jednostki;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-
-
-import java.util.List;
-import java.util.Queue;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.entity.Jednostka;
@@ -68,11 +58,11 @@ public class JednostkiFragment extends Fragment {
                 startActivity(intent);
             }
         };
-        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton button = view.findViewById(R.id.fab);
         button.setOnClickListener(buttonClickListener);
 
 
-        rvJednostki = (RecyclerView) view.findViewById(R.id.recycleView);
+        rvJednostki = view.findViewById(R.id.recycleView);
         rvJednostki.setHasFixedSize(true);
         rvJednostki.setLayoutManager(
                 new LinearLayoutManager(getContext()));
@@ -89,22 +79,20 @@ public class JednostkiFragment extends Fragment {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         jednostkaAdapter.startListening();
         rvJednostki.setAdapter(jednostkaAdapter);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         jednostkaAdapter.stopListening();
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
     }
