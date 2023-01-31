@@ -79,7 +79,7 @@ public class PomiarEdytuj extends AppCompatActivity {
         wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         idWybranejJednostki = 0;
-        textWybranejJednostki = "Opis Tekstowy";
+        textWybranejJednostki = "";
         pomiarId = (String) getIntent().getExtras().get(EXTRA_Pomiar_ID);
 
         nazwa = findViewById(R.id.editTextNazwaLayout);
@@ -98,24 +98,24 @@ public class PomiarEdytuj extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    data.add("Opis Tekstowy");
+                    data.add(getString(R.string.opis_tekstowy));
                     for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                         Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                         jednostka.setId(queryDocumentSnapshot.getId());
                         listaJednostek.add(jednostka);
                         data.add(jednostka.getNazwa() + getString(R.string.spacia) + jednostka.getWartosc());
                         if (jednostka.getId().equals(pomiar.getIdJednostki())) {
-                            idWybranejJednostki = data.size();
+                            idWybranejJednostki = data.size()-1;
                         }
                     }
                     ArrayAdapter adapter = new ArrayAdapter(PomiarEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
-                    if (idWybranejJednostki != 0)
-                        textWybranejJednostki = data.get(idWybranejJednostki - 1);
+                    if (idWybranejJednostki != -1)
+                        textWybranejJednostki = data.get(idWybranejJednostki);
                     jednostki.setText(textWybranejJednostki, false);
                     jednostkiL.setEnabled(false);
                 } else {
-                    Log.i("Tag", "błąd odczytu jednostek");
+                    finish();
                 }
             }
         });
@@ -162,7 +162,7 @@ public class PomiarEdytuj extends AppCompatActivity {
                 return true;
             case R.id.drop: {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(PomiarEdytuj.this);
-                builder.setMessage("Czy na pewno usunąć");
+                builder.setMessage(getString(R.string.czy_na_pewno_usun__));
                 builder.setCancelable(false);
                 builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     if (pomiar != null) {
@@ -192,11 +192,10 @@ public class PomiarEdytuj extends AppCompatActivity {
 
 
         if (pomiar != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.spacia) + getString(R.string.format_daty));
             wpisPomiarRepository.getQueryByPomiarId(pomiar.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: " + task.isSuccessful());
                     if (task.isSuccessful()) {
 
                         List<WpisPomiar> wpisPomiarList = task.getResult().toObjects(WpisPomiar.class);
@@ -263,14 +262,11 @@ public class PomiarEdytuj extends AppCompatActivity {
         chart.getLegend().setEnabled(false); // legenda
         chart.getDescription().setEnabled(false); // opis
 
-
         // os x
         chart.getXAxis().setEnabled(false);
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setDrawGridLines(false);
         chart.getXAxis().setTextSize(14f);
-//        chart.getXAxis().setTextColor(Color.WHITE);
-
 
         chart.setScaleEnabled(false);
         chart.setDoubleTapToZoomEnabled(false);
@@ -279,11 +275,10 @@ public class PomiarEdytuj extends AppCompatActivity {
 
 //wpisywanie danych
         if (pomiar != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.spacia) + getString(R.string.format_daty));
             wpisPomiarRepository.getQueryByPomiarId(pomiar.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: " + task.isSuccessful());
                     if (task.isSuccessful()) {
                         List<WpisPomiar> wpisPomiarList = task.getResult().toObjects(WpisPomiar.class);
                         List<BarEntry> entries = new ArrayList<>();
@@ -297,7 +292,7 @@ public class PomiarEdytuj extends AppCompatActivity {
                             i++;
                         }
 
-                        BarDataSet set = new BarDataSet(entries, "DataSet");
+                        BarDataSet set = new BarDataSet(entries, "");
                         set.setColor(colorPrimary);
                         BarData data = new BarData(set);
                         data.setValueTextSize(14f);
@@ -305,11 +300,11 @@ public class PomiarEdytuj extends AppCompatActivity {
                         data.setBarWidth(0.9f); // set custom bar width
                         chart.setData(data);
                         chart.setFitBars(true); // make the x-axis fit exactly all bars
-
-                        Log.w("TAG-grap", "wpisPomiarList: " + wpisPomiarList.size());
                         chart.invalidate(); // refresh
-                        TextView jednostka = elementView.findViewById(R.id.textView3);
-                        jednostka.setText(listaJednostek.get(idWybranejJednostki - 2).getNazwa());
+                        if(idWybranejJednostki > 0) {
+                            TextView jednostka = elementView.findViewById(R.id.textView3);
+                            jednostka.setText(listaJednostek.get(idWybranejJednostki - 1).getNazwa());
+                        }
 
                         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                             @Override
@@ -344,7 +339,7 @@ public class PomiarEdytuj extends AppCompatActivity {
         WpisPomiarAdapter wpisPomiarAdapter = new WpisPomiarAdapter(options);
 
         FullScreanDialog fullScreanDialog = new FullScreanDialog();
-        fullScreanDialog.display(getSupportFragmentManager(), wpisPomiarAdapter, "Wszytkie pomiary");
+        fullScreanDialog.display(getSupportFragmentManager(), wpisPomiarAdapter, getString(R.string.wszytkie_pomiary));
     }
 
     public void stopEdit(View view) {
@@ -361,11 +356,14 @@ public class PomiarEdytuj extends AppCompatActivity {
     }
 
     public void aktualizuj(View view) {
-        String nazwa = this.nazwa.getEditText().getText().toString();
-        String notatka = this.notatka.getEditText().getText().toString();
+        String nazwa = this.nazwa.getEditText().getText().toString().trim();
+        String notatka = this.notatka.getEditText().getText().toString().trim();
 
-        if (jednostki.getText().length() > 0 && nazwa.length() >= 2 && notatka.length() >= 2) {
+        if (validateData(nazwa, idWybranejJednostki)) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
+            if(notatka.length() == 0){
+                notatka = getString(R.string.brak_notatki);
+            }
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
                 notatka += '.';
@@ -381,7 +379,26 @@ public class PomiarEdytuj extends AppCompatActivity {
 
             pomiarRepository.update(pomiar);
             finish();
+        }
+    }
+
+    boolean validateData(String nazwa, int idWybranejJednostki) {
+        boolean status = true;
+
+        if (nazwa.length() < 3) {
+            this.nazwa.setError(getString(R.string.minimum_3_znak_w));
+            status = false;
         } else
-            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+            this.nazwa.setErrorEnabled(false);
+
+        TextInputLayout JednostkaLayout = findViewById(R.id.spinnerLayout);
+
+        if (idWybranejJednostki == -1) {
+            JednostkaLayout.setError(getString(R.string.wybie__jednostke));
+            status = false;
+        } else
+            JednostkaLayout.setErrorEnabled(false);
+
+        return status;
     }
 }

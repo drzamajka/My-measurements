@@ -17,117 +17,134 @@
         <activity
             android:name=".auth.ZresetujHasloActivity"
             android:exported="false"
-            android:label="Zresetuj hasło"
+            android:label="@string/zresetuj_has_o"
             android:parentActivityName=".auth.LoginActivity"
-            android:theme="@style/MyAppTheme"/>
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".auth.KontoActivity"
             android:exported="false"
-            android:label="Moje konto"
+            android:label="@string/moje_konto"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme"/>
-        <!-- <activity -->
-        <!-- android:name=".wpisyPomiary.WpisPomiarEdytuj" -->
-        <!-- android:exported="false" -->
-        <!-- android:label="Edycia wpisu" -->
-        <!-- android:parentActivityName=".MainActivity" -->
-        <!-- android:theme="@style/MyAppTheme" -->
-        <!-- android:windowSoftInputMode="stateHidden" /> -->
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".wpisyLeki.WpisLekEdytuj"
+            android:exported="false"
+            android:label="@string/edycka_wpisu"
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".wpisyLeki.WpisLekDopisz"
             android:exported="false"
-            android:label="Dodawanie wpisu"
+            android:label="@string/dodawanie_wpisu"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".leki.LekDopisz"
             android:exported="false"
-            android:label="Dodawanie leku"
+            android:label="@string/dodawanie_leku"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".leki.LekEdytuj"
             android:exported="false"
-            android:label="Edycia leku"
+            android:label="@string/edycja_leku"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".terapie.EtapTerapiActivity"
             android:exported="false"
-            android:label="Etap terapi"
-            android:theme="@style/MyAppTheme" />
+            android:label="@string/etap_terapii"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".wpisyPomiary.WpisPomiarEdytuj"
             android:exported="false"
-            android:label="Edycia wpisu"
+            android:label="@string/edycja_wpisu"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".wpisyPomiary.WpisPomiarDopisz"
             android:exported="false"
-            android:label="Dodawanie wpisu"
+            android:label="@string/dodawanie_wpisu"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".terapie.TerapiaEdytuj"
             android:exported="false"
-            android:label="Edycia terapii"
+            android:label="@string/edycja_terapii"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".terapie.TerapiaDopisz"
             android:exported="false"
-            android:label="Dodawanie terapii"
+            android:label="@string/dodawanie_terapii"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".pomiary.PomiarEdytuj"
             android:exported="false"
-            android:label="Edycia pomiaru"
+            android:label="@string/edycja_pomiaru"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".pomiary.PomiarDopisz"
             android:exported="false"
-            android:label="Dodawanie pomiaru"
+            android:label="@string/dodawanie_pomiaru"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".jednostki.JednostkiEdytuj"
             android:exported="false"
-            android:label="Edycja jednostki"
+            android:label="@string/edycja_jednostki"
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyAppTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".jednostki.JednostkiDopisz"
             android:exported="false"
-            android:label="Dodawanie jednostki"
+            android:label="@string/dodawanie_jednostki"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyAppTheme" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/MyAppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".auth.RegisterActivity"
             android:exported="false"
-            android:label="Rejestracja"
+            android:label="@string/rejestracja"
             android:parentActivityName=".auth.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyAppTheme" />
         <activity
             android:name=".auth.LoginActivity"
             android:exported="false"
-            android:label="Logowanie"
+            android:label="@string/logowanie"
             android:screenOrientation="portrait"
-            android:theme="@style/MyAppTheme" /> <!-- <activity -->
-        <!-- android:name=".lab12.Ustawienia" -->
-        <!-- android:exported="false" -->
-        <!-- android:label="@string/title_activity_ustawienia" -->
-        <!-- android:parentActivityName=".MainActivity" -->
-        <!-- android:theme="@style/MyAppTheme" /> -->
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/MyAppTheme" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"

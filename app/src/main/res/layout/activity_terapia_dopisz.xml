@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Elementy" />
+                    android:text="@string/elementy" />
 
                 <LinearLayout
                     android:id="@+id/listaElementow"
@@ -47,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="dodajElement"
-                    android:text="Dodaj element"
+                    android:text="@string/dodaj_element"
                     app:icon="@drawable/ic_add_24" />
 
             </LinearLayout>
@@ -66,14 +66,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Harmonogram" />
+                    android:text="@string/harmonogram" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/czestotliwoscLayout"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cęstotliwość">
+                    android:hint="@string/c_stotliwo__">
 
                     <AutoCompleteTextView
                         android:id="@+id/czestotliwosc"
@@ -100,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Data rozpoczęcia terapi"
+                    android:hint="@string/data_rozpocz_cia_terapi"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -119,7 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Data zakonczenia terapi"
+                    android:hint="@string/data_zakonczenia_terapi"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -148,13 +148,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Infirnacie dodatkowe" />
+                    android:text="@string/infirnacie_dodatkowe" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/NotatkaLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Notatka"
+                    android:hint="@string/notatka"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -177,7 +177,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
                 android:onClick="zapiszNowaTerapie"
-                android:text="Zapisz nową terapie"
+                android:text="@string/zapisz_now_terapie"
                 app:icon="@drawable/ic_add_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -50,14 +50,11 @@ public class JednostkiEdytuj extends AppCompatActivity {
         typZmiennej = findViewById(R.id.spinner);
         typZmiennejL = findViewById(R.id.spinnerLayout);
 
-
         jednostka = jednostkiRepository.findById(jednostkaId);
         nazwa.getEditText().setText(jednostka.getNazwa());
         wartosc.getEditText().setText(jednostka.getWartosc());
         typZmiennejSelectedId = jednostka.getTypZmiennej();
-        String[] listaDokladnosci = getResources().getStringArray(R.array.typZmiennej);
         typZmiennej.setText(typZmiennej.getAdapter().getItem(typZmiennejSelectedId).toString(), false);
-
 
         typZmiennej.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -66,13 +63,11 @@ public class JednostkiEdytuj extends AppCompatActivity {
             }
         });
 
-
         aktualizuj.setEnabled(false);
         anuluj.setEnabled(false);
         nazwa.setEnabled(false);
         wartosc.setEnabled(false);
         typZmiennejL.setEnabled(false);
-
     }
 
     @Override
@@ -95,15 +90,14 @@ public class JednostkiEdytuj extends AppCompatActivity {
                     wartosc.setEnabled(true);
                     typZmiennejL.setEnabled(true);
                 } else {
-                    Toast.makeText(this, "Nie mozna edytować domyślnej jednostki", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.nie_mozna_edytowa_, Toast.LENGTH_LONG).show();
                 }
                 return true;
             case R.id.drop: {
 
                 if (!jednostka.getCzyDomyslna()) {
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(JednostkiEdytuj.this);
-                    builder.setMessage("Czy na pewno usunąć");
-//                builder.setTitle("Alert !");
+                    builder.setMessage(R.string.czy_na_pewno_usun__);
                     builder.setCancelable(false);
                     builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                         if (jednostka != null) {
@@ -117,7 +111,7 @@ public class JednostkiEdytuj extends AppCompatActivity {
                     });
                     builder.show();
                 } else {
-                    Toast.makeText(this, "Nie mozna usunąć domyślnej jednostki", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.nie_mozna_usun__, Toast.LENGTH_LONG).show();
                 }
                 return true;
             }
@@ -142,12 +136,11 @@ public class JednostkiEdytuj extends AppCompatActivity {
     }
 
     public void aktualizujJednostke(View view) {
-        String nazwa = this.nazwa.getEditText().getText().toString();
-        String wartosc = this.wartosc.getEditText().getText().toString();
+        String nazwa = this.nazwa.getEditText().getText().toString().trim();
+        String wartosc = this.wartosc.getEditText().getText().toString().trim();
 
-        if (nazwa.length() >= 2 && wartosc.length() >= 1) {
+        if (validateData(nazwa, wartosc, typZmiennejSelectedId)) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
-
 
             jednostka.setNazwa(nazwa);
             jednostka.setWartosc(wartosc);
@@ -155,7 +148,33 @@ public class JednostkiEdytuj extends AppCompatActivity {
             jednostka.setDataAktualizacji(new Date());
             jednostkiRepository.update(jednostka);
             finish();
-        } else
-            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+        }
     }
+
+    boolean validateData(String nazwa, String wartosc, int typZmiennej) {
+        boolean status = true;
+
+        if (nazwa.length() < 3) {
+            this.nazwa.setError(getString(R.string.minimum_3_znak_w));
+            status = false;
+        } else
+            this.nazwa.setErrorEnabled(false);
+
+        if (wartosc.length() < 1) {
+            this.wartosc.setError(getString(R.string.Wprowad_warto__));
+            status = false;
+        } else
+            this.wartosc.setErrorEnabled(false);
+
+        TextInputLayout typZmiennejLayout = findViewById(R.id.spinnerLayout);
+
+        if (typZmiennej == -1) {
+            typZmiennejLayout.setError(getString(R.string.wybierz_typ));
+            status = false;
+        } else
+            typZmiennejLayout.setErrorEnabled(false);
+
+        return status;
+    }
+
 }

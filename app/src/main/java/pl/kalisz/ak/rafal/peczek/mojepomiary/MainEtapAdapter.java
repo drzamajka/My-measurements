@@ -179,9 +179,9 @@ public class MainEtapAdapter extends FirestoreRecyclerAdapter<
                                     if (model.getDataWykonania() != null) {
                                         WpisLek wpisLek = wpisLekRepository.findByEtapIdLekId(model.getId(), lek.getId());
                                         if (wpisLek != null) {
-                                            holder.obiektOpis.setText(holder.obiektOpis.getText() + holder.view.getContext().getString(R.string.pobrano) + lek.getNazwa());
+                                            holder.obiektOpis.setText(holder.obiektOpis.getText() + holder.view.getContext().getString(R.string.pobrano) + holder.view.getContext().getString(R.string.spacia) + lek.getNazwa());
                                         } else {
-                                            holder.obiektOpis.setText(holder.obiektOpis.getText() + holder.view.getContext().getString(R.string.pominieto) + lek.getNazwa());
+                                            holder.obiektOpis.setText(holder.obiektOpis.getText() + holder.view.getContext().getString(R.string.pominieto) + holder.view.getContext().getString(R.string.spacia) + lek.getNazwa());
                                         }
                                     }
                                 }

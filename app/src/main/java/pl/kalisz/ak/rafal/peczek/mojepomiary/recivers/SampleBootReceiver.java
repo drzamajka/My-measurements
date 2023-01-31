@@ -29,17 +29,19 @@ public class SampleBootReceiver extends BroadcastReceiver {
 
     public void renewAlarmManager(Context context) {
         Log.w("TAG-Reciver", "ROZPOCZYNAM");
-        EtapTerapiaRepository etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        List<EtapTerapa> list = etapTerapiaRepository.getAllAfterData(new Date());
-        if (!list.isEmpty()) {
-            for (EtapTerapa etapTerapa : list) {
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                Intent i = new Intent(context, OdbiornikPowiadomien.class);
-                i.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) etapTerapa.getDataZaplanowania().getTime(), i, PendingIntent.FLAG_MUTABLE);
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            EtapTerapiaRepository etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            List<EtapTerapa> list = etapTerapiaRepository.getAllAfterData(new Date());
+            if (!list.isEmpty()) {
+                for (EtapTerapa etapTerapa : list) {
+                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    Intent i = new Intent(context, OdbiornikPowiadomien.class);
+                    i.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) etapTerapa.getDataZaplanowania().getTime(), i, PendingIntent.FLAG_MUTABLE);
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
+                }
+                Log.w("TAG-Reciver", "załadowano: " + list.size() + " powiadomień");
             }
-            Log.w("TAG-Reciver", "załadowano: " + list.size() + " powiadomień");
         }
         Log.w("TAG-Reciver", "koncze");
     }

@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,7 +45,6 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.wpisyPomiary.WpisPomiarFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private Snackbar snackbar;
     private FrameLayout frame;
     private NavigationView navigationView;
     private Button wyloguj, konto;
@@ -117,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         Uzytkownik user = task.getResult().toObject(Uzytkownik.class);
-                        konto.setText(user.getImie() + getString(R.string.spacia) + user.getNazwisko());
+                        if(user != null) {
+                            konto.setText(user.getImie() + getString(R.string.spacia) + user.getNazwisko());
+                        }
                     }
                 }
             });
@@ -158,14 +158,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.about: {
-                snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.o_programie, Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction(R.string.submit, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        snackbar.dismiss();
-                    }
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+                builder.setTitle(R.string.about);
+                builder.setMessage(R.string.o_programie);
+                builder.setPositiveButton(R.string.submit, (dialog, which) -> {
+                    dialog.cancel();
                 });
-                snackbar.show();
+                builder.show();
             }
             return true;
             default:

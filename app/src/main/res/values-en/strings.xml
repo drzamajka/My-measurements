@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--Automatically translated by Globalization Translator (https://github.com/wilinz/globalization-translator)-->
+<resources>
+  <string-array name="typZmiennej"> 
+    <item>Integer</item>
+    <item>Floating point</item> 
+  </string-array>
+  <string-array name="przeznaczenie"> 
+    <item>Drugs and Measurements</item>  
+    <item>Drug</item>
+    <item>Measurement</item> 
+  </string-array>
+  <string-array name="czestotliwosc"> 
+    <item>Every day x times a day</item>  
+    <item>Daily every x hours</item>  
+    <item>Every x days</item> 
+  </string-array>
+  <string-array name="czestotliwosc_x_dni"> 
+    <item>2</item>  
+    <item>3</item>  
+    <item>4</item>  
+    <item>5</item>  
+    <item>6</item>  
+    <item>7</item>  
+    <item>8</item>  
+    <item>9</item>  
+    <item>10</item> 
+  </string-array>
+  <string name="format_daty">dd/MM/yyyy</string>
+  <string name="format_czasu">HH:mm</string>
+  <string name="app_name">My Measurements</string>
+  <string name="about">About program</string>
+  <string name="naw_open">Open the drawer</string>
+  <string name="naw_close">Close the drawers</string>
+  <string name="wyloguj">Logout</string>
+  <string name="title_activity_jednostki">Units</string>
+  <string name="menu_object_drop">Delete the object</string>
+  <string name="menu_object_edit">Edit object</string>
+  <string name="title_activity_etap_perapi_wykonaj">StepPerapiDo</string>
+  <string name="etap_nie_wykonany">Step not done yet</string>
+  <string name="wykonaj">Execute</string>
+  <string name="wyswietl_sczeguly_terapi">View therapy details</string>
+  <string name="wyswietl_sczegoly_terapi">View therapy details</string>
+  <string name="pobrano">Taking</string>
+  <string name="pominieto">Omitted</string>
+  <string name="edytuj">Edit</string>
+  <string name="czy_napewno_wylogowac">Are you sure to log out?</string>
+  <string name="tak">Yes</string>
+  <string name="wylogowanie">Logout</string>
+  <string name="nie">No</string>
+  <string name="o_programie">My Measurements program written by Rafał Pęczek for the needs of an engineering project. \n The application is available under a free license</string>
+  <string name="zrodlo_powiadomien">Notification source</string>
+  <string name="moje_pomiary_chanel">Channel my measurements</string>
+  <string name="wykonaj_pomiar">Take the measurement</string>
+  <string name="dodaj_jednostke">Add unit</string>
+  <string name="dodaj_pomiar">Add measurement</string>
+  <string name="pomiary">Measurement</string>
+  <string name="wynik_pomiaru">Measurement result</string>
+  <string name="godzina_wykonania_pomiaru">The time of the measurement</string>
+  <string name="data_wykonania_pomiaru">Date of the measurement</string>
+  <string name="aktualizuj_wpis">Update entry</string>
+  <string name="dopisz_terapie">Add therapies</string>
+  <string name="edytuj_dane_konta">Edit account details</string>
+  <string name="usu_konto">Delete account</string>
+  <string name="wcze_niej">Earlier</string>
+  <string name="p_niej">Later</string>
+  <string name="dopisz_lek">Add medicine</string>
+  <string name="dopisz_zas_b_leku">Add drug resource</string>
+  <string name="dopisz_jednostke">Add a unit</string>
+  <string name="dopisz_wynik_pomiaru">Add the measurement result</string>
+  <string name="etapy">Stages</string>
+  <string name="terapie">Therapies</string>
+  <string name="jednostki">Units</string>
+  <string name="wpisy">Entries</string>
+  <string name="leki">Drugs</string>
+  <string name="nazwa">Name</string>
+  <string name="notatka">Note</string>
+  <string name="jednostka">Unit</string>
+  <string name="aktualizuj_pomiar">Update measurement</string>
+  <string name="anuluj_edycie">Cancel editing</string>
+  <string name="ostatnie_10_wpis_w">Last 10 entries</string>
+  <string name="brak_wpis_w">No posts</string>
+  <string name="wy_wietl_wszystkie_wpisy">View all entries</string>
+  <string name="logo">Logo</string>
+  <string name="adres_e_mail">E-mail adress</string>
+  <string name="has_o">Password</string>
+  <string name="nie_pamietam_has_a">I forgot my password</string>
+  <string name="zaloguj">Login</string>
+  <string name="zarejestruj">Register</string>
+  <string name="imie">Name</string>
+  <string name="nazwisko">Name</string>
+  <string name="powt_z_has_o">Retype password</string>
+  <string name="data_urodzenia">Date of birth</string>
+  <string name="godzina_rozpocz_cia">Start time</string>
+  <string name="godzina_zakonczenia">End time</string>
+  <string name="co">every</string>
+  <string name="godzin">hours</string>
+  <string name="dopisz_pomiar">Add measurement</string>
+  <string name="lek">Drug</string>
+  <string name="notatka_dwukropek">Note:</string>
+  <string name="nowe_has_o">New password</string>
+  <string name="stare_has_o">Old password</string>
+  <string name="powt_z_nowe_has_o">Retype the new password</string>
+  <string name="warto">Value</string>
+  <string name="typ_zmiennej">Variable type</string>
+  <string name="aktualizuj_jednostk">Update unit</string>
+  <string name="zapisz_now_jednostk">Save the new unit</string>
+  <string name="o_godzinie">At</string>
+  <string name="usu">Delete</string>
+  <string name="dodawany_zas_b">Added resource</string>
+  <string name="dopisz_nowy_zas_b">Add a new resource</string>
+  <string name="zapisz_now_pozycj">Save the new position</string>
+  <string name="zapisz_pomiar">Save the measurement</string>
+  <string name="powtazaj_co_x_dni">Repeat every x days</string>
+  <string name="dawka_leku">A dose of medicine</string>
+  <string name="czy_aktualizowa_adres_email">Should I update my email address?</string>
+  <string name="wy_lij_ponownie_e_mail_werfikacyjny">Resend the verification email</string>
+  <string name="adres_e_mail_potwierdzony">Email address confirmed</string>
+  <string name="aktualizuj_dane">Update data</string>
+  <string name="zmien_has_o">Change Password</string>
+  <string name="usu_wpis">Delete entry</string>
+  <string name="logowanie">Login</string>
+  <string name="Brak_dostępu_do_internetu">No internet access</string>
+  <string name="nieprawidłowe_dane_logowania">Invalid login details</string>
+  <string name="resetowanie">Resetting</string>
+  <string name="brak_dostępu_do_internetu">No internet access</string>
+  <string name="Nie_znaleziono_urzytkownika_o_takim_adresie_email">User with this email address not found!</string>
+  <string name="niepoprawny_e_mail">Invalid email</string>
+  <string name="po_usunięciu_konta_wszytkie">After deleting your account, all data will be permanently erased.</string>
+  <string name="us_wanie_konta">Account deletion</string>
+  <string name="anuluj">Cancel</string>
+  <string name="To_b_czie_nieodwracalne">It\'s going to be irreversible.</string>
+  <string name="usuwanie">Removal</string>
+  <string name="dane_usuniete">Data deleted</string>
+  <string name="b__d_usuwania">Deletion error</string>
+  <string name="aktualizacia">Updating</string>
+  <string name="wpisz_haslo">Enter the password</string>
+  <string name="adres_email_juz_zajety">Email already taken!</string>
+  <string name="zmiana_has_a">Password change</string>
+  <string name="nmien_has_o">Change Password</string>
+  <string name="aktualizuj">Update</string>
+  <string name="nieprawid_owe_has_o">Incorrect password</string>
+  <string name="wys_ano_wiadomo___email">An email has been sent</string>
+  <string name="za_du_o_zapyta_">Too many requests, please try later!</string>
+  <string name="nieprawid_owe_imie">Invalid name!</string>
+  <string name="nieprawid_owe_nazwisko">Incorrect name!</string>
+  <string name="minimum_6_znak_w">Minimum 6 characters!</string>
+  <string name="minimum_3_znak_w">Minimum 3 characters!</string>
+  <string name="s_abe_has_o">Weak password!</string>
+  <string name="has_a_nie_s_">The passwords don\'t match!</string>
+  <string name="rejsreacia">Registration</string>
+  <string name="z_ozono__">complexity:" "</string>
+  <string name="format_daty_krutki">dd/MM</string>
+  <string name="Notatka">Note:" "</string>
+  <string name="w_sk_adzie_pozosta_o">Remaining in the composition:" "</string>
+  <string name="lek_jescze_nie_posiada_zapasu">The drug is out of stock</string>
+  <string name="dopisz_nowy_wpis">Add a new entry</string>
+  <string name="godzina_wykonania_wpisu">The time the entry was made</string>
+  <string name="data_wykonania_wpisu">The date the entry was made</string>
+  <string name="Wprowad_warto__">Enter a value!</string>
+  <string name="wybierz_typ">Choose a type!</string>
+  <string name="nie_mozna_usun__">The default unit cannot be deleted</string>
+  <string name="czy_na_pewno_usun__">Are you sure to delete</string>
+  <string name="nie_mozna_edytowa_">The default unit cannot be edited</string>
+  <string name="wybie__jednostke">Choose a unit!</string>
+  <string name="brak_notatki">No note</string>
+  <string name="czy_na_pewno_usun__etap_z">Are you sure you want to delete the stage from day:" "</string>
+  <string name="wszytkie_wpisy">All entries</string>
+  <string name="uzupe_niono_o">Completed with" "</string>
+  <string name="pobrano_">Taked" "</string>
+  <string name="_leku">drug</string>
+  <string name="opis_tekstowy">Text Description</string>
+  <string name="wszytkie_pomiary">All measurements</string>
+  <string name="pobierany_zas_b">Downloaded resource</string>
+  <string name="okresl_godzine_wykonania">Specify the execution time</string>
+  <string name="wybiez_lek">Choose a drug!</string>
+  <string name="wprowad__warto___obrotu">Enter your trade value!</string>
+  <string name="b__d_zapisu">Write error</string>
+  <string name="trwa_od_">"lasts from: "</string>
+  <string name="_do__">" "to:" "</string>
+  <string name="czy_wykonano_pomiar">Whether a measurement has been made</string>
+  <string name="sczeg__y_wpis_w">Entries details</string>
+  <string name="czy_pobrano_lek">Has the medicine been taken?</string>
+  <string name="wybierz_element">Select an item</string>
+  <string name="dodaj_lek">Add drug</string>
+  <string name="pomiar">Measurement</string>
+  <string name="terapia_musi_posiada_">Therapy must have at least one component</string>
+  <string name="wybierz_element_terapii">Choose an element of therapy!</string>
+  <string name="terapia_musi_zawiera_">Therapy must include at least one activity!</string>
+  <string name="terapia_musi_posiadac">Therapy must have at least one planned stage!</string>
+  <string name="okre_l_godzin__etapu">Specify the stage time</string>
+  <string name="terapia_musi_posiada_godzine">The therapy must last at least one hour!</string>
+  <string name="zresetuj_has_o">Reset your password</string>
+  <string name="moje_konto">My account</string>
+  <string name="edycka_wpisu">Edit entry</string>
+  <string name="dodawanie_wpisu">Adding an entry</string>
+  <string name="dodawanie_leku">Adding drugs</string>
+  <string name="edycja_leku">Drug edition</string>
+  <string name="etap_terapii">Therapy stage</string>
+  <string name="edycja_wpisu">Edit entry</string>
+  <string name="edycja_terapii">Therapy edition</string>
+  <string name="dodawanie_terapii">Adding therapy</string>
+  <string name="edycja_pomiaru">Measurement edit</string>
+  <string name="dodawanie_pomiaru">Adding a measurement</string>
+  <string name="edycja_jednostki">Unit editing</string>
+  <string name="dodawanie_jednostki">Adding a unit</string>
+  <string name="rejestracja">Registration</string>
+  <string name="zapisz_nowy_pomiar">Save the new measurement</string>
+  <string name="zapisz_nowy_lek">Save new drug</string>
+  <string name="dodaje">Adds resources</string>
+    <string name="elementy">Elements</string>
+  <string name="dodaj_element">Add item</string>
+  <string name="harmonogram">Schedule</string>
+  <string name="c_stotliwo__">Frequency</string>
+  <string name="data_rozpocz_cia_terapi">Therapy start date</string>
+  <string name="data_zakonczenia_terapi">Therapy end date</string>
+  <string name="infirnacie_dodatkowe">Additional information</string>
+  <string name="zapisz_now_terapie">Save new therapies</string>
+  <string name="elementy_terapi">Elements of therapy</string>
+  <string name="przebieg_terapii">The course of therapy</string>
+  <string name="wy_wietl_szczeg_y_wpis_w">view entry details</string>
+  <string name="pominiento_etap">Step skipped</string>
+  <string name="wykonany_">"done: "</string>
+  <string name="pominiento_">"omitted "</string>
+  <string name="etap_">"Stage "</string>
+  <string name="pobieram">Taking resources</string>
+</resources>

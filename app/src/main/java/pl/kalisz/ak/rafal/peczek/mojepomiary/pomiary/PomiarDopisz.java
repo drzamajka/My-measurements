@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -31,7 +32,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.PomiarRepository;
 
 public class PomiarDopisz extends AppCompatActivity {
 
-    private EditText nazwa, notatka;
+    private TextInputLayout nazwa, notatka;
     private AutoCompleteTextView jednostki;
     private List<Jednostka> listaJednostek;
     private int idWybranejJednostki;
@@ -47,9 +48,9 @@ public class PomiarDopisz extends AppCompatActivity {
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        idWybranejJednostki = 0;
-        nazwa = findViewById(R.id.editTextNazwa);
-        notatka = findViewById(R.id.editTextJednostka);
+        idWybranejJednostki = -1;
+        nazwa = findViewById(R.id.editTextNazwaLayout);
+        notatka = findViewById(R.id.editTextJednostkaLayout);
         jednostki = findViewById(R.id.spinner);
 
 
@@ -59,7 +60,7 @@ public class PomiarDopisz extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<String> data = new ArrayList<>();
-                    data.add("Opis Tekstowy");
+                    data.add(getString(R.string.opis_tekstowy));
                     for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                         Jednostka jednostka = queryDocumentSnapshot.toObject(Jednostka.class);
                         jednostka.setId(queryDocumentSnapshot.getId());
@@ -69,7 +70,7 @@ public class PomiarDopisz extends AppCompatActivity {
                     ArrayAdapter adapter = new ArrayAdapter(PomiarDopisz.this, android.R.layout.simple_spinner_dropdown_item, data);
                     jednostki.setAdapter(adapter);
                 } else {
-                    Log.i("Tag-1", "błąd odczytu jednostek" + task.getResult());
+                    finish();
                 }
             }
         });
@@ -98,12 +99,15 @@ public class PomiarDopisz extends AppCompatActivity {
     }
 
     public void zapiszNowaPozycia(View view) {
-        String nazwa = this.nazwa.getText().toString();
-        String notatka = this.notatka.getText().toString();
+        String nazwa = this.nazwa.getEditText().getText().toString().trim();
+        String notatka = this.notatka.getEditText().getText().toString().trim();
 
-        if (jednostki.getText().length() > 0 && nazwa.length() >= 2 && notatka.length() >= 2) {
+        if (validateData(nazwa, idWybranejJednostki)) {
 
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
+            if(notatka.length() == 0){
+                notatka = getString(R.string.brak_notatki);
+            }
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
                 notatka += '.';
@@ -111,11 +115,29 @@ public class PomiarDopisz extends AppCompatActivity {
             if (idWybranejJednostki != 0)
                 jednostkaId = listaJednostek.get(idWybranejJednostki - 1).getId();
 
-
             pomiarRepository.insert(new Pomiar(nazwa, notatka, FirebaseAuth.getInstance().getCurrentUser().getUid(), jednostkaId, new Date(), new Date()));
             finish();
+        }
+    }
+
+    boolean validateData(String nazwa, int idWybranejJednostki) {
+        boolean status = true;
+
+        if (nazwa.length() < 3) {
+            this.nazwa.setError(getString(R.string.minimum_3_znak_w));
+            status = false;
         } else
-            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+            this.nazwa.setErrorEnabled(false);
+
+        TextInputLayout JednostkaLayout = findViewById(R.id.spinnerLayout);
+
+        if (idWybranejJednostki == -1) {
+            JednostkaLayout.setError(getString(R.string.wybie__jednostke));
+            status = false;
+        } else
+            JednostkaLayout.setErrorEnabled(false);
+
+        return status;
     }
 
 }

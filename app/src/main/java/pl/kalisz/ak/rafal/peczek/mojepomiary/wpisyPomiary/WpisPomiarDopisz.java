@@ -61,7 +61,7 @@ public class WpisPomiarDopisz extends AppCompatActivity {
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         wpisPomiarRepository = new WpisPomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        idWybranegoPomiaru = 0;
+        idWybranegoPomiaru = -1;
 
         wynik = findViewById(R.id.editTextWynikLayout);
         godzinaWykonania = findViewById(R.id.godzinaWykonaniaLayout);
@@ -95,8 +95,10 @@ public class WpisPomiarDopisz extends AppCompatActivity {
         pomiary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                pomiaryL.setErrorEnabled(false);
                 idWybranegoPomiaru = position;
                 Pomiar pomiar = listaPomiarow.get(position);
+                wynik.setEnabled(true);
                 wynik.getEditText().setText("");
                 if (pomiar.getIdJednostki() != null) {
                     Jednostka jednostka = jednostkiRepository.findById(pomiar.getIdJednostki());
@@ -139,7 +141,7 @@ public class WpisPomiarDopisz extends AppCompatActivity {
 
     public void zapiszNowaPozycia(View view) throws ParseException {
         String wynik = this.wynik.getEditText().getText().toString();
-        if (wynik.length() > 0) {
+        if (wynik.length() > 0 && idWybranegoPomiaru >= 0) {
             String pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu));
@@ -152,8 +154,13 @@ public class WpisPomiarDopisz extends AppCompatActivity {
 
             wpisPomiarRepository.insert(new WpisPomiar(wynik, pomiarId, FirebaseAuth.getInstance().getCurrentUser().getUid(), cData.getTime(), new Date(), new Date()));
             finish();
-        } else
-            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+        } else {
+            if (idWybranegoPomiaru < 0) {
+                pomiaryL.setError("Wybiez pomiar!");
+            } else {
+                this.wynik.setError("Wprowadż wartość pomiaru!");
+            }
+        }
     }
 
     private void dodajTimePicker(EditText editText) {
@@ -177,7 +184,7 @@ public class WpisPomiarDopisz extends AppCompatActivity {
                 MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
                         .setTimeFormat(TimeFormat.CLOCK_24H)
                         .setHour(hour)
-                        .setTitleText("Okresl godzine etapu")
+                        .setTitleText(getString(R.string.okresl_godzine_wykonania))
                         .setMinute(minute)
                         .build();
 

@@ -55,7 +55,6 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
     private WpisPomiar wpisPomiar;
     private List<Pomiar> listaPomiarow;
     private int idWybranegoPomiaru;
-    private String textWybranegoPomiaru;
 
     private PomiarRepository pomiarRepository;
     private JednostkiRepository jednostkiRepository;
@@ -72,7 +71,6 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
 
         wpisId = (String) getIntent().getExtras().get(EXTRA_Wpisu_ID);
         idWybranegoPomiaru = 0;
-        textWybranegoPomiaru = "";
 
         wynik = findViewById(R.id.editTextWynikLayout);
         godzinaWykonania = findViewById(R.id.godzinaWykonaniaLayout);
@@ -109,8 +107,7 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
                         wynik.getEditText().setMinLines(3);
                         wynik.getEditText().setGravity(Gravity.START);
                     }
-                    textWybranegoPomiaru = data.get(idWybranegoPomiaru);
-                    pomiary.setText(textWybranegoPomiaru, false);
+                    pomiary.setText(data.get(idWybranegoPomiaru));
                     ArrayAdapter adapter = new ArrayAdapter(WpisPomiarEdytuj.this, android.R.layout.simple_spinner_dropdown_item, data);
                     pomiary.setAdapter(adapter);
                 } else {
@@ -167,7 +164,7 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
     public void usun(View view) {
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(WpisPomiarEdytuj.this);
-        builder.setMessage("Czy na pewno usunąć");
+        builder.setMessage(getString(R.string.czy_na_pewno_usun__));
         builder.setCancelable(false);
         builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
             if (wpisPomiar != null) {
@@ -188,7 +185,7 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
             String pomiarId = listaPomiarow.get(idWybranegoPomiaru).getId();
 
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu)+getString(R.string.format_daty));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.spacia) + getString(R.string.format_daty));
             Date data = simpleDateFormat.parse(godzinaWykonania.getEditText().getText().toString() + getString(R.string.spacia) + dataWykonania.getEditText().getText().toString());
 
             wpisPomiar.setWynikPomiary(wynik);
@@ -259,7 +256,7 @@ public class WpisPomiarEdytuj extends AppCompatActivity {
                 MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
                         .setTimeFormat(TimeFormat.CLOCK_24H)
                         .setHour(hour)
-                        .setTitleText("Okresl godzine etapu")
+                        .setTitleText(getString(R.string.okresl_godzine_wykonania))
                         .setMinute(minute)
                         .build();
 

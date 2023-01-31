@@ -75,16 +75,16 @@ public class WpisPomiarAdapter extends FirestoreRecyclerAdapter<
                     jednostka = tmp;
             }
             if (jednostka.getTypZmiennej() == 0) {
-                holder.obiektOpis.setText(holder.obiektOpis.getText() + (((int) Double.parseDouble(model.getWynikPomiary())) + "") + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
+                holder.obiektOpis.setText((((int) Double.parseDouble(model.getWynikPomiary())) + "") + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
             } else {
-                holder.obiektOpis.setText(holder.obiektOpis.getText() + model.getWynikPomiary() + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
+                holder.obiektOpis.setText((Double.parseDouble(model.getWynikPomiary())+"") + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
             }
         } else {
             holder.obiektOpis.setText(model.getWynikPomiary());
         }
 
 
-        SimpleDateFormat sdf = new SimpleDateFormat(holder.view.getContext().getString(R.string.format_czasu) + holder.view.getContext().getString(R.string.format_daty));
+        SimpleDateFormat sdf = new SimpleDateFormat(holder.view.getContext().getString(R.string.format_czasu) + holder.view.getContext().getString(R.string.spacia) + holder.view.getContext().getString(R.string.format_daty));
         holder.obiektData.setText(sdf.format(model.getDataWykonania()));
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override

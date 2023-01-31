@@ -116,8 +116,20 @@ public class WpisLekRepository {
         mDatabase.document(wpisLek.getId()).set(wpisLek);
     }
 
-    public void delete(@NonNull WpisLek wpisLek) {
+    public Task<QuerySnapshot> delete(@NonNull WpisLek wpisLek) {
         mDatabase.document(wpisLek.getId()).delete();
+        return mDatabase.whereEqualTo("idLeku", wpisLek.getIdLeku()).whereGreaterThan("dataWykonania", wpisLek.getDataWykonania()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
+                    for (WpisLek tmpWpisLek : lista) {
+                        tmpWpisLek.setPozostalyZapas(((Double) (Double.parseDouble(tmpWpisLek.getPozostalyZapas()) - Double.parseDouble(wpisLek.getSumaObrotu()))).toString());
+                        update(tmpWpisLek);
+                    }
+                }
+            }
+        });
     }
 
 

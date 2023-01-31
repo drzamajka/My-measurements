@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Elementy terapi"
+                android:hint="@string/elementy_terapi"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Data rozpoczęcia terapi"
+                android:hint="@string/data_rozpocz_cia_terapi"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Data zakonczenia terapi"
+                android:hint="@string/data_zakonczenia_terapi"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Notatka"
+                android:hint="@string/notatka"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -121,7 +121,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Przebieg terapii"
+                        android:text="@string/przebieg_terapii"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -144,7 +144,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="50dp"
-                            android:text="Brak wpisów"
+                            android:text="@string/brak_wpis_w"
                             android:textAlignment="center" />
                     </LinearLayout>
 
@@ -157,7 +157,7 @@
                         android:layout_marginBottom="8dp"
                         android:enabled="false"
                         android:onClick="wyswietlWszystkie"
-                        android:text="wyświetl szczegóły wpisów"
+                        android:text="@string/wy_wietl_szczeg_y_wpis_w"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/wpisyLayout" />

@@ -99,8 +99,8 @@ public class TerapiaAdapter extends FirestoreRecyclerAdapter<
             e.printStackTrace();
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        holder.obiektOpis.setText("trwa od: " + sdf.format(model.getDataRozpoczecia()) + " do: " + sdf.format(model.getDataZakonczenia()));
+        SimpleDateFormat sdf = new SimpleDateFormat(holder.view.getContext().getString(R.string.format_daty));
+        holder.obiektOpis.setText(holder.view.getContext().getString(R.string.trwa_od_) + sdf.format(model.getDataRozpoczecia()) + holder.view.getContext().getString(R.string._do__) + sdf.format(model.getDataZakonczenia()));
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

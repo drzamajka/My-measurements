@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/wynik_pomiaru"
             app:endIconMode="clear_text"
+            android:enabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

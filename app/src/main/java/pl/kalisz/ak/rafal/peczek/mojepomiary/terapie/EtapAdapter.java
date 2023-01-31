@@ -115,7 +115,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
 
     @Override
     protected void onBindViewHolder(@NonNull EtapAdapter.etapViewholder holder, int position, @NonNull EtapTerapa model) {
-        SimpleDateFormat sdf = new SimpleDateFormat(holder.view.getContext().getString(R.string.format_czasu) + holder.view.getContext().getString(R.string.format_daty));
+        SimpleDateFormat sdf = new SimpleDateFormat(holder.view.getContext().getString(R.string.format_czasu) + holder.view.getContext().getString(R.string.spacia) + holder.view.getContext().getString(R.string.format_daty));
         holder.obiektNazwa.setText(position + 1 + ". " + sdf.format(model.getDataZaplanowania()));
 
 
@@ -126,14 +126,14 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                 if (terapia != null) {
                     if (model.getDataWykonania() == null) {
                         if (model.getDataZaplanowania().before(new Date())) {
-                            holder.obiektOpis.setText("Pominiento etap");
+                            holder.obiektOpis.setText(R.string.pominiento_etap);
                             holder.dotIndicator.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
                         } else {
-                            holder.obiektOpis.setText("Jescze nie wykonano etapu");
+                            holder.obiektOpis.setText(R.string.etap_nie_wykonany);
                             holder.dotIndicator.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
                         }
                     } else {
-                        holder.obiektOpis.setText("wykonany: " + sdf.format(model.getDataWykonania()) + "\n");
+                        holder.obiektOpis.setText(holder.view.getContext().getString(R.string.wykonany_) + sdf.format(model.getDataWykonania()) + "\n");
                         try {
                             holder.dotIndicator.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
                             ArrayList<String> listaElementow = terapia.getIdsCzynnosci();
@@ -141,7 +141,6 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                                 JSONObject czynnosc = new JSONObject(listaElementow.get(i));
                                 String szukaneId = (String) czynnosc.get("id");
                                 if (i != 0 && i < listaElementow.size()) {
-                                    ///////////////tytul += ", ";
                                     if (model.getDataWykonania() != null)
                                         holder.obiektOpis.setText(holder.obiektOpis.getText() + "\n");
                                 }
@@ -153,7 +152,6 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                                             pomiar = tmp;
                                     }
                                     if (pomiar != null) {
-                                        /////////////tytul += pomiar.getNazwa();
                                         if (model.getDataWykonania() != null) {
                                             WpisPomiar wpisPomiar = wpisPomiarRepository.findByEtapIdPomiarId(model.getId(), pomiar.getId());
                                             if (wpisPomiar != null) {
@@ -177,42 +175,34 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                                             lek = tmp;
                                     }
                                     if (lek != null) {
-                                        //////////////////tytul += lek.getNazwa();
                                         if (model.getDataWykonania() != null) {
                                             WpisLek wpisLek = wpisLekRepository.findByEtapIdLekId(model.getId(), lek.getId());
                                             if (wpisLek != null) {
-                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + "Pobrano " + lek.getNazwa());
+                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + holder.view.getContext().getString(R.string.pobrano_) + lek.getNazwa());
                                             } else {
-                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + "Pominiento " + lek.getNazwa());
+                                                holder.obiektOpis.setText(holder.obiektOpis.getText() + holder.view.getContext().getString(R.string.pominiento_) + lek.getNazwa());
                                             }
                                         }
                                     }
                                 }
                             }
-                            //////////////////holder.obiektNazwa.setText(tytul);
                         } catch (
                                 JSONException e) {
                             e.printStackTrace();
                         }
-                        holder.obiektOpis.setText(holder.obiektOpis.getText() + "\nNotatka: " + model.getNotatka());
+                        holder.obiektOpis.setText(holder.obiektOpis.getText() + "\n" + holder.view.getContext().getString(R.string.notatka) + ": " + model.getNotatka());
                     }
                 }
             }
         });
 
-//        if(model.getDataWykonania() != null)
-//            holder.obiektOpis.setText( "wykonany: "+sdf.format(model.getDataWykonania()));
-//        else{
-//            holder.obiektOpis.setText( "Jescze nie wykonano etapu");
-//        }
-
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] colors = {"Edytuj", "Usuń"};
+                String[] colors = {holder.view.getContext().getString(R.string.edytuj), holder.view.getContext().getString(R.string.usu)};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.view.getContext());
-                builder.setTitle("Etap " + (position + 1) + ". " + sdf.format(model.getDataZaplanowania()));
+                builder.setTitle(holder.view.getContext().getString(R.string.etap_) + (position + 1) + ". " + sdf.format(model.getDataZaplanowania()));
                 builder.setItems(colors, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -227,7 +217,7 @@ public class EtapAdapter extends FirestoreRecyclerAdapter<
                             }
                             case 1: {
                                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(holder.view.getContext());
-                                builder.setMessage("Czy na pewno usunąć etap z dnia " + sdf.format(model.getDataZaplanowania()));
+                                builder.setMessage(holder.view.getContext().getString(R.string.czy_na_pewno_usun__etap_z) + sdf.format(model.getDataZaplanowania()));
                                 builder.setCancelable(false);
                                 builder.setPositiveButton(holder.view.getContext().getString(R.string.tak), new DialogInterface.OnClickListener() {
                                     @Override

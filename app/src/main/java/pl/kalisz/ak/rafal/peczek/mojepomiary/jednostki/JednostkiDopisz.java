@@ -5,11 +5,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Date;
@@ -20,7 +19,7 @@ import pl.kalisz.ak.rafal.peczek.mojepomiary.repository.JednostkiRepository;
 
 public class JednostkiDopisz extends AppCompatActivity {
 
-    private EditText nazwa, wartosc;
+    private TextInputLayout nazwa, wartosc;
     private JednostkiRepository jednostkiRepository;
     private int typZmiennejSelectedId;
 
@@ -31,10 +30,10 @@ public class JednostkiDopisz extends AppCompatActivity {
 
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        nazwa = findViewById(R.id.editTextNazwa);
-        wartosc = findViewById(R.id.editTextJednostka);
+        nazwa = findViewById(R.id.editTextNazwaLayout);
+        wartosc = findViewById(R.id.editTextJednostkaLayout);
         AutoCompleteTextView typZmiennej = findViewById(R.id.spinner);
-        typZmiennejSelectedId = 0;
+        typZmiennejSelectedId = -1;
 
         typZmiennej.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -58,17 +57,42 @@ public class JednostkiDopisz extends AppCompatActivity {
     }
 
     public void zapiszNowaPozycia(View view) {
-        String nazwa = this.nazwa.getText().toString();
-        String wartosc = this.wartosc.getText().toString();
+        String nazwa = this.nazwa.getEditText().getText().toString().trim();
+        String wartosc = this.wartosc.getEditText().getText().toString().trim();
+        if (validateData(nazwa, wartosc, typZmiennejSelectedId)) {
 
-        if (nazwa.length() >= 2 && wartosc.length() >= 1) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
             String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             Jednostka jednostka = new Jednostka(nazwa, wartosc, typZmiennejSelectedId, false, userid, new Date(), new Date());
 
             jednostkiRepository.insert(jednostka);
             finish();
+        }
+    }
+
+    boolean validateData(String nazwa, String wartosc, int typZmiennej) {
+        boolean status = true;
+
+        if (nazwa.length() < 3) {
+            this.nazwa.setError(getString(R.string.minimum_3_znak_w));
+            status = false;
         } else
-            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+            this.nazwa.setErrorEnabled(false);
+
+        if (wartosc.length() < 1) {
+            this.wartosc.setError(getString(R.string.Wprowad_warto__));
+            status = false;
+        } else
+            this.wartosc.setErrorEnabled(false);
+
+        TextInputLayout typZmiennejLayout = findViewById(R.id.spinnerLayout);
+
+        if (typZmiennej == -1) {
+            typZmiennejLayout.setError(getString(R.string.wybierz_typ));
+            status = false;
+        } else
+            typZmiennejLayout.setErrorEnabled(false);
+
+        return status;
     }
 }

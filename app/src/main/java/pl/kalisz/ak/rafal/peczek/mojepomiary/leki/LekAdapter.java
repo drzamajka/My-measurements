@@ -116,14 +116,14 @@ public class LekAdapter extends FirestoreRecyclerAdapter<
                         for (Jednostka jednostka : listaJednostek) {
                             if (jednostka.getId().equals(model.getIdJednostki())) {
                                 if (jednostka.getTypZmiennej() == 0) {
-                                    holder.obiektOpis.setText("W zapasie pozostało: " + ((int) Double.parseDouble(lista.get(0).getPozostalyZapas()) + "") + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
+                                    holder.obiektOpis.setText(holder.view.getContext().getString(R.string.w_sk_adzie_pozosta_o) + ((int) Double.parseDouble(lista.get(0).getPozostalyZapas()) + "") + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
                                 } else {
-                                    holder.obiektOpis.setText("W zapasie pozostało: " + lista.get(0).getPozostalyZapas() + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
+                                    holder.obiektOpis.setText(holder.view.getContext().getString(R.string.w_sk_adzie_pozosta_o) + lista.get(0).getPozostalyZapas() + holder.view.getContext().getString(R.string.spacia) + jednostka.getWartosc());
                                 }
                             }
                         }
                     } else {
-                        holder.obiektOpis.setText("Lek nie posiada jescze zapasu");
+                        holder.obiektOpis.setText(holder.view.getContext().getString(R.string.lek_jescze_nie_posiada_zapasu));
                     }
                 }
             }

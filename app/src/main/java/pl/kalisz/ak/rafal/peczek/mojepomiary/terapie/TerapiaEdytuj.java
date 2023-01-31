@@ -17,11 +17,14 @@ import androidx.core.content.ContextCompat;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -33,9 +36,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import pl.kalisz.ak.rafal.peczek.mojepomiary.FullScreanDialog;
 import pl.kalisz.ak.rafal.peczek.mojepomiary.R;
@@ -100,7 +106,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
 
         terapia = terapiaRepository.findById(terapiaId);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty));
 
         dataRozpoczecia.getEditText().setText(sdf.format(terapia.getDataRozpoczecia()));
         dataZakonczenia.getEditText().setText(sdf.format(terapia.getDataZakonczenia()));
@@ -187,14 +193,19 @@ public class TerapiaEdytuj extends AppCompatActivity {
         LinearLayout wpisyLayout = findViewById(R.id.wpisyLayout);
         wpisyLayout.removeAllViews();
 
+
         for (Object czynnosc : listaElementowTerapi) {
             if (czynnosc.getClass().equals(Lek.class)) {
                 elementView = getLekChart((Lek) czynnosc, listaEtapTerapi);
             } else if (czynnosc.getClass().equals(Pomiar.class)) {
                 elementView = getPomiarChart((Pomiar) czynnosc, listaEtapTerapi);
             }
-            if (elementView != null)
-                wpisyLayout.addView(elementView);
+            if (elementView != null) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                if (listaElementowTerapi.indexOf(czynnosc) != 0)
+                    layoutParams.setMargins(0, 70, 0, 0);
+                wpisyLayout.addView(elementView, layoutParams);
+            }
         }
 
     }
@@ -202,17 +213,20 @@ public class TerapiaEdytuj extends AppCompatActivity {
     private View getLekChart(Lek lek, List<EtapTerapa> listaEtapTerapi) {
         View elementView = getLayoutInflater().inflate(R.layout.chart_view, null, false);
         BarChart chart = elementView.findViewById(R.id.chart);
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty_krutki));
 
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
-        int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light);
-        int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark);
+        int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light_default);
+        int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark_default);
 
         switch (getResources().getConfiguration().uiMode - 1) {
             case Configuration.UI_MODE_NIGHT_YES:
                 chart.getAxisLeft().setTextColor(colorTextDark);
+                chart.getXAxis().setTextColor(colorTextDark);
                 break;
             case Configuration.UI_MODE_NIGHT_NO:
                 chart.getAxisLeft().setTextColor(colorTextLight);
+                chart.getXAxis().setTextColor(colorTextLight);
                 break;
         }
 
@@ -220,7 +234,9 @@ public class TerapiaEdytuj extends AppCompatActivity {
         chart.getAxisLeft().setEnabled(true); //legenda z lewej
         chart.getAxisLeft().setDrawAxisLine(true);
         chart.getAxisLeft().setDrawGridLines(true);
-        chart.getAxisLeft().setTextSize(14f);
+        chart.getAxisLeft().setTextSize(12f);
+        chart.getAxisLeft().setSpaceTop(5f);
+        chart.getAxisLeft().setSpaceBottom(0f);
         chart.getAxisLeft().setValueFormatter(new IndexAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -242,24 +258,36 @@ public class TerapiaEdytuj extends AppCompatActivity {
         chart.getDescription().setEnabled(false); // opis
 
         // os x
-        chart.getXAxis().setEnabled(false);
+        chart.getXAxis().setEnabled(true);
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setTextSize(14f);
+        chart.getXAxis().setTextSize(12f);
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+
+                int index = Math.round(value);
+
+                if(listaEtapTerapi.size() - 1 - index >= 0) {
+                    return sdf.format(listaEtapTerapi.get(listaEtapTerapi.size() - 1 - index).getDataZaplanowania());
+                }
+                else {
+                    return "";
+                }
+            }
+        });
 
         chart.setScaleEnabled(true);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setPinchZoom(true);
+        chart.setPinchZoom(false);
 
         if (lek != null) {
             TextView tytulView = elementView.findViewById(R.id.textView5);
             tytulView.setText(lek.getNazwa());
 
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
             wpisLekRepository.getQueryByLekId(lek.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: " + task.isSuccessful());
                     if (task.isSuccessful()) {
                         List<WpisLek> wpisLekList = task.getResult().toObjects(WpisLek.class);
                         List<BarEntry> entries = new ArrayList<>();
@@ -273,34 +301,31 @@ public class TerapiaEdytuj extends AppCompatActivity {
                                 }
                             }
                             if (wpisLekTMP != null) {
-                                entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("1")));
+                                entries.add(new BarEntry(Float.parseFloat("" + (i)), 1f));
                             } else if (i + 1 == listaEtapTerapi.size()) {
-                                entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("0")));
+                                entries.add(new BarEntry(Float.parseFloat("" + (i)), 0f));
                             }
 
                         }
-                        if (entries.get(0).getX() != 0f) {
-                            entries.add(new BarEntry(Float.parseFloat("0"), Float.parseFloat("0")));
-                        }
 
-                        BarDataSet set = new BarDataSet(entries, "DataSet");
+                        BarDataSet set = new BarDataSet(entries, "");
                         set.setColor(colorPrimary);
                         BarData data = new BarData(set);
                         data.setDrawValues(false);
                         data.setHighlightEnabled(false);
                         data.setBarWidth(0.9f); // set custom bar width
                         chart.setData(data);
-                        chart.setFitBars(true); // make the x-axis fit exactly all bars
-
-                        Log.w("TAG-grap", "wpisLekList: " + wpisLekList.size());
                         chart.invalidate(); // refresh
+                        chart.setFitBars(true); // make the x-axis fit exactly all bars
+                        chart.setVisibleXRange(0, listaEtapTerapi.size());
+                        chart.setVisibleYRange(1.25f, 1.25f, null);
+
                         TextView jednostkaView = elementView.findViewById(R.id.textView3);
-                        jednostkaView.setText("Czy pobrano lek");
+                        jednostkaView.setText(R.string.czy_pobrano_lek);
 
                     }
                 }
             });
-
         }
 
         return elementView;
@@ -308,29 +333,29 @@ public class TerapiaEdytuj extends AppCompatActivity {
 
     private View getPomiarChart(Pomiar pomiar, List<EtapTerapa> listaEtapTerapi) {
         View elementView = getLayoutInflater().inflate(R.layout.chart_view, null, false);
-
         BarChart chart = elementView.findViewById(R.id.chart);
+        SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_daty_krutki));
 
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light);
         int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark);
 
-
         switch (getResources().getConfiguration().uiMode - 1) {
             case Configuration.UI_MODE_NIGHT_YES:
                 chart.getAxisLeft().setTextColor(colorTextDark);
+                chart.getXAxis().setTextColor(colorTextDark);
                 break;
             case Configuration.UI_MODE_NIGHT_NO:
                 chart.getAxisLeft().setTextColor(colorTextLight);
+                chart.getXAxis().setTextColor(colorTextLight);
                 break;
         }
-
 
         chart.getAxisRight().setEnabled(false); //legenda z prawej
         chart.getAxisLeft().setEnabled(true); //legenda z lewej
         chart.getAxisLeft().setDrawAxisLine(true);
         chart.getAxisLeft().setDrawGridLines(true);
-        chart.getAxisLeft().setTextSize(14f);
+        chart.getAxisLeft().setTextSize(12f);
 
         chart.setDrawGridBackground(false); // tło
         chart.setDrawBorders(false); // ramka
@@ -339,14 +364,27 @@ public class TerapiaEdytuj extends AppCompatActivity {
         chart.getDescription().setEnabled(false); // opis
 
         // os x
-        chart.getXAxis().setEnabled(false);
+        chart.getXAxis().setEnabled(true);
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setTextSize(14f);
+        chart.getXAxis().setTextSize(12f);
+        chart.getXAxis().setTextSize(12f);
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                int index = Math.round(value);
+                if(listaEtapTerapi.size() - 1 - index >= 0) {
+                    return sdf.format(listaEtapTerapi.get(listaEtapTerapi.size() - 1 - index).getDataZaplanowania());
+                }
+                else {
+                    return "";
+                }
+            }
+        });
 
         chart.setScaleEnabled(true);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setPinchZoom(true);
+        chart.setPinchZoom(false);
 
         if (pomiar != null) {
             TextView tytulView = elementView.findViewById(R.id.textView5);
@@ -368,15 +406,12 @@ public class TerapiaEdytuj extends AppCompatActivity {
                 });
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
             wpisPomiarRepository.getQueryByPomiarId(pomiar.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: " + task.isSuccessful());
                     if (task.isSuccessful()) {
                         List<WpisPomiar> wpisPomiarList = task.getResult().toObjects(WpisPomiar.class);
                         List<BarEntry> entries = new ArrayList<>();
-
 
                         for (int i = 0; i < listaEtapTerapi.size(); i++) {
                             EtapTerapa etapTerapa = listaEtapTerapi.get(listaEtapTerapi.size() - 1 - i);
@@ -396,24 +431,17 @@ public class TerapiaEdytuj extends AppCompatActivity {
                                         entries.add(new BarEntry(Float.parseFloat("" + (i)), Float.parseFloat("0")));
                                     }
                                 }
-                            } else if (i + 1 == listaEtapTerapi.size()) {
-                                entries.add(new BarEntry(Float.parseFloat("" + (i)), 0));
                             }
-
-                        }
-                        if (entries.get(0).getX() != 0f) {
-                            entries.add(new BarEntry(Float.parseFloat("" + 0), 0));
                         }
 
-
-                        BarDataSet set = new BarDataSet(entries, "DataSet");
+                        BarDataSet set = new BarDataSet(entries, "");
                         set.setColor(colorPrimary);
                         BarData data = new BarData(set);
                         data.setDrawValues(false);
                         data.setHighlightEnabled(false);
                         data.setBarWidth(0.9f); // set custom bar width
                         chart.setData(data);
-                        //chart.setFitBars(true); // make the x-axis fit exactly all bars
+                        chart.setVisibleXRange(0, listaEtapTerapi.size());
 
                         chart.invalidate(); // refresh
 
@@ -426,14 +454,11 @@ public class TerapiaEdytuj extends AppCompatActivity {
                         if (jednostka != null) {
                             jednostkaView.setText(jednostka.getNazwa());
                         } else {
-                            jednostkaView.setText("Czy wykonano pomiar");
+                            jednostkaView.setText(R.string.czy_wykonano_pomiar);
                         }
-                    } else {
-                        Log.w("TAG-grap", "task error: " + task.getException());
                     }
                 }
             });
-
         }
 
         return elementView;
@@ -448,7 +473,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
         EtapAdapter etapAdapter = new EtapAdapter(options);
 
         FullScreanDialog fullScreanDialog = new FullScreanDialog();
-        fullScreanDialog.display(getSupportFragmentManager(), etapAdapter, "Sczegóły wpisów");
+        fullScreanDialog.display(getSupportFragmentManager(), etapAdapter, getString(R.string.sczeg__y_wpis_w));
     }
 
     @Override
@@ -456,8 +481,7 @@ public class TerapiaEdytuj extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.drop: {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(TerapiaEdytuj.this);
-                builder.setMessage("Czy na pewno usunąć");
-                builder.setTitle("Alert !");
+                builder.setMessage(getString(R.string.czy_na_pewno_usun__));
                 builder.setCancelable(false);
                 builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     if (terapia != null) {

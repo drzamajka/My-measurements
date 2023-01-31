@@ -75,7 +75,6 @@ public class LekEdytuj extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lek_edytuj);
 
-
         jednostkiRepository = new JednostkiRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         lekRepository = new LekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
         wpisLekRepository = new WpisLekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -116,15 +115,13 @@ public class LekEdytuj extends AppCompatActivity {
                     jednostki.setText(textWybranejJednostki, false);
                     jednostkiL.setEnabled(false);
                 } else {
-                    Log.i("Tag", "błąd odczytu jednostek");
+                    finish();
                 }
             }
         });
 
-
         nazwa.getEditText().setText(lek.getNazwa());
         notatka.getEditText().setText(lek.getNotatka());
-
 
         jednostki.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -134,17 +131,6 @@ public class LekEdytuj extends AppCompatActivity {
         });
 
         setupChart();
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -168,7 +154,7 @@ public class LekEdytuj extends AppCompatActivity {
                 return true;
             case R.id.drop: {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(LekEdytuj.this);
-                builder.setMessage("Czy na pewno usunąć");
+                builder.setMessage(getString(R.string.czy_na_pewno_usun__));
                 builder.setCancelable(false);
                 builder.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     if (lek != null) {
@@ -192,11 +178,6 @@ public class LekEdytuj extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     private void setupChart() {
         View elementView = getLayoutInflater().inflate(R.layout.chart_view, null, false);
         LinearLayout wpisyLayout = findViewById(R.id.wpisyLayout);
@@ -208,7 +189,6 @@ public class LekEdytuj extends AppCompatActivity {
         int colorPrimary = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         int colorTextLight = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_light);
         int colorTextDark = ContextCompat.getColor(getApplicationContext(), com.firebase.ui.firestore.R.color.common_google_signin_btn_text_dark);
-
 
         switch (getResources().getConfiguration().uiMode - 1) {
             case Configuration.UI_MODE_NIGHT_YES:
@@ -234,27 +214,22 @@ public class LekEdytuj extends AppCompatActivity {
         chart.getLegend().setEnabled(false); // legenda
         chart.getDescription().setEnabled(false); // opis
 
-
         // os x
         chart.getXAxis().setEnabled(false);
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setDrawGridLines(false);
         chart.getXAxis().setTextSize(14f);
-//        chart.getXAxis().setTextColor(Color.WHITE);
-
 
         chart.setScaleEnabled(false);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setPinchZoom(true);
 
-
-//wpisywanie danych
+        //wpisywanie danych
         if (lek != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.format_daty));
+            SimpleDateFormat sdf = new SimpleDateFormat(getString(R.string.format_czasu) + getString(R.string.spacia) + getString(R.string.format_daty));
             wpisLekRepository.getQueryByLekId(lek.getId(), 10).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    Log.w("TAG-grap", "task: " + task.isSuccessful());
                     if (task.isSuccessful()) {
                         List<WpisLek> wpisLekList = task.getResult().toObjects(WpisLek.class);
                         List<BarEntry> entries = new ArrayList<>();
@@ -265,12 +240,11 @@ public class LekEdytuj extends AppCompatActivity {
 
 
                         for (int i = 0; i < wpisLekList.size(); i++) {
-                            //for(WpisLek wpisLek : wpisLekList){
                             WpisLek wpisLek = wpisLekList.get(wpisLekList.size() - (i + 1));
                             entries.add(new BarEntry(Float.parseFloat("" + i), Float.parseFloat(wpisLek.getPozostalyZapas())));
                         }
 
-                        BarDataSet set = new BarDataSet(entries, "DataSet");
+                        BarDataSet set = new BarDataSet(entries, "");
                         set.setColor(colorPrimary);
                         BarData data = new BarData(set);
                         data.setValueTextSize(14f);
@@ -278,8 +252,6 @@ public class LekEdytuj extends AppCompatActivity {
                         data.setBarWidth(0.9f); // set custom bar width
                         chart.setData(data);
                         chart.setFitBars(true); // make the x-axis fit exactly all bars
-
-                        Log.w("TAG-grap", "wpisLekList: " + wpisLekList.size());
                         chart.invalidate(); // refresh
                         TextView jednostka = elementView.findViewById(R.id.textView3);
                         jednostka.setText(listaJednostek.get(idWybranejJednostki).getNazwa());
@@ -292,18 +264,18 @@ public class LekEdytuj extends AppCompatActivity {
                                 TextView dataTextView = elementView.findViewById(R.id.dataTextView);
                                 WpisLek wpisLek = wpisLekList.get(wpisLekList.size() - (((int) e.getX() + 1)));
                                 if (Double.parseDouble(wpisLek.getSumaObrotu()) >= 0) {
-                                    wpisTextView.setText("uzupełniono o ");
+                                    wpisTextView.setText(R.string.uzupe_niono_o);
                                     if (listaJednostek.get(idWybranejJednostki).getTypZmiennej() == 0) {
-                                        wpisTextView.setText(wpisTextView.getText() + ((int) Double.parseDouble(wpisLek.getSumaObrotu()) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
+                                        wpisTextView.setText(wpisTextView.getText() + ((int) Double.parseDouble(wpisLek.getSumaObrotu()) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + getString(R.string._leku));
                                     } else {
-                                        wpisTextView.setText(wpisTextView.getText() + (Double.parseDouble(wpisLek.getSumaObrotu()) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
+                                        wpisTextView.setText(wpisTextView.getText() + (Double.parseDouble(wpisLek.getSumaObrotu()) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + getString(R.string._leku));
                                     }
                                 } else {
-                                    wpisTextView.setText("pobrano ");
+                                    wpisTextView.setText(R.string.pobrano_);
                                     if (listaJednostek.get(idWybranejJednostki).getTypZmiennej() == 0) {
-                                        wpisTextView.setText(wpisTextView.getText() + ((int) (Double.parseDouble(wpisLek.getSumaObrotu()) * -1) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
+                                        wpisTextView.setText(wpisTextView.getText() + ((int) (Double.parseDouble(wpisLek.getSumaObrotu()) * -1) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + getString(R.string._leku));
                                     } else {
-                                        wpisTextView.setText(wpisTextView.getText() + ((Double.parseDouble(wpisLek.getSumaObrotu()) * -1) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + " leku");
+                                        wpisTextView.setText(wpisTextView.getText() + ((Double.parseDouble(wpisLek.getSumaObrotu()) * -1) + getString(R.string.spacia)) + listaJednostek.get(idWybranejJednostki).getWartosc() + getString(R.string._leku));
                                     }
                                 }
 
@@ -335,7 +307,7 @@ public class LekEdytuj extends AppCompatActivity {
         WpisLekAdapter wpisLekAdapter = new WpisLekAdapter(options);
 
         FullScreanDialog fullScreanDialog = new FullScreanDialog();
-        fullScreanDialog.display(getSupportFragmentManager(), wpisLekAdapter, "Wszytkie wpisy");
+        fullScreanDialog.display(getSupportFragmentManager(), wpisLekAdapter, getString(R.string.wszytkie_wpisy));
     }
 
     public void stopEdit(View view) {
@@ -355,7 +327,7 @@ public class LekEdytuj extends AppCompatActivity {
         String nazwa = this.nazwa.getEditText().getText().toString();
         String notatka = this.notatka.getEditText().getText().toString();
 
-        if (jednostki.getText().length() > 0 && nazwa.length() >= 2 && notatka.length() >= 2) {
+        if (validateData(nazwa, idWybranejJednostki)) {
             nazwa = nazwa.substring(0, 1).toUpperCase() + nazwa.substring(1).toLowerCase();
             notatka = notatka.substring(0, 1).toUpperCase() + notatka.substring(1);
             if (notatka.charAt(notatka.length() - 1) != '.')
@@ -369,8 +341,27 @@ public class LekEdytuj extends AppCompatActivity {
 
             lekRepository.update(lek);
             finish();
+        }
+    }
+
+    boolean validateData(String nazwa, int idWybranejJednostki) {
+        boolean status = true;
+
+        if (nazwa.length() < 3) {
+            this.nazwa.setError(getString(R.string.minimum_3_znak_w));
+            status = false;
         } else
-            Toast.makeText(this, "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+            this.nazwa.setErrorEnabled(false);
+
+        TextInputLayout JednostkaLayout = findViewById(R.id.spinnerLayout);
+
+        if (idWybranejJednostki == -1) {
+            JednostkaLayout.setError(getString(R.string.wybie__jednostke));
+            status = false;
+        } else
+            JednostkaLayout.setErrorEnabled(false);
+
+        return status;
     }
 
 }

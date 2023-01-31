@@ -26,19 +26,16 @@ public class JednostkaAdapter extends FirestoreRecyclerAdapter<
 
     @Override
     protected void onBindViewHolder(@NonNull JednostkaAdapter.jednostkaViewholder holder, int position, @NonNull Jednostka model) {
-        Log.i("Tag", "jednostka:" + model);
         holder.obiektNazwa.setText(model.getNazwa());
         holder.obiektOpis.setText(model.getWartosc());
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(cardView.getContext(), "kliknieto:"+listaJednostek.get(position).getId(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(holder.view.getContext(), JednostkiEdytuj.class);
                 intent.putExtra(JednostkiEdytuj.EXTRA_JEDNOSTKA_ID, model.getId());
                 holder.view.getContext().startActivity(intent);
             }
         });
-
     }
 
     @NonNull

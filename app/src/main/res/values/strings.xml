@@ -28,13 +28,13 @@
         <item>10</item>
     </string-array>
 
-    <string name="lacznik_daty">/</string>
+    <string name="lacznik_daty" translatable="false">/</string>
     <string name="format_daty">dd/MM/yyyy</string>
     <string name="format_czasu">HH:mm</string>
 
     <string name="app_name">Moje Pomiary</string>
     <string name="about">O programie</string>
-    <string name="submit">OK</string>
+    <string name="submit" translatable="false">OK</string>
     <string name="naw_open">Otwórz szuflade</string>
     <string name="naw_close">Zamknij szuflade</string>
     <string name="wyloguj">Wylogój</string>
@@ -44,17 +44,17 @@
     <string name="title_activity_etap_perapi_wykonaj">EtapPerapiWykonaj</string>
     <string name="etap_nie_wykonany">Jescze nie wykonano etapu</string>
     <string name="wykonaj">Wykonaj</string>
-    <string name="wyswietl_sczeguly_terapi">Wyświetl sczegóły terapi</string>
-    <string name="wyswietl_sczegoly_terapi">Wyświetl sczegóły terapi</string>
-    <string name="pobrano">\"Pobrano \"</string>
-    <string name="pominieto">\"Pominiento \"</string>
+    <string name="wyswietl_sczeguly_terapi">Wyświetl sczegóły terapii</string>
+    <string name="wyswietl_sczegoly_terapi">Wyświetl sczegóły terapii</string>
+    <string name="pobrano">Pobrano</string>
+    <string name="pominieto">Pominiento</string>
     <string name="edytuj">Edytuj</string>
-    <string name="przecinek">, </string>
+    <string name="przecinek" translatable="false">, </string>
     <string name="czy_napewno_wylogowac">Czy na pewno wylogować?</string>
     <string name="tak">Tak</string>
     <string name="wylogowanie">Wylogowanie</string>
     <string name="nie">Nie</string>
-    <string name="o_programie">Program Moje pomiary napisany przez Rafała Pęczek.\n Aplikacia udostępniona na zasadach wolnej licencji</string>
+    <string name="o_programie">Program Moje pomiary napisany przez Rafała Pęczek na potrzeby projektu inżynierskiego.\nAplikacja  udostępniona na zasadach wolnej licencji</string>
     <string name="zrodlo_powiadomien">Źródło powiadomień</string>
     <string name="moje_pomiary_chanel">Kanał moje pomiary</string>
     <string name="wykonaj_pomiar">Wykonaj pomiar</string>
@@ -86,9 +86,9 @@
     <string name="anuluj_edycie">Anuluj edycie</string>
     <string name="ostatnie_10_wpis_w">Ostatnie 10 wpisów</string>
     <string name="brak_wpis_w">Brak wpisów</string>
-    <string name="wy_wietl_wszystkie_wpisy">wyświetl wszystkie wpisy</string>
+    <string name="wy_wietl_wszystkie_wpisy">Wyświetl wszystkie wpisy</string>
     <string name="logo">Logo</string>
-    <string name="adres_e_mail">Adres e-mail</string>
+    <string name="adres_e_mail">Adres E-mail</string>
     <string name="has_o">Hasło</string>
     <string name="nie_pamietam_has_a">Nie pamietam hasła</string>
     <string name="zaloguj">Zaloguj</string>
@@ -113,7 +113,7 @@
     <string name="zapisz_now_jednostk">Zapisz nową jednostkę</string>
     <string name="o_godzinie">O godzinie</string>
     <string name="usu">Usuń</string>
-    <string name="dodawany_zas_b">dodawany zasób</string>
+    <string name="dodawany_zas_b">Dodawany zasób</string>
     <string name="dopisz_nowy_zas_b">dopisz nowy zasób</string>
     <string name="zapisz_now_pozycj">Zapisz nową pozycję</string>
     <string name="zapisz_pomiar">Zapisz pomiar</string>
@@ -132,12 +132,11 @@
     <string name="brak_dostępu_do_internetu">Brak dostępu do internetu</string>
     <string name="Nie_znaleziono_urzytkownika_o_takim_adresie_email">Nie znaleziono urzytkownika o takim adresie e-mail!</string>
     <string name="niepoprawny_e_mail">Niepoprawny e-mail</string>
-    <string name="spacia"> </string>
+    <string name="spacia" translatable="false">" "</string>
     <string name="po_usunięciu_konta_wszytkie">Po usunięciu konta wszytkie dane zostaną trwale wymazane.</string>
     <string name="us_wanie_konta">Usówanie konta</string>
     <string name="anuluj">Anuluj</string>
     <string name="To_b_czie_nieodwracalne">To bęczie nieodwracalne.</string>
-    <string name="czy_napewno_usun">Czy napewno usunąć?</string>
     <string name="usuwanie">Usuwanie</string>
     <string name="dane_usuniete">Dane usunięte</string>
     <string name="b__d_usuwania">Błąd usuwania</string>
@@ -153,9 +152,84 @@
     <string name="nieprawid_owe_imie">Nieprawidłowe imie!</string>
     <string name="nieprawid_owe_nazwisko">Nieprawidłowe nazwisko!</string>
     <string name="minimum_6_znak_w">Minimum 6 znaków!</string>
-    <string name="s_abe_has_o">słabe hasło!</string>
+    <string name="minimum_3_znak_w">Minimum 3 znaki!</string>
+    <string name="s_abe_has_o">Słabe hasło!</string>
     <string name="has_a_nie_s_">Hasła nie są zgodne!</string>
     <string name="rejsreacia">Rejsreacia</string>
     <string name="z_ozono__">"złozoność: "</string>
+    <string name="format_daty_krutki">dd/MM</string>
+    <string name="Notatka">Notatka:" "</string>
+    <string name="w_sk_adzie_pozosta_o">W składzie pozostało:" "</string>
+    <string name="lek_jescze_nie_posiada_zapasu">Lek jescze nie posiada zapasu</string>
+    <string name="dopisz_nowy_wpis">Dopisz nowy wpis</string>
+    <string name="godzina_wykonania_wpisu">Godzina wykonania wpisu</string>
+    <string name="data_wykonania_wpisu">Data wykonania wpisu</string>
+    <string name="Wprowad_warto__">Wprowadź wartość!</string>
+    <string name="wybierz_typ">Wybierz typ!</string>
+    <string name="nie_mozna_usun__">Nie mozna usunąć domyślnej jednostki</string>
+    <string name="czy_na_pewno_usun__">Czy na pewno usunąć</string>
+    <string name="nie_mozna_edytowa_">Nie można edytować domyślnej jednostki</string>
+    <string name="wybie__jednostke">Wybież jednostke!</string>
+    <string name="brak_notatki">Brak notatki</string>
+    <string name="czy_na_pewno_usun__etap_z">Czy na pewno usunąć etap z dnia:" "</string>
+    <string name="wszytkie_wpisy">Wszytkie wpisy</string>
+    <string name="uzupe_niono_o">Uzupełniono o" "</string>
+    <string name="pobrano_">Pobrano" "</string>
+    <string name="_leku">" "leku</string>
+    <string name="opis_tekstowy">Opis Tekstowy</string>
+    <string name="wszytkie_pomiary">Wszytkie pomiary</string>
+    <string name="pobierany_zas_b">Pobierany zasób</string>
+    <string name="okresl_godzine_wykonania">Określ godzine wykonania</string>
+    <string name="wybiez_lek">Wybiez lek!</string>
+    <string name="wprowad__warto___obrotu">Wprowadż wartość obrotu!</string>
+    <string name="b__d_zapisu">Błąd zapisu</string>
+    <string name="trwa_od_">trwa od:" "</string>
+    <string name="_do__">" "do:" "</string>
+    <string name="czy_wykonano_pomiar">Czy wykonano pomiar</string>
+    <string name="sczeg__y_wpis_w">Sczegóły wpisów</string>
+    <string name="czy_pobrano_lek">Czy pobrano lek</string>
+    <string name="wybierz_element">Wybierz element</string>
+    <string name="dodaj_lek">Dodaj lek</string>
+    <string name="pomiar">Pomiar</string>
+    <string name="terapia_musi_posiada_">Terapia musi posiadać conajmniej jedną składową</string>
+    <string name="wybierz_element_terapii">Wybierz element terapii!</string>
+    <string name="terapia_musi_zawiera_">Terapia musi zawierać conajmniej jedną czynność!</string>
+    <string name="terapia_musi_posiadac">Terapia musi posiadać conajmniej jeden zaplanowany etap!</string>
+    <string name="okre_l_godzin__etapu">Określ godzinę etapu</string>
+    <string name="terapia_musi_posiada_godzine">Terapia musi posiadać conajmniej jedną godzine!</string>
+    <string name="zresetuj_has_o">Zresetuj hasło</string>
+    <string name="moje_konto">Moje konto</string>
+    <string name="edycka_wpisu">Edycja wpisu</string>
+    <string name="dodawanie_wpisu">Dodawanie wpisu</string>
+    <string name="dodawanie_leku">Dodawanie leku</string>
+    <string name="edycja_leku">Edycja leku</string>
+    <string name="etap_terapii">Etap terapii</string>
+    <string name="edycja_wpisu">Edycja wpisu</string>
+    <string name="edycja_terapii">Edycja terapii</string>
+    <string name="dodawanie_terapii">Dodawanie terapii</string>
+    <string name="edycja_pomiaru">Edycja pomiaru</string>
+    <string name="dodawanie_pomiaru">Dodawanie pomiaru</string>
+    <string name="edycja_jednostki">Edycja jednostki</string>
+    <string name="dodawanie_jednostki">Dodawanie jednostki</string>
+    <string name="rejestracja">Rejestracja</string>
+    <string name="zapisz_nowy_pomiar">Zapisz nowy pomiar</string>
+    <string name="zapisz_nowy_lek">Zapisz nowy lek</string>
+    <string name="pobieram">Pobieram zasoby</string>
+    <string name="dodaje">Dodaje zasoby</string>
+    <string name="elementy">Elementy</string>
+    <string name="dodaj_element">Dodaj element</string>
+    <string name="harmonogram">Harmonogram</string>
+    <string name="c_stotliwo__">Częstotliwość</string>
+    <string name="data_rozpocz_cia_terapi">Data rozpoczęcia terapii</string>
+    <string name="data_zakonczenia_terapi">Data zakonczenia terapii</string>
+    <string name="infirnacie_dodatkowe">Informacje dodatkowe</string>
+    <string name="zapisz_now_terapie">Zapisz nową terapie</string>
+    <string name="elementy_terapi">Elementy terapii</string>
+    <string name="przebieg_terapii">Przebieg terapii</string>
+    <string name="wy_wietl_szczeg_y_wpis_w">wyświetl szczegóły wpisów</string>
+    <string name="pominiento_etap">Pominięto etap</string>
+    <string name="wykonany_">wykonany:" "</string>
+    <string name="pominiento_">"Pominięto "</string>
+    <string name="etap_">Etap" "</string>
 
 </resources>

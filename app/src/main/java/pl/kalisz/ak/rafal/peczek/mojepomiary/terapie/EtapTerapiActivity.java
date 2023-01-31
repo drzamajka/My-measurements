@@ -320,10 +320,6 @@ public class EtapTerapiActivity extends AppCompatActivity {
                             cData.set(Calendar.MINUTE, c.get(Calendar.MINUTE));
                             cData.set(Calendar.SECOND, c.get(Calendar.SECOND));
 
-//                            etapTerapa.setNotatka(notatka.getEditText().toString());
-//                            etapTerapa.setDataWykonania(cData.getTime());
-//                            etapTerapa.setDataAktualizacji(new Date());
-//                            etapTerapiaRepository.update(etapTerapa);
 
                             int index = 0;
                             for (Object wpis : listaWpisow) {
@@ -336,7 +332,6 @@ public class EtapTerapiActivity extends AppCompatActivity {
 
                                     WpisLek wpisLek = (WpisLek) wpis;
                                     if (listaWynikow.get(index).equals(String.valueOf(true))) {
-
                                         if (wpis != null) {
                                             wpisLek.setDataWykonania(cData.getTime());
                                             wpisLek.setDataAktualizacji(new Date());
@@ -346,6 +341,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                             wpisLekRepository.getQueryByLekId(((Lek) listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    Log.w("TAG-etap", "zapas task:  "+task.isSuccessful());
                                                     if (task.isSuccessful()) {
                                                         try {
                                                             List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
@@ -356,9 +352,8 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                                                 WpisLek wpisLek = lista.get(0);
                                                                 zapasLeku = Double.parseDouble(wpisLek.getPozostalyZapas());
                                                             }
-                                                            if (listaWynikow.get(finalIndex).equals(String.valueOf(true))) {
-                                                                wpisLekRepository.insert(new WpisLek(((Double) (obrut * -1)).toString(), ((Double) (zapasLeku - obrut)).toString(), ((Lek) listaCzynnosci.get(finalIndex)).getId(), userUid, etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
-                                                            }
+                                                            wpisLekRepository.insert(new WpisLek(((Double) (obrut * -1)).toString(), ((Double) (zapasLeku - obrut)).toString(), ((Lek) listaCzynnosci.get(finalIndex)).getId(), userUid, etapTerapa.getId(), cData.getTime(), new Date(), new Date()));
+
                                                         } catch (Exception e) {
                                                         }
                                                     }

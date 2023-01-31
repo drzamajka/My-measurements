@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -99,15 +100,18 @@ public class KontoActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     uzytkownik = task.getResult().toObject(Uzytkownik.class);
-                    if (!mAuth.getCurrentUser().getEmail().equals(uzytkownik.getEMail())) {
-                        uzytkownik.setEMail(mAuth.getCurrentUser().getEmail());
-                        mDatabase.collection("users").document(uzytkownik.getId()).set(uzytkownik);
-                    }
+                    if(uzytkownik != null) {
+                        if (!mAuth.getCurrentUser().getEmail().equals(uzytkownik.getEMail())) {
+                            uzytkownik.setEMail(mAuth.getCurrentUser().getEmail());
+                            mDatabase.collection("users").document(uzytkownik.getId()).set(uzytkownik);
+                        }
 
-                    eMail.getEditText().setText(mAuth.getCurrentUser().getEmail());
-                    imie.getEditText().setText(uzytkownik.getImie());
-                    nazwisko.getEditText().setText(uzytkownik.getNazwisko());
-                    dataUrodzenia.getEditText().setText(sdf.format(uzytkownik.getDataUrodzenia()));
+
+                        eMail.getEditText().setText(mAuth.getCurrentUser().getEmail());
+                        imie.getEditText().setText(uzytkownik.getImie());
+                        nazwisko.getEditText().setText(uzytkownik.getNazwisko());
+                        dataUrodzenia.getEditText().setText(sdf.format(uzytkownik.getDataUrodzenia()));
+                    }
                 }
             }
         });
@@ -170,6 +174,10 @@ public class KontoActivity extends AppCompatActivity {
             case R.id.drop: {
                 MaterialAlertDialogBuilder builder1 = new MaterialAlertDialogBuilder(KontoActivity.this);
                 MaterialAlertDialogBuilder builder2 = new MaterialAlertDialogBuilder(KontoActivity.this);
+                MaterialAlertDialogBuilder builder3 = new MaterialAlertDialogBuilder(KontoActivity.this);
+                View passwodView = getLayoutInflater().inflate(R.layout.password_view, null, false);
+                TextInputLayout staticHaslo = passwodView.findViewById(R.id.hasloLayout);
+
                 builder1.setMessage(R.string.po_usunięciu_konta_wszytkie);
                 builder1.setTitle(R.string.us_wanie_konta);
                 builder1.setCancelable(false);
@@ -183,16 +191,71 @@ public class KontoActivity extends AppCompatActivity {
                 });
 
                 builder2.setMessage(R.string.To_b_czie_nieodwracalne);
-                builder2.setTitle(R.string.czy_napewno_usun);
+                builder2.setTitle(R.string.czy_na_pewno_usun__);
                 builder2.setCancelable(false);
                 builder2.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
                     dialog.cancel();
-                    deleteAccaunt();
+                    builder3.show();
                 });
 
                 builder2.setNegativeButton(getString(R.string.nie), (dialog, which) -> {
                     dialog.cancel();
                 });
+
+
+                builder3.setView(passwodView);
+                builder3.setTitle(R.string.wpisz_haslo);
+                builder3.setPositiveButton(getString(R.string.tak), (dialog, which) -> {
+                    mAuth.signInWithEmailAndPassword(mAuth.getCurrentUser().getEmail(), staticHaslo.getEditText().getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                dialog.cancel();
+                                deleteAccaunt();
+                            }
+                            else {
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseNetworkException e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
+                                            .setTitle(R.string.aktualizacia)
+                                            .setMessage(R.string.brak_dostępu_do_internetu)
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                } catch (FirebaseAuthInvalidUserException | FirebaseAuthInvalidCredentialsException e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
+                                            .setTitle(R.string.aktualizacia)
+                                            .setMessage(R.string.nieprawidłowe_dane_logowania)
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                } catch (Exception e) {
+                                    MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(KontoActivity.this)
+                                            .setTitle(R.string.aktualizacia)
+                                            .setMessage(task.getException().getLocalizedMessage())
+                                            .setPositiveButton(R.string.submit, (dialog, which) -> {
+                                                dialog.cancel();
+                                            });
+                                    progresbilder.show();
+                                }
+                            }
+                        }
+                    });
+
+                });
+                builder3.setNegativeButton(R.string.anuluj, (dialog, which) -> {
+                    dialog.cancel();
+                });
+                builder3.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.cancel();
+                    }
+                });
+
                 builder1.show();
                 return true;
             }
@@ -268,6 +331,7 @@ public class KontoActivity extends AppCompatActivity {
 
 
             Observer<Boolean[]> observer = new Observer<Boolean[]>() {
+
                 @Override
                 public void onChanged(Boolean[] booleans) {
                     Boolean ukonczono = true;
@@ -301,6 +365,8 @@ public class KontoActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                    } else{
+                        this.onChanged(status);
                     }
                 }
             };

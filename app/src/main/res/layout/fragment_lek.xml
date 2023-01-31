@@ -21,6 +21,6 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         app:srcCompat="@android:drawable/ic_input_add"
-        android:contentDescription="@string/dopisz_lek" />
+        android:contentDescription="@string/dodaj_lek" />
 
 </FrameLayout>

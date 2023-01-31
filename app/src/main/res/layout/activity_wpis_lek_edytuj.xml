@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".wpisyLeki.WpisLekDopisz">
+    tools:context=".wpisyLeki.WpisLekEdytuj">
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -48,7 +48,7 @@
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dodaje"
+            android:text="Dodaje"
             app:checkedIcon="@null"
             app:chipIcon="@drawable/ic_add_24"
             app:chipIconVisible="true" />
@@ -58,7 +58,7 @@
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pobieram"
+            android:text="Pobieram"
             app:checkedIcon="@null"
             app:chipIcon="@drawable/ic_baseline_remove_24"
             app:chipIconVisible="true" />
@@ -119,6 +119,25 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dataWykonaniaLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/data_wykonania_wpisu"
+        app:endIconMode="clear_text"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dataWykonania"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:id="@+id/button_save_edit"
         style="@style/Widget.Material3.Button.Icon"
@@ -126,9 +145,20 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="12dp"
-        android:onClick="zapiszNowaPozycia"
-        android:text="@string/dopisz_nowy_wpis"
+        android:onClick="aktualizujPozycie"
+        android:text="@string/aktualizuj_wpis"
         app:icon="@drawable/ic_add_24" />
+
+    <Button
+        android:id="@+id/button_disable_edit"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="24dp"
+        android:onClick="usun"
+        android:text="@string/usu_wpis"
+        app:icon="@drawable/ic_clear_24" />
 
 
 </LinearLayout>
