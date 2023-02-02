@@ -101,15 +101,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        if (mAuth.getCurrentUser() != null) {
-            mAuth.getCurrentUser().reload();
-        }
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         } else {
+            currentUser.reload();
             mDatabase.collection("users").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CharSequence nazwa = getString(R.string.moje_pomiary_chanel);
             String opis = getString(R.string.zrodlo_powiadomien);
             int znaczenie = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel chanel = new NotificationChannel(getString(R.string.app_name), nazwa, znaczenie);
+            NotificationChannel chanel = new NotificationChannel("mojepomiary", nazwa, znaczenie);
             chanel.setDescription(opis);
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);

@@ -137,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
         } else
             this.haslo.setErrorEnabled(false);
 
-
         return status;
     }
 

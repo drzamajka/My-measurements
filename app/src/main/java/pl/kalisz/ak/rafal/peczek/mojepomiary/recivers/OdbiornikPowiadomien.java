@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -32,20 +33,26 @@ public class OdbiornikPowiadomien extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String etapId = (String) intent.getExtras().get("EXTRA_Etap_ID");
-        EtapTerapiaRepository etapTerapiaRepository = new EtapTerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        TerapiaRepository terapiaRepository = new TerapiaRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        PomiarRepository pomiarRepository = new PomiarRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        LekRepository lekRepository = new LekRepository(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        Log.w("TAG-powiadomienie", "odbieram etap: " + etapId);
+        String userUid = FirebaseAuth.getInstance().getUid();
+        Log.w("TAG-powiadomienie", "jestem : " + userUid);
+        EtapTerapiaRepository etapTerapiaRepository = new EtapTerapiaRepository(userUid);
+        TerapiaRepository terapiaRepository = new TerapiaRepository(userUid);
+        PomiarRepository pomiarRepository = new PomiarRepository(userUid);
+        LekRepository lekRepository = new LekRepository(userUid);
 
         EtapTerapa etapTerapa = etapTerapiaRepository.findById(etapId);
 
-        if (etapTerapa.getDataWykonania() == null) {
+        Log.w("TAG-powiadomienie", "znalazełm etap : " + etapTerapa.toString());
+
+        if (etapTerapa != null && etapTerapa.getDataWykonania() == null) {
             Intent intent1 = new Intent(context, EtapTerapiActivity.class);
             intent1.putExtra(EtapTerapiActivity.EXTRA_Etap_ID, etapId);
             intent1.putExtra(EtapTerapiActivity.EXTRA_Aktywnosc, 0);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) etapTerapa.getDataZaplanowania().getTime(), intent1, PendingIntent.FLAG_MUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) etapTerapa.getDataUtwozenia().getTime(), intent1, PendingIntent.FLAG_MUTABLE);
             String opis = "";
             try {
                 ArrayList<String> listaElementow = terapiaRepository.findById(etapTerapa.getIdTerapi()).getIdsCzynnosci();
@@ -69,7 +76,7 @@ public class OdbiornikPowiadomien extends BroadcastReceiver {
             }
 
             NotificationCompat.Builder bilder = new NotificationCompat.Builder(context, "mojepomiary")
-                    .setSmallIcon(R.drawable.ic_notyfication_deafalt)
+                    .setSmallIcon(R.drawable.ic_launcher_wlasna_monochrome)
                     .setContentTitle("Wykonaj etap terapii")
                     .setContentText(opis)
                     .setAutoCancel(true)

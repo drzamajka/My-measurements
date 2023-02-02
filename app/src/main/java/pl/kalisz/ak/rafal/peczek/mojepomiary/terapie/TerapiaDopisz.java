@@ -658,10 +658,10 @@ public class TerapiaDopisz extends AppCompatActivity {
     private void setAlarm(EtapTerapa etapTerapa) {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
+        Log.w("TAG-powiadomienie", "zgłaszam etap: " + etapTerapa.getId());
         Intent intent = new Intent(this, OdbiornikPowiadomien.class);
         intent.putExtra("EXTRA_Etap_ID", etapTerapa.getId());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) etapTerapa.getDataZaplanowania().getTime(), intent, PendingIntent.FLAG_MUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) etapTerapa.getDataUtwozenia().getTime(), intent, PendingIntent.FLAG_MUTABLE);
 
         alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, etapTerapa.getDataZaplanowania().getTime(), pendingIntent);
     }
