@@ -3,7 +3,6 @@ package pl.kalisz.ak.rafal.peczek.mojepomiary.terapie;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -92,10 +91,9 @@ public class EtapTerapiActivity extends AppCompatActivity {
         View elementView = getLayoutInflater().inflate(R.layout.progres_bar, null, false);
         MaterialAlertDialogBuilder progresbilder = new MaterialAlertDialogBuilder(EtapTerapiActivity.this)
                 .setCancelable(false)
-                .setTitle("Ładowanie danych")
+                .setTitle(R.string._adowanie_danych)
                 .setView(elementView);
         AlertDialog progers = progresbilder.create();
-        //progers.getWindow().getAttributes().windowAnimations = R.style.FaidDialogAnimation;
         progers.show();
 
         godzinaWykonania = findViewById(R.id.godzinaWykonaniaLayout);
@@ -106,12 +104,12 @@ public class EtapTerapiActivity extends AppCompatActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.format_czasu));
 
         if (aktywnosc != 1 || etapTerapa.getDataWykonania() == null) {
-            przycisk.setText("Wykonaj etap");
+            przycisk.setText(R.string.wykonaj_etap);
             Date date = new Date();
             godzinaWykonania.getEditText().setText(simpleDateFormat.format(date));
             dodajTimePicker(godzinaWykonania.getEditText());
         } else {
-            przycisk.setText("Aktualizuj");
+            przycisk.setText(R.string.aktualizuj);
             notatka.getEditText().setText(etapTerapa.getNotatka());
             godzinaWykonania.getEditText().setText(simpleDateFormat.format(etapTerapa.getDataWykonania()));
             dodajTimePicker(godzinaWykonania.getEditText());
@@ -303,7 +301,6 @@ public class EtapTerapiActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             ArrayList<String> listaWynikow = validate(listaCzynnosci);
-                            Log.w("TAG-etap", "listaWynikow: " + listaWynikow.toString());
                             if (listaWynikow == null)
                                 return;
 
@@ -341,7 +338,6 @@ public class EtapTerapiActivity extends AppCompatActivity {
                                             wpisLekRepository.getQueryByLekId(((Lek) listaCzynnosci.get(index)).getId(), 1).whereLessThan("dataWykonania", cData.getTime()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    Log.w("TAG-etap", "zapas task:  "+task.isSuccessful());
                                                     if (task.isSuccessful()) {
                                                         try {
                                                             List<WpisLek> lista = task.getResult().toObjects(WpisLek.class);
@@ -412,7 +408,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                     if (wynikOdczyt.length() > 0 && Double.parseDouble(wynikOdczyt) > 0) {
                         wynikOdczyt = ((Double) (Double.parseDouble(wynikOdczyt))).toString();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Wprowadż poprawne dane", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.wprowad__poprawne_dane, Toast.LENGTH_SHORT).show();
                         return null;
                     }
                 }
@@ -449,7 +445,7 @@ public class EtapTerapiActivity extends AppCompatActivity {
                 MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
                         .setTimeFormat(TimeFormat.CLOCK_24H)
                         .setHour(hour)
-                        .setTitleText("Okresl godzine etapu")
+                        .setTitleText("Wybiez godzine wykonania etapu")
                         .setMinute(minute)
                         .build();
 

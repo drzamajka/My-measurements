@@ -225,4 +225,10 @@
   <string name="pominiento_">"omitted "</string>
   <string name="etap_">"Stage "</string>
   <string name="pobieram">Taking resources</string>
+    <string name="_adowanie_danych">Loading data</string>
+    <string name="wykonaj_etap">Complete the stage</string>
+    <string name="wprowad__poprawne_dane">Please enter the correct details</string>
+    <string name="wybierz_godzine_wykonania_etapu">Select the time to complete the step</string>
+    <string name="notatka_z_przebiegu_terapii">Therapy note</string>
+  <string name="godzina_wykonania_etapu">Stage execution time</string>
 </resources>

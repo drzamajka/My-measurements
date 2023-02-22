@@ -49,7 +49,7 @@
     <string name="pobrano">Pobrano</string>
     <string name="pominieto">Pominiento</string>
     <string name="edytuj">Edytuj</string>
-    <string name="przecinek" translatable="false">, </string>
+    <string name="przecinek" translatable="false">", "</string>
     <string name="czy_napewno_wylogowac">Czy na pewno wylogować?</string>
     <string name="tak">Tak</string>
     <string name="wylogowanie">Wylogowanie</string>
@@ -231,5 +231,10 @@
     <string name="wykonany_">wykonany:" "</string>
     <string name="pominiento_">"Pominięto "</string>
     <string name="etap_">Etap" "</string>
+    <string name="_adowanie_danych">Ładowanie danych</string>
+    <string name="wykonaj_etap">Wykonaj etap</string>
+    <string name="wprowad__poprawne_dane">Wprowadż poprawne dane</string>
+    <string name="notatka_z_przebiegu_terapii">Notatka z przebiegu terapii</string>
+    <string name="godzina_wykonania_etapu">Godzina wykonania etapu</string>
 
 </resources>
